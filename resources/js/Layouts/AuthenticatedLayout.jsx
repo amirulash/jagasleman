@@ -38,6 +38,14 @@ export default function AuthenticatedLayout({ header, children }) {
                                         Admin Reports
                                     </NavLink>
                                 )}
+                                {user.role === 'admin' && (
+                                    <NavLink
+                                        href={route('admin.users.index')}
+                                        active={route().current('admin.users.index')}
+                                    >
+                                        User Approval
+                                    </NavLink>
+                                )}
                             </div>
                         </div>
 
@@ -148,6 +156,14 @@ export default function AuthenticatedLayout({ header, children }) {
                                 active={route().current('admin.reports.index')}
                             >
                                 Admin Reports
+                            </ResponsiveNavLink>
+                        )}
+                        {user.role === 'admin' && (
+                            <ResponsiveNavLink
+                                href={route('admin.users.index')}
+                                active={route().current('admin.users.index')}
+                            >
+                                User Approval
                             </ResponsiveNavLink>
                         )}
                     </div>

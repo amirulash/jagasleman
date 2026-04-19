@@ -8,10 +8,15 @@ use Illuminate\Database\Eloquent\Model;
 
 #[Fillable([
     'user_id',
+    'reporter_name',
+    'reporter_email',
+    'reporter_phone',
     'title',
     'incident_type',
     'description',
     'location',
+    'latitude',
+    'longitude',
     'incident_at',
     'status',
     'reviewed_by',
@@ -35,6 +40,8 @@ class IncidentReport extends Model
         return [
             'incident_at' => 'datetime',
             'reviewed_at' => 'datetime',
+            'latitude' => 'decimal:7',
+            'longitude' => 'decimal:7',
         ];
     }
 }

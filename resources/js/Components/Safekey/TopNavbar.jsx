@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import { Link } from '@inertiajs/react';
+import { Link, usePage } from '@inertiajs/react';
 import {
     Home,
     Map,
@@ -11,6 +11,8 @@ import {
     Menu,
     X,
     LogIn,
+    User,
+    LayoutDashboard,
 } from 'lucide-react';
 import { Button } from '@/Components/Safekey/ui/button';
 import { cn } from '@/lib/utils';
@@ -26,6 +28,8 @@ const menuItems = [
 
 export default function TopNavbar() {
     const [mobileOpen, setMobileOpen] = useState(false);
+    const { auth } = usePage().props;
+    const authUser = auth?.user;
     const pathname = typeof window !== 'undefined' ? window.location.pathname : '/';
     const isLoginPage = ['/login', '/safekey/login'].includes(pathname);
     const isRegisterPage = ['/register', '/safekey/register'].includes(pathname);
@@ -34,6 +38,10 @@ export default function TopNavbar() {
         isActive
             ? 'bg-primary-foreground text-police hover:bg-primary-foreground/90'
             : 'bg-primary text-primary-foreground hover:bg-primary/85 border border-primary-foreground/30';
+
+    const avatarUrl = authUser?.name
+        ? `https://ui-avatars.com/api/?name=${encodeURIComponent(authUser.name)}&background=ffffff&color=7f1d1d&bold=true`
+        : null;
 
     return (
         <header className="h-full z-50 bg-gradient-to-r from-primary via-primary to-police border-b border-primary-foreground/20 shadow-sm">
@@ -70,20 +78,49 @@ export default function TopNavbar() {
                 </nav>
 
                 <div className="hidden lg:flex items-center gap-2">
-                    <Button
-                        asChild
-                        variant="default"
-                        size="sm"
-                        className={getAuthButtonClass(isLoginPage)}
-                    >
-                        <Link href="/safekey/login">
-                            <LogIn className="w-4 h-4 mr-1.5" />
-                            Masuk
-                        </Link>
-                    </Button>
-                    <Button asChild size="sm" className={getAuthButtonClass(isRegisterPage)}>
-                        <Link href="/safekey/register">Daftar</Link>
-                    </Button>
+                    {authUser ? (
+                        <>
+                            <Link href="/dashboard" className="flex items-center gap-2 rounded-md px-2 py-1 hover:bg-primary-foreground/10 transition-colors">
+                                {avatarUrl ? (
+                                    <img src={avatarUrl} alt={authUser.name} className="h-9 w-9 rounded-full border border-primary-foreground/30" />
+                                ) : (
+                                    <div className="h-9 w-9 rounded-full border border-primary-foreground/30 bg-primary-foreground/10 flex items-center justify-center">
+                                        <User className="w-4 h-4 text-primary-foreground" />
+                                    </div>
+                                )}
+                                <div className="text-left">
+                                    <p className="text-sm font-semibold text-primary-foreground leading-none">{authUser.name}</p>
+                                    <p className="text-[11px] text-primary-foreground/75 mt-1">{authUser.role === 'admin' ? 'Admin' : 'User'}</p>
+                                </div>
+                            </Link>
+                            <Button asChild size="sm" className="bg-primary-foreground text-police hover:bg-primary-foreground/90">
+                                <Link href="/dashboard">
+                                    <LayoutDashboard className="w-4 h-4 mr-1.5" />
+                                    Dashboard
+                                </Link>
+                            </Button>
+                            <Button asChild size="sm" variant="outline" className="border-primary-foreground/30 text-primary-foreground bg-transparent hover:bg-primary-foreground/10">
+                                <Link href={route('logout')} method="post" as="button">Keluar</Link>
+                            </Button>
+                        </>
+                    ) : (
+                        <>
+                            <Button
+                                asChild
+                                variant="default"
+                                size="sm"
+                                className={getAuthButtonClass(isLoginPage)}
+                            >
+                                <Link href="/safekey/login">
+                                    <LogIn className="w-4 h-4 mr-1.5" />
+                                    Masuk
+                                </Link>
+                            </Button>
+                            <Button asChild size="sm" className={getAuthButtonClass(isRegisterPage)}>
+                                <Link href="/safekey/register">Daftar</Link>
+                            </Button>
+                        </>
+                    )}
                 </div>
 
                 <button className="lg:hidden p-2 text-primary-foreground" onClick={() => setMobileOpen(!mobileOpen)}>
@@ -115,21 +152,36 @@ export default function TopNavbar() {
                         })}
                     </nav>
                     <div className="flex gap-2 mt-3 pt-3 border-t border-primary-foreground/20">
-                        <Button
-                            asChild
-                            variant="default"
-                            size="sm"
-                            className={`flex-1 ${getAuthButtonClass(isLoginPage)}`}
-                        >
-                            <Link href="/safekey/login" onClick={() => setMobileOpen(false)}>
-                                Masuk
-                            </Link>
-                        </Button>
-                        <Button asChild size="sm" className={`flex-1 ${getAuthButtonClass(isRegisterPage)}`}>
-                            <Link href="/safekey/register" onClick={() => setMobileOpen(false)}>
-                                Daftar
-                            </Link>
-                        </Button>
+                        {authUser ? (
+                            <>
+                                <Button asChild size="sm" className="flex-1 bg-primary-foreground text-police hover:bg-primary-foreground/90">
+                                    <Link href="/dashboard" onClick={() => setMobileOpen(false)}>Dashboard</Link>
+                                </Button>
+                                <Button asChild size="sm" variant="outline" className="flex-1 border-primary-foreground/30 text-primary-foreground bg-transparent hover:bg-primary-foreground/10">
+                                    <Link href={route('logout')} method="post" as="button" onClick={() => setMobileOpen(false)}>
+                                        Keluar
+                                    </Link>
+                                </Button>
+                            </>
+                        ) : (
+                            <>
+                                <Button
+                                    asChild
+                                    variant="default"
+                                    size="sm"
+                                    className={`flex-1 ${getAuthButtonClass(isLoginPage)}`}
+                                >
+                                    <Link href="/safekey/login" onClick={() => setMobileOpen(false)}>
+                                        Masuk
+                                    </Link>
+                                </Button>
+                                <Button asChild size="sm" className={`flex-1 ${getAuthButtonClass(isRegisterPage)}`}>
+                                    <Link href="/safekey/register" onClick={() => setMobileOpen(false)}>
+                                        Daftar
+                                    </Link>
+                                </Button>
+                            </>
+                        )}
                     </div>
                 </div>
             )}
