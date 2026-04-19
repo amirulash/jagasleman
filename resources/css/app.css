@@ -1,0 +1,73 @@
+@import "https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap";
+
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+	:root {
+		--background: 28 35% 96%;
+		--foreground: 15 28% 14%;
+
+		--card: 0 0% 100%;
+		--card-foreground: 20 20% 12%;
+
+		--popover: 0 0% 100%;
+		--popover-foreground: 20 20% 12%;
+
+		--primary: 357 74% 36%;
+		--primary-foreground: 0 0% 100%;
+
+		--secondary: 29 38% 82%;
+		--secondary-foreground: 25 40% 20%;
+
+		--muted: 28 20% 91%;
+		--muted-foreground: 20 16% 38%;
+
+		--accent: 29 46% 76%;
+		--accent-foreground: 22 44% 19%;
+
+		--destructive: 357 72% 45%;
+		--destructive-foreground: 0 0% 100%;
+
+		--border: 29 25% 80%;
+		--input: 29 25% 80%;
+		--ring: 357 74% 36%;
+
+		--radius: 0.625rem;
+
+		--police: 26 44% 28%;
+		--police-foreground: 0 0% 100%;
+
+		--warning: 30 52% 44%;
+		--warning-foreground: 0 0% 100%;
+		--success: 22 34% 36%;
+		--success-foreground: 0 0% 100%;
+		--emergency: 357 80% 43%;
+		--emergency-foreground: 0 0% 100%;
+	}
+
+	* {
+		@apply border-border;
+	}
+
+	body {
+		@apply bg-background text-foreground;
+		font-family: 'Plus Jakarta Sans', system-ui, sans-serif;
+	}
+}
+
+.leaflet-container {
+	z-index: 1;
+	font-family: 'Plus Jakarta Sans', sans-serif;
+}
+
+.incident-popup .leaflet-popup-content-wrapper {
+	border-radius: 0.625rem;
+	padding: 0;
+}
+
+.incident-popup .leaflet-popup-content {
+	margin: 0;
+	min-width: 220px;
+}

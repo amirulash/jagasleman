@@ -1,0 +1,17 @@
+<svg width="900" height="600" viewBox="0 0 900 600" fill="none" xmlns="http://www.w3.org/2000/svg">
+  <defs>
+    <linearGradient id="bg" x1="0" y1="0" x2="900" y2="600" gradientUnits="userSpaceOnUse">
+      <stop stop-color="#3A2315"/>
+      <stop offset="1" stop-color="#6E452A"/>
+    </linearGradient>
+  </defs>
+  <rect width="900" height="600" rx="28" fill="url(#bg)"/>
+  <rect x="160" y="210" width="580" height="280" rx="16" fill="#F2E6D8"/>
+  <rect x="120" y="210" width="660" height="32" rx="10" fill="#C78E4D"/>
+  <rect x="405" y="280" width="90" height="210" rx="10" fill="#6E452A"/>
+  <rect x="225" y="280" width="120" height="90" rx="10" fill="#C78E4D"/>
+  <rect x="555" y="280" width="120" height="90" rx="10" fill="#C78E4D"/>
+  <rect x="438" y="115" width="24" height="120" fill="#F2E6D8"/>
+  <path d="M450 85L500 115H400L450 85Z" fill="#9D1E26"/>
+  <text x="450" y="255" text-anchor="middle" fill="#3A2315" font-size="36" font-family="Arial, sans-serif" font-weight="700">POLSEK</text>
+</svg>
