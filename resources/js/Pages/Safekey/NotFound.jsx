@@ -1,5 +1,5 @@
 import SafekeyLayout from '@/Layouts/SafekeyLayout';
-import Page from '@/pages/NotFound';
+import Page from '@/Pages/NotFound';
 
 export default function SafekeyNotFound() {
     return (

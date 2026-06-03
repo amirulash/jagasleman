@@ -1,6 +1,14 @@
 // Import GeoJSON data as raw text and parse as JSON
 import dataKejadianGeojsonRaw from './points/data_kejadian.geojson?raw';
 
+export type StreetCrimeType =
+  | 'PENGEROYOKAN'
+  | 'PENGRUSAKAN'
+  | 'PENGANIAYAAN'
+  | 'PENYALAHGUNAAN SENJATA TAJAM'
+  | 'PENCURIAN DENGAN KEKERASAN (CURAS)'
+  | 'PEMERASAN DAN PENGANCAMAN';
+
 export interface IncidentFeature {
   type: string;
   properties: {
@@ -27,104 +35,106 @@ export interface IncidentData {
 }
 
 /**
- * Map category from GeoJSON to incident type
+ * Menyamakan kategori mentah dari GeoJSON menjadi 6 jenis kejahatan jalanan utama.
  */
-function mapCategoryToType(category: string): 'Pencurian' | 'Perampokan' | 'Kecelakaan' | 'Kebakaran' | 'Tawuran' | 'Vandalisme' {
-  const categoryLower = category.toLowerCase();
-  
-  if (categoryLower.includes('keroyok') || categoryLower.includes('pengeroyok')) {
-    return 'Tawuran';
+export function normalizeStreetCrimeType(category: string): StreetCrimeType {
+  const value = String(category || '').toLowerCase();
+
+  if (value.includes('keroyok') || value.includes('pengeroyok')) {
+    return 'PENGEROYOKAN';
   }
-  if (categoryLower.includes('aniaya') || categoryLower.includes('penganiayaan')) {
-    return 'Tawuran';
+
+  if (value.includes('pengrusakan') || value.includes('rusak') || value.includes('vandalisme')) {
+    return 'PENGRUSAKAN';
   }
-  if (categoryLower.includes('sajam') || categoryLower.includes('darurat')) {
-    return 'Tawuran';
+
+  if (value.includes('aniaya') || value.includes('penganiayaan')) {
+    return 'PENGANIAYAAN';
   }
-  if (categoryLower.includes('pengrusakan') || categoryLower.includes('vandalisme')) {
-    return 'Vandalisme';
+
+  if (value.includes('sajam') || value.includes('darurat') || value.includes('senjata') || value.includes('tumpul')) {
+    return 'PENYALAHGUNAAN SENJATA TAJAM';
   }
-  
-  return 'Tawuran'; // default
+
+  if (value.includes('curas') || value.includes('kekerasan')) {
+    return 'PENCURIAN DENGAN KEKERASAN (CURAS)';
+  }
+
+  if (value.includes('pemerasan') || value.includes('ancaman') || value.includes('pengancaman')) {
+    return 'PEMERASAN DAN PENGANCAMAN';
+  }
+
+  return 'PENGEROYOKAN';
 }
 
 /**
- * Parse date string in various formats
+ * Parse date string in various formats.
  */
 function parseDate(dateStr: string): string {
   if (!dateStr || dateStr === '-' || dateStr === '(tidak tercantum)') {
     return new Date().toISOString().split('T')[0];
   }
-  
+
   try {
-    // Try parsing DD/MM/YYYY or M/DD/YYYY format
     const parts = dateStr.split('/');
     if (parts.length === 3) {
-      const day = parts[0];
-      const month = parts[1];
-      const year = parts[2];
-      
-      // Check if it's DD/MM/YYYY or M/DD/YYYY
-      let d = parseInt(day);
-      let m = parseInt(month);
-      const y = parseInt(year);
-      
-      // If day > 12, it's DD/MM/YYYY
-      if (d > 12) {
-        return `${y}-${m.toString().padStart(2, '0')}-${d.toString().padStart(2, '0')}`;
-      } else {
-        // Assume M/DD/YYYY
-        return `${y}-${d.toString().padStart(2, '0')}-${m.toString().padStart(2, '0')}`;
-      }
+      const first = parseInt(parts[0], 10);
+      const second = parseInt(parts[1], 10);
+      const year = parseInt(parts[2], 10);
+
+      // Data lapangan umumnya D/M/YYYY; fallback tetap aman untuk nilai M/D/YYYY.
+      const day = first > 12 ? first : second;
+      const month = first > 12 ? second : first;
+
+      return `${year}-${month.toString().padStart(2, '0')}-${day.toString().padStart(2, '0')}`;
     }
-    
-    // Try DD-MMM-YY format (e.g., "6-Dec-20")
+
     const dateObj = new Date(dateStr);
-    if (!isNaN(dateObj.getTime())) {
+    if (!Number.isNaN(dateObj.getTime())) {
       return dateObj.toISOString().split('T')[0];
     }
-    
-    return new Date().toISOString().split('T')[0];
   } catch {
-    return new Date().toISOString().split('T')[0];
+    // ignore and fallback
   }
+
+  return new Date().toISOString().split('T')[0];
 }
 
 /**
- * Parse time string and extract kecamatan from address
+ * Parse time string and extract kecamatan from address.
  */
 function parseTimeAndKecamatan(timeStr: string, address: string): { time: string; kecamatan: string } {
   let time = '12:00';
-  if (timeStr && timeStr !== '-' && timeStr !== '(tidak tercantum)') {
-    const match = timeStr.match(/(\d{1,2}):?(\d{2})/);
+  const rawTime = String(timeStr || '');
+
+  if (rawTime && rawTime !== '-' && rawTime !== '(tidak tercantum)') {
+    const match = rawTime.match(/(\d{1,2})[.:]?(\d{2})/);
     if (match) {
       time = `${match[1].padStart(2, '0')}:${match[2]}`;
     }
   }
-  
-  // Extract kecamatan from address
-  // Common kecamatan in Sleman: Depok, Mlati, Ngaglik, Gamping, Kalasan, Godean, Sleman, Pakem, Turi, Minggir, Ngemplak, Prambanan, Berbah
-  const addressLower = address.toLowerCase();
-  
+
+  const addressLower = String(address || '').toLowerCase();
   const kecamatanList = [
-    'depok', 'mlati', 'ngaglik', 'gamping', 'kalasan', 'godean', 
-    'sleman', 'pakem', 'turi', 'minggir', 'ngemplak', 'prambanan', 'berbah'
+    'depok', 'mlati', 'ngaglik', 'gamping', 'kalasan', 'godean',
+    'sleman', 'pakem', 'turi', 'minggir', 'ngemplak', 'prambanan', 'berbah',
+    'cangkringan', 'tempel', 'seyegan', 'moyudan'
   ];
-  
+
   for (const kec of kecamatanList) {
     if (addressLower.includes(kec)) {
-      return { 
-        time, 
-        kecamatan: kec.charAt(0).toUpperCase() + kec.slice(1) 
+      return {
+        time,
+        kecamatan: kec.charAt(0).toUpperCase() + kec.slice(1),
       };
     }
   }
-  
+
   return { time, kecamatan: 'Sleman' };
 }
 
 /**
- * Extract incidents from GeoJSON
+ * Extract incidents from GeoJSON.
  */
 export function getIncidentsFromGeojson() {
   const data = JSON.parse(dataKejadianGeojsonRaw) as IncidentData;
@@ -132,26 +142,28 @@ export function getIncidentsFromGeojson() {
 }
 
 /**
- * Convert incident GeoJSON features to Incident format
+ * Convert incident GeoJSON features to Incident format.
  */
 export function convertIncidentsToFormat(features: IncidentFeature[]) {
   return features.map((feature, index) => {
     const props = feature.properties;
     const { time, kecamatan } = parseTimeAndKecamatan(props['Waktu Kejadian'], props['Alamat Fix']);
     const date = parseDate(props['Tanggal Kejadian']);
-    
+    const type = normalizeStreetCrimeType(props['Kategori']);
+
     return {
       id: `incident_${index + 1}`,
       date,
       time,
-      type: mapCategoryToType(props['Kategori']),
+      type,
       description: props['Deskripsi Singkat Web'],
-      lat: props['Latitude'],
-      lng: props['Longitude'],
+      lat: Number(props['Latitude']),
+      lng: Number(props['Longitude']),
       location: props['Alamat Fix'],
       status: 'Aktif' as const,
       kecamatan,
-      kategori: props['Kategori'],
+      kategori: type,
+      rawKategori: props['Kategori'],
     };
-  });
+  }).filter((item) => Number.isFinite(item.lat) && Number.isFinite(item.lng));
 }

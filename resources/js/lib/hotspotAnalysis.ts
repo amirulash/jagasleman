@@ -277,18 +277,18 @@ export function getHotspotColor(
   if (type === "hotspot") {
     // Red gradient: stronger red for higher z-score
     if (zScore > 3) return "#991b1b"; // Dark red
-    if (zScore > 2.5) return "#dc2626"; // Red
-    if (zScore > 2) return "#ef4444"; // Light red
-    return "#f87171"; // Very light red
+    if (zScore > 2.5) return "#F47B52"; // Red
+    if (zScore > 2) return "#F47B52"; // Light red
+    return "#F47B52"; // Very light red
   } else if (type === "coldspot") {
     // Blue gradient
     if (zScore < -3) return "#1e3a8a"; // Dark blue
-    if (zScore < -2.5) return "#2563eb"; // Blue
+    if (zScore < -2.5) return "#F47B52"; // Blue
     if (zScore < -2) return "#60a5fa"; // Light blue
     return "#93c5fd"; // Very light blue
   }
   // Neutral - yellow/neutral
-  return "#fbbf24"; // Amber
+  return "#F2A20B"; // Amber
 }
 
 /**
@@ -296,12 +296,12 @@ export function getHotspotColor(
  */
 export const HOTSPOT_LEGEND = [
   { color: "#991b1b", label: "Hotspot Sangat Tinggi (Z > 3)", type: "hotspot" },
-  { color: "#dc2626", label: "Hotspot Tinggi (Z > 2.5)", type: "hotspot" },
-  { color: "#ef4444", label: "Hotspot Sedang (Z > 2)", type: "hotspot" },
-  { color: "#f87171", label: "Hotspot Rendah (1.96 < Z < 2)", type: "hotspot" },
-  { color: "#fbbf24", label: "Normal/Neutral", type: "neutral" },
+  { color: "#F47B52", label: "Hotspot Tinggi (Z > 2.5)", type: "hotspot" },
+  { color: "#F47B52", label: "Hotspot Sedang (Z > 2)", type: "hotspot" },
+  { color: "#F47B52", label: "Hotspot Rendah (1.96 < Z < 2)", type: "hotspot" },
+  { color: "#F2A20B", label: "Normal/Neutral", type: "neutral" },
   { color: "#93c5fd", label: "Coldspot Rendah (-2 < Z < -1.96)", type: "coldspot" },
   { color: "#60a5fa", label: "Coldspot Sedang (Z < -2)", type: "coldspot" },
-  { color: "#2563eb", label: "Coldspot Tinggi (Z < -2.5)", type: "coldspot" },
+  { color: "#F47B52", label: "Coldspot Tinggi (Z < -2.5)", type: "coldspot" },
   { color: "#1e3a8a", label: "Coldspot Sangat Tinggi (Z < -3)", type: "coldspot" },
 ];

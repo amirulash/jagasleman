@@ -1,5 +1,5 @@
 import SafekeyLayout from '@/Layouts/SafekeyLayout';
-import Page from '@/pages/StreetCrimeAnalysis';
+import Page from '@/Pages/StreetCrimeAnalysis';
 
 export default function SafekeyStreetCrimeAnalysis() {
     return (

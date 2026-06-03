@@ -15,10 +15,17 @@ class AdminUserApprovalController extends Controller
         abort_unless($request->user()?->isAdmin(), 403);
 
         $users = User::query()
-            ->where('role', 'user')
+            ->where('id', '!=', $request->user()->id)
+            ->where(function ($query) {
+                $query->where('role', 'user')
+                    ->orWhere(function ($subQuery) {
+                        $subQuery->where('role', 'admin')
+                            ->whereNotNull('approved_by');
+                    });
+            })
             ->with('approver:id,name,email')
             ->latest()
-            ->get(['id', 'name', 'email', 'approval_status', 'approved_by', 'approved_at', 'approval_note', 'created_at']);
+            ->get(['id', 'name', 'email', 'role', 'approval_status', 'approved_by', 'approved_at', 'approval_note', 'created_at']);
 
         return Inertia::render('Admin/UserApprovals', [
             'users' => $users,
@@ -30,7 +37,7 @@ class AdminUserApprovalController extends Controller
         abort_unless($request->user()?->isAdmin(), 403);
 
         if ($user->isAdmin()) {
-            return back()->with('error', 'Akun admin tidak dapat diubah status persetujuannya.');
+            return back()->with('error', 'Akun admin utama tidak dapat diubah status persetujuannya.');
         }
 
         $validated = $request->validate([
@@ -40,17 +47,18 @@ class AdminUserApprovalController extends Controller
 
         if ($validated['approval_status'] === 'rejected' && blank($validated['approval_note'] ?? null)) {
             return back()->withErrors([
-                'approval_note' => 'Catatan penolakan wajib diisi saat menolak user.',
+                'approval_note' => 'Catatan penolakan wajib diisi saat menolak pendaftar admin.',
             ]);
         }
 
         $user->update([
+            'role' => $validated['approval_status'] === 'approved' ? 'admin' : 'user',
             'approval_status' => $validated['approval_status'],
             'approved_by' => $request->user()->id,
             'approved_at' => now(),
             'approval_note' => $validated['approval_status'] === 'rejected' ? $validated['approval_note'] : null,
         ]);
 
-        return back()->with('success', 'Status persetujuan user berhasil diperbarui.');
+        return back()->with('success', 'Status admin berhasil diperbarui.');
     }
 }

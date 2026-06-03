@@ -1,5 +1,5 @@
 import { Home, Map, FileWarning, BarChart3, Newspaper, Phone, Shield } from "lucide-react";
-import { NavLink } from "@/components/NavLink";
+import { NavLink } from "@/Components/NavLink";
 import { useLocation } from "react-router-dom";
 import {
   Sidebar,
@@ -12,7 +12,7 @@ import {
   SidebarHeader,
   SidebarFooter,
   useSidebar,
-} from "@/components/ui/sidebar";
+} from "@/Components/ui/sidebar";
 
 const menuItems = [
   { title: "Beranda", url: "/", icon: Home },
@@ -37,8 +37,8 @@ export function AppSidebar() {
           </div>
           {!collapsed && (
             <div>
-              <h1 className="text-base font-bold text-sidebar-foreground tracking-tight">JagaSleman</h1>
-              <p className="text-[11px] text-sidebar-muted">Keamanan Kabupaten Sleman</p>
+              <h1 className="text-base font-bold text-sidebar-foreground tracking-tight"></h1>
+              <p className="text-[11px] text-sidebar-muted"></p>
             </div>
           )}
         </div>
@@ -70,7 +70,7 @@ export function AppSidebar() {
 
       <SidebarFooter className="p-4">
         {!collapsed && (
-          <p className="text-[10px] text-sidebar-muted text-center">© 2026 JagaSleman</p>
+          <p className="text-[10px] text-sidebar-muted text-center">© 2026 </p>
         )}
       </SidebarFooter>
     </Sidebar>

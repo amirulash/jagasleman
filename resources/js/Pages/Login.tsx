@@ -1,10 +1,26 @@
 import { useState } from "react";
 import { Link, useForm, usePage } from "@inertiajs/react";
-import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card";
-import { Input } from "@/components/ui/input";
-import { Button } from "@/components/ui/button";
-import { Label } from "@/components/ui/label";
-import { Shield, Mail, Lock, Eye, EyeOff } from "lucide-react";
+import { Shield, Mail, Lock, Eye, EyeOff, AlertCircle, CheckCircle2 } from "lucide-react";
+
+// Icon ornamen background
+const PIN_PATH  = "M12 2C7.58 2 4 5.58 4 10c0 5.25 8 12 8 12s8-6.75 8-12c0-4.42-3.58-8-8-8z";
+const PIN_CIRCLE = { cx: "12", cy: "10", r: "3.5" };
+const SHIELD_PATH = "M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z";
+
+const pinIcons = [
+  { top: "8%",  left: "6%",  size: 40, op: 0.07, rot: -15 },
+  { top: "18%", left: "88%", size: 32, op: 0.06, rot: 10  },
+  { top: "60%", left: "4%",  size: 28, op: 0.06, rot: 20  },
+  { top: "72%", left: "91%", size: 36, op: 0.07, rot: -8  },
+  { top: "88%", left: "20%", size: 24, op: 0.05, rot: 5   },
+  { top: "35%", left: "93%", size: 30, op: 0.06, rot: -20 },
+];
+
+const shieldIcons = [
+  { top: "45%", left: "8%",  size: 26, op: 0.06, rot: 12 },
+  { top: "25%", left: "82%", size: 22, op: 0.05, rot: -5 },
+  { top: "80%", left: "75%", size: 30, op: 0.06, rot: 8  },
+];
 
 export default function Login() {
   const { flash } = usePage().props as { flash?: { success?: string; error?: string } };
@@ -23,76 +39,282 @@ export default function Login() {
   };
 
   return (
-    <div className="min-h-[calc(100vh-4rem)] flex items-center justify-center p-4 bg-muted/30">
-      <Card className="w-full max-w-md">
-        <CardHeader className="text-center space-y-3">
-          <div className="mx-auto w-14 h-14 rounded-xl bg-primary flex items-center justify-center">
-            <Shield className="w-7 h-7 text-primary-foreground" />
+    <div className="jaga-login-page min-h-[calc(100vh-4rem)] flex items-center justify-center p-4 relative overflow-hidden">
+
+      {/* ══════════════════════════════
+          BACKGROUND LAYERS
+      ══════════════════════════════ */}
+      <div className="pointer-events-none fixed inset-0 -z-10">
+
+        {/* 1. Base gradient */}
+        <div className="absolute inset-0 bg-gradient-to-br from-[#EEF8F6] via-[#F8FAFC] to-[#FFF7ED]" />
+
+        {/* 2. Dot grid pattern */}
+        <div
+          className="absolute inset-0 opacity-30"
+          style={{
+            backgroundImage: "radial-gradient(circle, rgba(15, 31, 46, 0.16) 1px, transparent 1px)",
+            backgroundSize: "28px 28px",
+          }}
+        />
+
+        {/* 3. Vignette fade tepi atas & bawah */}
+        <div className="absolute inset-x-0 top-0 h-40 bg-gradient-to-b from-white/70 to-transparent" />
+        <div className="absolute inset-x-0 bottom-0 h-40 bg-gradient-to-t from-white/70 to-transparent" />
+
+        {/* 4. Soft color blobs */}
+        <div className="absolute top-[-10%] right-[-5%] w-[420px] h-[420px] rounded-full bg-[#0FA3A0]/15 blur-[90px]" />
+        <div className="absolute bottom-[-10%] left-[-5%] w-[380px] h-[380px] rounded-full bg-[#F2A20B]/12 blur-[80px]" />
+        <div className="absolute top-[40%] left-[30%] w-[260px] h-[260px] rounded-full bg-[#F47B52]/8 blur-[70px]" />
+
+        {/* 5. MapPin icon ornaments */}
+        <div className="absolute inset-0 overflow-hidden">
+          {pinIcons.map((s, i) => (
+            <svg
+              key={i}
+              viewBox="0 0 24 24"
+              fill="none"
+              stroke="currentColor"
+              strokeWidth="1.5"
+              className="absolute text-[#F47B52]"
+              style={{
+                top: s.top,
+                left: s.left,
+                width: s.size,
+                height: s.size,
+                opacity: s.op,
+                transform: "rotate(" + s.rot + "deg)",
+              }}
+            >
+              <circle cx={PIN_CIRCLE.cx} cy={PIN_CIRCLE.cy} r={PIN_CIRCLE.r} />
+              <path d={PIN_PATH} />
+            </svg>
+          ))}
+
+          {/* Shield icon ornaments */}
+          {shieldIcons.map((s, i) => (
+            <svg
+              key={"sh" + i}
+              viewBox="0 0 24 24"
+              fill="none"
+              stroke="currentColor"
+              strokeWidth="1.5"
+              className="absolute text-[#F47B52]"
+              style={{
+                top: s.top,
+                left: s.left,
+                width: s.size,
+                height: s.size,
+                opacity: s.op,
+                transform: "rotate(" + s.rot + "deg)",
+              }}
+            >
+              <path d={SHIELD_PATH} />
+            </svg>
+          ))}
+        </div>
+      </div>
+
+      {/* ══════════════════════════════
+          FORM CONTENT
+      ══════════════════════════════ */}
+      <div className="w-full max-w-md space-y-6">
+
+        {/* Header */}
+        <div className="text-center space-y-3">
+          <div className="mx-auto w-16 h-16 rounded-2xl bg-[#07324A] flex items-center justify-center shadow-lg shadow-[#07324A]/20">
+            <Shield className="w-8 h-8 text-white" />
           </div>
-          <CardTitle className="text-2xl font-bold">Masuk ke JagaSleman</CardTitle>
-          <CardDescription>Masukkan email dan password Anda</CardDescription>
-          {flash?.success && <p className="text-sm text-emerald-600">{flash.success}</p>}
-          {flash?.error && <p className="text-sm text-red-600">{flash.error}</p>}
-        </CardHeader>
-        <CardContent>
-          <form onSubmit={handleSubmit} className="space-y-4">
-            <div className="space-y-2">
-              <Label htmlFor="email">Email</Label>
-              <div className="relative">
-                <Mail className="absolute left-3 top-2.5 w-4 h-4 text-muted-foreground" />
-                <Input
+          <div>
+            <h1 className="text-2xl font-bold text-foreground tracking-tight">
+              Masuk ke JagaSleman
+            </h1>
+            <p className="text-sm text-muted-foreground mt-1">
+              Masukkan email dan password Anda
+            </p>
+          </div>
+
+          {flash?.success && (
+            <div className="flex items-center gap-2 px-4 py-3 rounded-xl bg-[#F2FAF6] border border-[#BDE7E1] text-[#F47B52] text-sm text-left">
+              <CheckCircle2 className="w-4 h-4 flex-shrink-0" />
+              <span>{flash.success}</span>
+            </div>
+          )}
+          {flash?.error && (
+            <div className="flex items-center gap-2 px-4 py-3 rounded-xl bg-destructive/10 border border-destructive/20 text-destructive text-sm text-left">
+              <AlertCircle className="w-4 h-4 flex-shrink-0" />
+              <span>{flash.error}</span>
+            </div>
+          )}
+        </div>
+
+        {/* Card */}
+        <div className="bg-white/95 border border-[#BDE7E1] rounded-[1.5rem] shadow-2xl shadow-[#07324A]/10 overflow-hidden backdrop-blur">
+          {/* Garis aksen atas */}
+          <div className="h-1 w-full bg-gradient-to-r from-[#07324A] via-[#0FA3A0] to-[#F47B52]" />
+
+          <div className="p-8 space-y-5">
+
+            {/* Email */}
+            <div className="space-y-1.5">
+              <label htmlFor="email" className="text-sm font-semibold text-foreground">
+                Email
+              </label>
+              <div className="relative group">
+                <Mail className="absolute left-3.5 top-1/2 -translate-y-1/2 w-4 h-4 text-muted-foreground transition-colors group-focus-within:text-[#F47B52]" />
+                <input
                   id="email"
                   type="email"
                   placeholder="nama@email.com"
-                  className="pl-9"
                   value={data.email}
                   onChange={(e) => setData("email", e.target.value)}
                   required
+                  className={[
+                    "w-full h-11 pl-10 pr-4 rounded-xl text-sm bg-background text-foreground",
+                    "border transition-all outline-none placeholder:text-muted-foreground",
+                    "focus:ring-2 focus:ring-[#0FA3A0]/20 focus:border-[#0FA3A0]",
+                    errors.email
+                      ? "border-destructive bg-destructive/5 focus:ring-destructive/20 focus:border-destructive"
+                      : "border-input hover:border-muted-foreground/40",
+                  ].join(" ")}
                 />
               </div>
-              {errors.email && <p className="text-xs text-red-600">{errors.email}</p>}
+              {errors.email && (
+                <p className="flex items-center gap-1 text-xs text-destructive mt-1">
+                  <AlertCircle className="w-3 h-3 flex-shrink-0" />
+                  {errors.email}
+                </p>
+              )}
             </div>
-            <div className="space-y-2">
+
+            {/* Password */}
+            <div className="space-y-1.5">
               <div className="flex items-center justify-between">
-                <Label htmlFor="password">Password</Label>
-                <Link href={route("password.request")} className="text-xs text-primary hover:underline">Lupa password?</Link>
+                <label htmlFor="password" className="text-sm font-semibold text-foreground">
+                  Password
+                </label>
+                <Link
+                  href={route("password.request")}
+                  className="text-xs text-[#0F766E] font-medium hover:underline underline-offset-2"
+                >
+                  Lupa password?
+                </Link>
               </div>
-              <div className="relative">
-                <Lock className="absolute left-3 top-2.5 w-4 h-4 text-muted-foreground" />
-                <Input
+              <div className="relative group">
+                <Lock className="absolute left-3.5 top-1/2 -translate-y-1/2 w-4 h-4 text-muted-foreground transition-colors group-focus-within:text-[#F47B52]" />
+                <input
                   id="password"
                   type={showPassword ? "text" : "password"}
                   placeholder="••••••••"
-                  className="pl-9 pr-9"
                   value={data.password}
                   onChange={(e) => setData("password", e.target.value)}
                   required
+                  className={[
+                    "w-full h-11 pl-10 pr-11 rounded-xl text-sm bg-background text-foreground",
+                    "border transition-all outline-none placeholder:text-muted-foreground",
+                    "focus:ring-2 focus:ring-[#0FA3A0]/20 focus:border-[#0FA3A0]",
+                    errors.password
+                      ? "border-destructive bg-destructive/5 focus:ring-destructive/20 focus:border-destructive"
+                      : "border-input hover:border-muted-foreground/40",
+                  ].join(" ")}
                 />
-                <button type="button" className="absolute right-3 top-2.5 text-muted-foreground" onClick={() => setShowPassword(!showPassword)}>
+                <button
+                  type="button"
+                  onClick={() => setShowPassword(!showPassword)}
+                  className="absolute right-3.5 top-1/2 -translate-y-1/2 text-muted-foreground hover:text-foreground transition-colors p-0.5"
+                >
                   {showPassword ? <EyeOff className="w-4 h-4" /> : <Eye className="w-4 h-4" />}
                 </button>
               </div>
-              {errors.password && <p className="text-xs text-red-600">{errors.password}</p>}
+              {errors.password && (
+                <p className="flex items-center gap-1 text-xs text-destructive mt-1">
+                  <AlertCircle className="w-3 h-3 flex-shrink-0" />
+                  {errors.password}
+                </p>
+              )}
             </div>
-            <label className="flex items-center gap-2 text-sm text-muted-foreground">
-              <input
-                type="checkbox"
-                checked={data.remember}
-                onChange={(event) => setData("remember", event.target.checked)}
-                className="rounded border-gray-300"
-              />
-              Ingat saya
+
+            {/* Ingat saya */}
+            <label className="flex items-center gap-2.5 cursor-pointer group w-fit">
+              <div className="relative flex-shrink-0">
+                <input
+                  type="checkbox"
+                  checked={data.remember}
+                  onChange={(e) => setData("remember", e.target.checked)}
+                  className="sr-only peer"
+                />
+                <div
+                  className={[
+                    "w-[18px] h-[18px] rounded-[5px] border-2 transition-all duration-150",
+                    "flex items-center justify-center",
+                    data.remember
+                      ? "bg-[#0F766E] border-[#0F766E]"
+                      : "bg-background border-input group-hover:border-[#0F766E]/60",
+                  ].join(" ")}
+                >
+                  {data.remember && (
+                    <svg className="w-3 h-3 text-white" fill="none" viewBox="0 0 12 12">
+                      <path
+                        d="M2.5 6L5 8.5 9.5 3.5"
+                        stroke="currentColor"
+                        strokeWidth="1.8"
+                        strokeLinecap="round"
+                        strokeLinejoin="round"
+                      />
+                    </svg>
+                  )}
+                </div>
+              </div>
+              <span className="text-sm text-muted-foreground select-none group-hover:text-foreground transition-colors">
+                Ingat saya
+              </span>
             </label>
-            <Button type="submit" className="w-full" size="lg" disabled={processing}>
-              {processing ? "Memproses..." : "Masuk"}
-            </Button>
-          </form>
-          <p className="text-center text-sm text-muted-foreground mt-6">
-            Belum punya akun?{" "}
-            <Link href="/safekey/register" className="text-primary font-medium hover:underline">Daftar sekarang</Link>
-          </p>
-        </CardContent>
-      </Card>
+
+            {/* Submit */}
+            <button
+              type="button"
+              onClick={handleSubmit}
+              disabled={processing}
+              className={[
+                "w-full h-11 rounded-xl text-sm font-semibold",
+                "bg-[#07324A] text-white",
+                "transition-all duration-200",
+                "hover:opacity-90 hover:-translate-y-px",
+                "active:translate-y-0 active:opacity-100",
+                "focus:outline-none focus:ring-2 focus:ring-[#0FA3A0]/30 focus:ring-offset-2",
+                "disabled:opacity-60 disabled:cursor-not-allowed disabled:translate-y-0",
+                "flex items-center justify-center gap-2",
+                "shadow-md shadow-[#07324A]/20 hover:shadow-lg hover:shadow-[#0FA3A0]/25",
+              ].join(" ")}
+            >
+              {processing ? (
+                <>
+                  <svg className="animate-spin w-4 h-4" fill="none" viewBox="0 0 24 24">
+                    <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4" />
+                    <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8v8H4z" />
+                  </svg>
+                  Memproses...
+                </>
+              ) : (
+                "Masuk"
+              )}
+            </button>
+
+          </div>
+        </div>
+
+        {/* Footer link */}
+        <p className="text-center text-sm text-muted-foreground">
+          Belum punya akun?{" "}
+          <Link
+            href="/safekey/register"
+            className="text-[#0F766E] font-medium hover:underline underline-offset-2"
+          >
+            Daftar sekarang
+          </Link>
+        </p>
+
+      </div>
     </div>
   );
 }

@@ -4,7 +4,7 @@ import { Card, CardContent } from '@/Components/Safekey/ui/card';
 export default function FeaturePage({ title, description }) {
     return (
         <SafekeyLayout>
-            <div className="min-h-[calc(100vh-4rem)] bg-gradient-to-b from-primary/95 via-primary to-police p-6">
+            <div className="min-h-[calc(100vh-4rem)] from-primary/95 via-primary to-police p-6">
                 <div className="max-w-5xl mx-auto">
                     <Card className="bg-card/95 border-police/40">
                         <CardContent className="p-8">

@@ -1,5 +1,5 @@
 import SafekeyLayout from '@/Layouts/SafekeyLayout';
-import Page from '@/pages/News';
+import Page from '@/Pages/News';
 
 export default function SafekeyNews() {
     return (

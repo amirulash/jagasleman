@@ -1,5 +1,5 @@
 import SafekeyLayout from '@/Layouts/SafekeyLayout';
-import Page from '@/pages/MapDashboard';
+import Page from '@/Pages/MapDashboard';
 
 export default function SafekeyMapDashboard() {
     return (

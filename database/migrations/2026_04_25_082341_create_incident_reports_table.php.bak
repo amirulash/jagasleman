@@ -1,0 +1,72 @@
+<?php
+
+use Illuminate\Database\Migrations\Migration;
+use Illuminate\Database\Schema\Blueprint;
+use Illuminate\Support\Facades\Schema;
+
+return new class extends Migration
+{
+    public function up(): void
+    {
+        Schema::create('incident_reports', function (Blueprint $table) {
+            $table->id();
+
+            // Kode unik laporan, contoh: JGS-20260425-A1B2C3
+            $table->string('report_code')->unique();
+
+            // Jenis kejahatan jalanan
+            $table->string('crime_type');
+
+            // Waktu kejadian
+            $table->date('incident_date');
+            $table->time('incident_time')->nullable();
+
+            // Informasi lokasi
+            $table->text('address');
+            $table->string('district')->nullable(); // kecamatan
+            $table->string('village')->nullable();  // desa
+
+            // Koordinat titik kejadian
+            $table->decimal('latitude', 10, 7);
+            $table->decimal('longitude', 10, 7);
+
+            // Deskripsi kejadian
+            $table->text('description')->nullable();
+
+            // Data pelapor
+            $table->string('reporter_name')->nullable();
+            $table->string('reporter_phone')->nullable();
+
+            // Status verifikasi admin:
+            // pending = menunggu
+            // approved = disetujui
+            // rejected = ditolak
+            $table->string('status')->default('pending');
+
+            // Catatan admin saat menerima/menolak laporan
+            $table->text('admin_note')->nullable();
+
+            // Admin yang memverifikasi
+            $table->foreignId('reviewed_by')
+                ->nullable()
+                ->constrained('users')
+                ->nullOnDelete();
+
+            $table->timestamp('reviewed_at')->nullable();
+
+            $table->timestamps();
+
+            // Index agar query peta dan dashboard lebih cepat
+            $table->index('status');
+            $table->index('crime_type');
+            $table->index('district');
+            $table->index('village');
+            $table->index(['latitude', 'longitude']);
+        });
+    }
+
+    public function down(): void
+    {
+        Schema::dropIfExists('incident_reports');
+    }
+};

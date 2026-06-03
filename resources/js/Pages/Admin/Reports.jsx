@@ -3,8 +3,8 @@ import { Head, Link, router, usePage } from '@inertiajs/react';
 import { useState } from 'react';
 
 const badgeClass = {
-    pending: 'bg-yellow-100 text-yellow-800',
-    approved: 'bg-emerald-100 text-emerald-800',
+    pending: 'bg-[#BDE7E1] text-[#07324A]',
+    approved: 'bg-[#BDE7E1] text-[#07324A]',
     rejected: 'bg-rose-100 text-rose-800',
 };
 
@@ -54,7 +54,7 @@ export default function AdminReports({ reports }) {
                     <div className="flex gap-2">
                         <Link
                             href={route('admin.reports.index')}
-                            className="rounded-md border border-indigo-600 bg-indigo-600 px-3 py-2 text-sm font-medium text-white"
+                            className="rounded-md border border-stone-600 bg-stone-600 px-3 py-2 text-sm font-medium text-white"
                         >
                             Report Approval
                         </Link>
@@ -67,7 +67,7 @@ export default function AdminReports({ reports }) {
                     </div>
 
                     {flash?.success && (
-                        <div className="rounded-md border border-emerald-200 bg-emerald-50 px-4 py-3 text-sm text-emerald-800">
+                        <div className="rounded-md border border-[#BDE7E1] bg-[#F2FAF6] px-4 py-3 text-sm text-[#07324A]">
                             {flash.success}
                         </div>
                     )}
@@ -124,7 +124,7 @@ export default function AdminReports({ reports }) {
                                                 <div className="flex flex-col gap-2">
                                                     <button
                                                         type="button"
-                                                        className="rounded bg-emerald-600 px-3 py-1.5 text-xs font-medium text-white hover:bg-emerald-700"
+                                                        className="rounded bg-[#F47B52] px-3 py-1.5 text-xs font-medium text-white hover:bg-[#07324A]"
                                                         onClick={() => approveReport(report.id)}
                                                     >
                                                         Setujui
@@ -136,7 +136,7 @@ export default function AdminReports({ reports }) {
                                                                 value={rejectionReason}
                                                                 onChange={(event) => setRejectionReason(event.target.value)}
                                                                 rows={3}
-                                                                className="w-56 rounded border-gray-300 text-xs shadow-sm focus:border-indigo-500 focus:ring-indigo-500"
+                                                                className="w-56 rounded border-gray-300 text-xs shadow-sm focus:border-stone-500 focus:ring-stone-500"
                                                                 placeholder="Alasan penolakan"
                                                             />
                                                             {errors?.rejection_reason && (

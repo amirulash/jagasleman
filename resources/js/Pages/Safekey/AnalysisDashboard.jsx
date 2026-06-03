@@ -1,5 +1,5 @@
 import SafekeyLayout from '@/Layouts/SafekeyLayout';
-import Page from '@/pages/AnalysisDashboard';
+import Page from '@/Pages/AnalysisDashboard';
 
 export default function SafekeyAnalysisDashboard() {
     return (

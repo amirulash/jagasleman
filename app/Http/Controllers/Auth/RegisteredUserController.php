@@ -46,6 +46,6 @@ class RegisteredUserController extends Controller
 
         event(new Registered($user));
 
-        return redirect('/safekey/login')->with('success', 'Registrasi berhasil. Akun Anda menunggu persetujuan admin.');
+        return redirect('/safekey/login')->with('success', 'Pendaftaran admin berhasil. Akun menunggu persetujuan admin utama.');
     }
 }

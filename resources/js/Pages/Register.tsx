@@ -1,9 +1,9 @@
 import { useState } from "react";
 import { Link, useForm } from "@inertiajs/react";
-import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card";
-import { Input } from "@/components/ui/input";
-import { Button } from "@/components/ui/button";
-import { Label } from "@/components/ui/label";
+import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/Components/ui/card";
+import { Input } from "@/Components/ui/input";
+import { Button } from "@/Components/ui/button";
+import { Label } from "@/Components/ui/label";
 import { Shield, Mail, Lock, User, Eye, EyeOff } from "lucide-react";
 
 export default function Register() {
@@ -27,8 +27,8 @@ export default function Register() {
     <div className="min-h-[calc(100vh-4rem)] flex items-center justify-center p-4 bg-muted/30">
       <Card className="w-full max-w-md">
         <CardHeader className="text-center space-y-3">
-          <div className="mx-auto w-14 h-14 rounded-xl bg-primary flex items-center justify-center">
-            <Shield className="w-7 h-7 text-primary-foreground" />
+          <div className="mx-auto w-14 h-14 rounded-xl bg-[#F47B52] flex items-center justify-center">
+            <Shield className="w-7 h-7 text-white" />
           </div>
           <CardTitle className="text-2xl font-bold">Daftar Akun</CardTitle>
           <CardDescription>Buat akun untuk mulai menggunakan JagaSleman</CardDescription>
@@ -75,7 +75,7 @@ export default function Register() {
           </form>
           <p className="text-center text-sm text-muted-foreground mt-6">
             Sudah punya akun?{" "}
-            <Link href="/safekey/login" className="text-primary font-medium hover:underline">Masuk di sini</Link>
+            <Link href="/safekey/login" className="text-[#F47B52] font-medium hover:underline">Masuk di sini</Link>
           </p>
         </CardContent>
       </Card>

@@ -1,5 +1,5 @@
 import SafekeyLayout from '@/Layouts/SafekeyLayout';
-import Page from '@/pages/Index';
+import Page from '@/Pages/Index';
 
 export default function SafekeyIndex() {
     return (
