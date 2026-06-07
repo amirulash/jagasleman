@@ -47,6 +47,7 @@ interface MapViewProps {
     showIncidentMarkers?: boolean;
     showMapControls?: boolean;
     showKdeLegend?: boolean;
+    showRiskInfo?: boolean;
     kdeLayerMode?: 'official' | 'automatic' | 'none';
     onKdeLayerModeChange?: (mode: 'official' | 'automatic' | 'none') => void;
     officialKdeUrl?: string;
@@ -2381,17 +2382,25 @@ function KdeLayerControl({
 }
 
 function KdeLegendControl({ mode }: { mode: KdeLayerMode }) {
-    const levels = [
+    const riskLevels = [
         { label: 'Rendah', color: '#22C55E' },
         { label: 'Sedang', color: '#FACC15' },
         { label: 'Tinggi', color: '#F97316' },
         { label: 'Sangat Tinggi', color: '#E11D48' },
         { label: 'Ekstrem', color: '#7F1D1D' },
     ];
+    const densityLevels = [
+        { label: 'Tipis', color: '#22C55E' },
+        { label: 'Rendah', color: '#A3E635' },
+        { label: 'Sedang', color: '#FACC15' },
+        { label: 'Pekat', color: '#F97316' },
+        { label: 'Terpekat', color: '#E11D48' },
+    ];
+    const levels = mode === 'official' ? riskLevels : densityLevels;
 
     const subtitle = mode === 'official'
         ? 'Daerah rawan berdasarkan data kejadian periode 2020–2025.'
-        : 'Peta kepadatan otomatis berdasarkan filter yang sedang aktif.';
+        : 'Intensitas warna KDE otomatis mengikuti kepadatan titik, bukan klasifikasi tingkat risiko.';
 
     return (
         <div className="jagasleman-kde-legend">
@@ -2674,7 +2683,7 @@ function ContinuousHeatmapLayer({
     return null;
 }
 
-function ClusteredIncidentMarkers({ incidents }: { incidents: Incident[] }) {
+function ClusteredIncidentMarkers({ incidents, showRiskInfo = true }: { incidents: Incident[]; showRiskInfo?: boolean }) {
     const map = useMap();
     const [zoom, setZoom] = useState(() => map.getZoom());
     const [viewTick, setViewTick] = useState(0);
@@ -2748,7 +2757,7 @@ function ClusteredIncidentMarkers({ incidents }: { incidents: Incident[] }) {
             <>
                 {clusters.map((cluster) => {
                     if (cluster.count === 1) {
-                        return <IncidentMarker key={cluster.key} incident={cluster.items[0]} />;
+                        return <IncidentMarker key={cluster.key} incident={cluster.items[0]} showRiskInfo={showRiskInfo} />;
                     }
 
                     const topTypes = cluster.items.reduce((acc: Record<string, number>, item: any) => {
@@ -2813,13 +2822,14 @@ function ClusteredIncidentMarkers({ incidents }: { incidents: Incident[] }) {
                 <IncidentMarker
                     key={`${getIncidentSource(incident)}-${incident.id || incident.lat + '-' + incident.lng}`}
                     incident={incident}
+                    showRiskInfo={showRiskInfo}
                 />
             ))}
         </>
     );
 }
 
-function IncidentMarker({ incident }: { incident: any }) {
+function IncidentMarker({ incident, showRiskInfo = true }: { incident: any; showRiskInfo?: boolean }) {
     const displayType = getIncidentType(incident);
     const typeLabel = getIncidentTypeLabel(displayType);
     const source = getIncidentSource(incident);
@@ -2958,16 +2968,18 @@ function IncidentMarker({ incident }: { incident: any }) {
                             <p className="mt-2 text-[11px] font-black text-slate-500">{displayVillage}, {displayDistrict}</p>
                         </div>
 
-                        <div className="rounded-xl border border-slate-200 bg-white p-2 shadow-sm">
-                            <div className="flex items-center justify-between gap-2">
-                                <p className="text-[10px] font-black uppercase tracking-[0.14em] text-slate-500">Kecamatan & Kerawanan</p>
-                                <span className="rounded-full px-2 py-1 text-[10px] font-black text-white" style={{ backgroundColor: locationContext.riskColor }}>
-                                    {locationContext.risk}
-                                </span>
+                        {showRiskInfo && (
+                            <div className="rounded-xl border border-slate-200 bg-white p-2 shadow-sm">
+                                <div className="flex items-center justify-between gap-2">
+                                    <p className="text-[10px] font-black uppercase tracking-[0.14em] text-slate-500">Kecamatan & Kerawanan</p>
+                                    <span className="rounded-full px-2 py-1 text-[10px] font-black text-white" style={{ backgroundColor: locationContext.riskColor }}>
+                                        {locationContext.risk}
+                                    </span>
+                                </div>
+                                <p className="mt-1 text-sm font-black text-[#07324A]">Kecamatan {displayDistrict}</p>
+                                <p className="mt-1 text-[11px] font-semibold leading-relaxed text-slate-500">{locationContext.riskNote}</p>
                             </div>
-                            <p className="mt-1 text-sm font-black text-[#07324A]">Kecamatan {displayDistrict}</p>
-                            <p className="mt-1 text-[11px] font-semibold leading-relaxed text-slate-500">{locationContext.riskNote}</p>
-                        </div>
+                        )}
 
                         {description && description !== '-' && (
                             <div className="rounded-xl border border-slate-200 bg-slate-50 p-2">
@@ -3100,7 +3112,7 @@ function EmergencyContactLegend({ contacts }: { contacts: EmergencyContact[] }) 
     );
 }
 
-function SelectedLocationMarker({ clickMarker }: { clickMarker: { lat: number; lng: number } | null }) {
+function SelectedLocationMarker({ clickMarker, showRiskInfo = true }: { clickMarker: { lat: number; lng: number } | null; showRiskInfo?: boolean }) {
     if (!clickMarker) return null;
 
     return (
@@ -3111,7 +3123,7 @@ function SelectedLocationMarker({ clickMarker }: { clickMarker: { lat: number; l
                     <p className="mt-1 font-mono text-xs font-bold text-slate-500">
                         {Number(clickMarker.lat).toFixed(6)}, {Number(clickMarker.lng).toFixed(6)}
                     </p>
-                    {(() => {
+                    {showRiskInfo && (() => {
                         const context = makeLocationContext(Number(clickMarker.lat), Number(clickMarker.lng));
                         return (
                             <div className="mt-3 rounded-xl border border-slate-200 bg-slate-50 p-2 text-xs">
@@ -3222,6 +3234,7 @@ function MapViewContent({
     showIncidentMarkers = true,
     showMapControls = true,
     showKdeLegend = true,
+    showRiskInfo = true,
     kdeLayerMode = showHeatmap ? 'automatic' : 'official',
     onKdeLayerModeChange,
     officialKdeUrl,
@@ -3287,7 +3300,7 @@ function MapViewContent({
                                 <p className="mt-1 font-mono text-xs font-bold text-slate-500">
                                     {Number(userLocation.lat).toFixed(5)}, {Number(userLocation.lng).toFixed(5)}
                                 </p>
-                                {(() => {
+                                {showRiskInfo ? (() => {
                                     const context = makeLocationContext(Number(userLocation.lat), Number(userLocation.lng));
                                     return (
                                         <>
@@ -3300,7 +3313,11 @@ function MapViewContent({
                                             </div>
                                         </>
                                     );
-                                })()}
+                                })() : (
+                                    <p className="mt-1 text-xs font-semibold text-slate-500">
+                                        Akurasi ±{Math.round(userAccuracy)}m
+                                    </p>
+                                )}
                             </div>
                         </Popup>
                     </Marker>
@@ -3317,12 +3334,12 @@ function MapViewContent({
                 <HotspotClusterLayer hotspotClusters={hotspotClusters} onClusterClick={onClusterClick} />
             )}
 
-            {showIncidentMarkers && <ClusteredIncidentMarkers incidents={cleanIncidents} />}
+            {showIncidentMarkers && <ClusteredIncidentMarkers incidents={cleanIncidents} showRiskInfo={showRiskInfo} />}
 
             <EmergencyContactLegend contacts={contacts} />
             <EmergencyContactMarkers contacts={contacts} />
 
-            <SelectedLocationMarker clickMarker={clickMarker || null} />
+            <SelectedLocationMarker clickMarker={clickMarker || null} showRiskInfo={showRiskInfo} />
         </>
     );
 }
@@ -3349,12 +3366,18 @@ export const MapView = forwardRef<L.Map | null, MapViewProps>(
             showIncidentMarkers = true,
             showMapControls = true,
             showKdeLegend = true,
+            showRiskInfo = true,
             kdeLayerMode,
             onKdeLayerModeChange,
             officialKdeUrl,
         },
         ref,
     ) => {
+        const isVillageBoundaryOnlyMap = Boolean(showVillageBoundary && !showDistrictBoundary && !showHeatmap && !kdeLayerMode && (!incidents || incidents.length === 0));
+        const resolvedKdeLayerMode = kdeLayerMode ?? (isVillageBoundaryOnlyMap ? 'none' : undefined);
+        const resolvedShowKdeLegend = isVillageBoundaryOnlyMap ? false : showKdeLegend;
+        const resolvedShowRiskInfo = isVillageBoundaryOnlyMap ? false : showRiskInfo;
+
         return (
             <MapContainer
                 ref={ref as any}
@@ -3386,8 +3409,9 @@ export const MapView = forwardRef<L.Map | null, MapViewProps>(
                     villageBoundaryInteractive={villageBoundaryInteractive}
                     showIncidentMarkers={showIncidentMarkers}
                     showMapControls={showMapControls}
-                    showKdeLegend={showKdeLegend}
-                    kdeLayerMode={kdeLayerMode}
+                    showKdeLegend={resolvedShowKdeLegend}
+                    showRiskInfo={resolvedShowRiskInfo}
+                    kdeLayerMode={resolvedKdeLayerMode}
                     onKdeLayerModeChange={onKdeLayerModeChange}
                     officialKdeUrl={officialKdeUrl}
                 />

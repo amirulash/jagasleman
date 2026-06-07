@@ -107,6 +107,14 @@ const KDE_LEGEND_UI = [
     { label: 'Sangat Tinggi', range: 'Prioritas utama', color: '#E11D48', intensity: 'very-high' },
 ];
 
+const KDE_AUTOMATIC_LEGEND_UI = [
+    { label: 'Kepadatan Tipis', color: '#22C55E', intensity: 'auto-very-low' },
+    { label: 'Kepadatan Rendah', color: '#A3E635', intensity: 'auto-low' },
+    { label: 'Kepadatan Sedang', color: '#FACC15', intensity: 'auto-medium' },
+    { label: 'Kepadatan Pekat', color: '#F97316', intensity: 'auto-high' },
+    { label: 'Kepadatan Terpekat', color: '#E11D48', intensity: 'auto-very-high' },
+];
+
 const KDE_LAYER_OPTIONS: Array<{ value: KdeLayerMode; label: string; note: string }> = [
     {
         value: 'official',
@@ -1199,31 +1207,40 @@ export default function AnalysisDashboard() {
 
                 {legendSectionOpen && (
                     <div className="space-y-2.5 border-t border-[#BDE7E1] bg-[#F8FAFC] p-3">
-                        <div className="flex items-center gap-3 rounded-2xl bg-[#FFF8ED] px-3 py-2 ring-1 ring-[#FDE68A]">
-                            <span className="flex h-9 w-9 shrink-0 items-center justify-center rounded-2xl border-2 border-white bg-[#FACC15] text-[10px] font-black text-[#422006] shadow-sm">LAP</span>
+                        <div className="flex items-center gap-3 rounded-2xl bg-white px-3 py-2 ring-1 ring-[#BDE7E1]">
+                            <span className="relative flex h-10 w-9 shrink-0 items-center justify-center">
+                                <span className="absolute inset-x-1 top-1 h-7 rounded-full border-[3px] border-white bg-[#0B6E78] shadow-sm" />
+                                <span className="absolute bottom-1 h-2.5 w-2.5 rotate-45 border-b-[3px] border-r-[3px] border-white bg-[#0B6E78]" />
+                                <span className="relative z-10 text-[9px] font-black tracking-tight text-white">DK</span>
+                            </span>
                             <span className="min-w-0">
-                                <span className="block text-xs font-black text-[#07324A]">Laporan Masyarakat</span>
-                                <span className="block text-[11px] font-semibold leading-4 text-slate-500">Data laporan terverifikasi</span>
+                                <span className="block text-xs font-black text-[#07324A]">Data Kepolisian</span>
+                                <span className="block text-[11px] font-semibold leading-4 text-slate-500">Marker utama berlabel DK di muka peta</span>
                             </span>
                         </div>
 
-                        {typeStats.slice(0, 6).map((item) => (
-                            <div key={item.name} className="flex items-center gap-3 rounded-2xl bg-white px-3 py-2 ring-1 ring-[#BDE7E1]">
-                                <span
-                                    className="flex h-9 w-9 shrink-0 items-center justify-center rounded-full border-2 border-white text-[10px] font-black text-white shadow-sm"
-                                    style={{ backgroundColor: getIncidentColor(item.name) }}
-                                >
-                                    {String(getIncidentTypeLabel(item.name)).slice(0, 2).toUpperCase()}
-                                </span>
-                                <span className="min-w-0">
-                                    <span className="block truncate text-xs font-black text-[#07324A]">{getIncidentTypeLabel(item.name)}</span>
-                                    <span className="block text-[11px] font-semibold leading-4 text-slate-500">{formatNumber(item.total)} titik pada filter aktif</span>
-                                </span>
-                            </div>
-                        ))}
+                        <div className="flex items-center gap-3 rounded-2xl bg-[#FFF8ED] px-3 py-2 ring-1 ring-[#FDE68A]">
+                            <span className="relative flex h-10 w-9 shrink-0 items-center justify-center">
+                                <span className="absolute inset-x-1 top-1 h-7 rounded-full border-[3px] border-white bg-[#F2A20B] shadow-sm" />
+                                <span className="absolute bottom-1 h-2.5 w-2.5 rotate-45 border-b-[3px] border-r-[3px] border-white bg-[#F2A20B]" />
+                                <span className="relative z-10 text-[9px] font-black tracking-tight text-white">LM</span>
+                            </span>
+                            <span className="min-w-0">
+                                <span className="block text-xs font-black text-[#07324A]">Laporan Masyarakat</span>
+                                <span className="block text-[11px] font-semibold leading-4 text-slate-500">Marker laporan terverifikasi berlabel LM</span>
+                            </span>
+                        </div>
 
                         <div className="flex items-center gap-3 rounded-2xl bg-white px-3 py-2 ring-1 ring-[#BDE7E1]">
-                            <span className="flex h-9 w-9 shrink-0 items-center justify-center rounded-2xl border-2 border-white bg-slate-400 text-[10px] font-black text-white shadow-sm">---</span>
+                            <span className="flex h-10 w-10 shrink-0 items-center justify-center rounded-full border-4 border-[#F2FAF6] bg-gradient-to-br from-[#F97316] to-[#FDE68A] text-[11px] font-black text-white shadow-sm ring-4 ring-orange-100">12</span>
+                            <span className="min-w-0">
+                                <span className="block text-xs font-black text-[#07324A]">Cluster Kejadian</span>
+                                <span className="block text-[11px] font-semibold leading-4 text-slate-500">Angka menunjukkan jumlah titik saat peta diperkecil</span>
+                            </span>
+                        </div>
+
+                        <div className="flex items-center gap-3 rounded-2xl bg-white px-3 py-2 ring-1 ring-[#BDE7E1]">
+                            <span className="flex h-9 w-9 shrink-0 items-center justify-center rounded-2xl border-2 border-dashed border-[#0B6E78] bg-[#F2FAF6] text-[10px] font-black text-[#0B6E78] shadow-sm">BT</span>
                             <span className="min-w-0">
                                 <span className="block text-xs font-black text-[#07324A]">Batas Kecamatan</span>
                                 <span className="block text-[11px] font-semibold leading-4 text-slate-500">Wilayah administrasi Kabupaten Sleman</span>
@@ -1455,6 +1472,12 @@ export default function AnalysisDashboard() {
         </div>
     );
 
+    const activeKdeLegendItems = kdeLayerMode === 'automatic' ? KDE_AUTOMATIC_LEGEND_UI : KDE_LEGEND_UI;
+    const activeKdeLegendTitle = kdeLayerMode === 'official' ? 'Daerah Rawan 2020–2025' : 'Kepadatan Otomatis';
+    const activeKdeLegendSubtitle = kdeLayerMode === 'official'
+        ? 'Data 2020–2025'
+        : 'Intensitas KDE otomatis, bukan klasifikasi tingkat risiko';
+
     return (
         <main className={cx('jaga-analysis-page bg-[#F2FAF6] text-foreground', isFullscreen ? 'fixed inset-0 z-[9999] overflow-hidden p-0' : 'min-h-screen')}>
             <style>{`
@@ -1470,32 +1493,71 @@ export default function AnalysisDashboard() {
                     display: none !important;
                 }
 
+                .jaga-analysis-map-tools {
+                    max-width: min(92vw, 560px);
+                }
+
+                .jaga-analysis-tool-card {
+                    display: inline-flex;
+                    align-items: center;
+                    gap: 6px;
+                    border: 1px solid rgba(255,255,255,.82);
+                    border-radius: 1.25rem;
+                    background: rgba(255,255,255,.95);
+                    padding: 6px;
+                    box-shadow: 0 16px 38px rgba(15,31,46,.12);
+                    backdrop-filter: blur(16px);
+                }
+
                 .jaga-analysis-page .jagasleman-basemap-panel {
-                    top: 124px !important;
+                    top: 86px !important;
                     left: 16px !important;
                     z-index: 646 !important;
                 }
 
                 .jaga-analysis-page .jagasleman-basemap-inline {
-                    width: min(328px, calc(100vw - 2rem)) !important;
+                    width: min(288px, calc(100vw - 2rem)) !important;
+                    border-radius: 1.25rem !important;
                     border-color: rgba(255,255,255,.82) !important;
                     background: rgba(255,255,255,.95) !important;
-                    box-shadow: 0 18px 42px rgba(15,31,46,.14) !important;
+                    padding: 8px !important;
+                    box-shadow: 0 16px 38px rgba(15,31,46,.12) !important;
                 }
 
                 .jaga-analysis-page .jagasleman-basemap-inline .jagasleman-basemap-title {
-                    margin-bottom: 7px !important;
-                    padding-bottom: 7px !important;
+                    margin-bottom: 6px !important;
+                    padding-bottom: 6px !important;
+                    font-size: 9px !important;
+                }
+
+                .jaga-analysis-page .jagasleman-basemap-inline-options {
+                    gap: 6px !important;
                 }
 
                 .jaga-analysis-page .jagasleman-basemap-inline .jagasleman-basemap-option {
-                    min-height: 58px !important;
-                    border-radius: 16px !important;
+                    min-height: 50px !important;
+                    border-radius: 14px !important;
+                    padding: 6px 4px !important;
+                }
+
+                .jaga-analysis-page .jagasleman-basemap-inline .jagasleman-basemap-option-icon {
+                    height: 26px !important;
+                    width: 26px !important;
+                    border-radius: 11px !important;
+                    font-size: 13px !important;
+                }
+
+                .jaga-analysis-page .jagasleman-basemap-inline .jagasleman-basemap-option-title {
+                    font-size: 9px !important;
                 }
 
                 @media (max-width: 768px) {
+                    .jaga-analysis-map-tools {
+                        max-width: calc(100vw - 2rem);
+                    }
+
                     .jaga-analysis-page .jagasleman-basemap-panel {
-                        top: 124px !important;
+                        top: 142px !important;
                         left: 16px !important;
                     }
                 }
@@ -1628,14 +1690,25 @@ export default function AnalysisDashboard() {
                         />
 
                         <div className="pointer-events-none absolute inset-x-4 top-4 z-[640] flex items-start justify-between gap-3">
-                            <div className="pointer-events-auto grid w-[min(92vw,420px)] grid-cols-5 gap-2 rounded-[1.55rem] border border-white/80 bg-white/95 p-2 shadow-xl shadow-slate-950/12 backdrop-blur-xl">
-                                <SmallButton onClick={zoomIn} title="Zoom in" iconOnly><Plus className="h-4 w-4" /></SmallButton>
-                                <SmallButton onClick={zoomOut} title="Zoom out" iconOnly><Minus className="h-4 w-4" /></SmallButton>
-                                <SmallButton onClick={fitSleman} title="Zoom to extent Kabupaten Sleman" label="Extent"><Crosshair className="h-4 w-4" /></SmallButton>
-                                <SmallButton onClick={locateUser} active={Boolean(userLocation)} title="Lokasi Saya" label="Lokasi"><LocateFixed className={cx('h-4 w-4', isLocating && 'animate-pulse')} /></SmallButton>
-                                <SmallButton onClick={() => setIsFullscreen((value) => !value)} active={isFullscreen} title="Layar penuh" label={isFullscreen ? 'Tutup' : 'Layar'}>
-                                    {isFullscreen ? <Minimize2 className="h-4 w-4" /> : <Maximize2 className="h-4 w-4" />}
-                                </SmallButton>
+                            <div className="jaga-analysis-map-tools pointer-events-auto flex flex-wrap items-start gap-2">
+                                <div className="jaga-analysis-tool-card" aria-label="Kontrol zoom peta">
+                                    <SmallButton onClick={zoomIn} title="Zoom in" iconOnly><Plus className="h-4 w-4" /></SmallButton>
+                                    <SmallButton onClick={zoomOut} title="Zoom out" iconOnly><Minus className="h-4 w-4" /></SmallButton>
+                                </div>
+
+                                <div className="jaga-analysis-tool-card" aria-label="Zoom wilayah Sleman">
+                                    <SmallButton onClick={fitSleman} title="Zoom to extent Kabupaten Sleman" label="Sleman"><Crosshair className="h-4 w-4" /></SmallButton>
+                                </div>
+
+                                <div className="jaga-analysis-tool-card" aria-label="Lokasi pengguna">
+                                    <SmallButton onClick={locateUser} active={Boolean(userLocation)} title="Lokasi Saya" label="Lokasi"><LocateFixed className={cx('h-4 w-4', isLocating && 'animate-pulse')} /></SmallButton>
+                                </div>
+
+                                <div className="jaga-analysis-tool-card" aria-label="Mode layar penuh">
+                                    <SmallButton onClick={() => setIsFullscreen((value) => !value)} active={isFullscreen} title="Layar penuh" label={isFullscreen ? 'Tutup' : 'Layar'}>
+                                        {isFullscreen ? <Minimize2 className="h-4 w-4" /> : <Maximize2 className="h-4 w-4" />}
+                                    </SmallButton>
+                                </div>
                             </div>
                         </div>
 
@@ -1706,14 +1779,14 @@ export default function AnalysisDashboard() {
                         {kdeLayerMode !== 'none' && (
                             <div className="absolute bottom-4 left-1/2 z-[630] w-[min(520px,calc(100%-2rem))] -translate-x-1/2 rounded-[1.35rem] border border-white/80 bg-white/95 p-3 shadow-xl shadow-slate-950/12 backdrop-blur-xl">
                                 <div className="mb-2 flex items-center justify-between gap-3">
-                                    <span className="text-[11px] font-black uppercase tracking-[0.16em] text-[#07324A]">{kdeLayerMode === 'official' ? 'Daerah Rawan 2020–2025' : 'Kepadatan Otomatis'}</span>
-                                    <span className="text-[10px] font-bold text-slate-500">{kdeLayerMode === 'official' ? 'Data 2020–2025' : 'Filter aktif'}</span>
+                                    <span className="text-[11px] font-black uppercase tracking-[0.16em] text-[#07324A]">{activeKdeLegendTitle}</span>
+                                    <span className="text-[10px] font-bold text-slate-500">{activeKdeLegendSubtitle}</span>
                                 </div>
 
                                 <div className="jaga-analysis-kde-gradient h-2.5 rounded-full" />
 
                                 <div className="mt-2 grid grid-cols-2 gap-2 text-[11px] font-black text-slate-600 sm:grid-cols-5">
-                                    {KDE_LEGEND_UI.map((item) => (
+                                    {activeKdeLegendItems.map((item) => (
                                         <div key={item.intensity} className="flex items-center gap-1.5">
                                             <span className="h-2.5 w-2.5 rounded-full" style={{ backgroundColor: item.color }} />
                                             {item.label}

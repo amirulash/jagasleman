@@ -941,7 +941,7 @@ export default function Index() {
                         <p className="text-sm font-black uppercase tracking-[0.22em] text-[#F47B52]">Fitur Utama</p>
                         <h2 className="mt-2 text-2xl font-black text-[#07324A] md:text-3xl">Pilih layanan yang Anda butuhkan.</h2>
                         <p className="mt-2 max-w-2xl text-sm font-semibold leading-6 text-slate-600">
-                            Menu dibuat lebih langsung agar pengguna umum bisa menuju peta, laporan, statistik, atau bantuan tanpa bingung.
+                            Cari Tahu Lebih Lanjut fitur dan layanan yang tersedia.
                         </p>
                     </div>
 
@@ -1193,7 +1193,7 @@ export default function Index() {
                             </div>
 
                             <p className="text-xs leading-relaxed text-white/55">
-                                WebGIS keamanan jalanan untuk melihat titik kejadian,
+                                WebGIS Interaktif Pemetaan kejahatan jalanan untuk melihat titik kejadian,
                                 area rawan, berita, dan laporan masyarakat.
                             </p>
 
