@@ -1,25 +1,50 @@
-*.log
-.DS_Store
+# Laravel environment and credentials
 .env
-.env.backup
-.env.production
-.phpactor.json
-.phpunit.result.cache
-/.cursor/
-/.idea
-/.nova
-/.phpunit.cache
-/.vscode
-/.zed
+.env.*
+!.env.example
 /auth.json
-/node_modules
-/public/build
+
+# PHP / JavaScript dependencies
+/vendor/
+/node_modules/
+
+# Laravel runtime files
 /public/hot
 /public/storage
 /storage/*.key
-/storage/pail
-/vendor
-_ide_helper.php
-Homestead.json
-Homestead.yaml
+/storage/framework/cache/data/*
+/storage/framework/sessions/*
+/storage/framework/views/*
+/storage/logs/*
+/bootstrap/cache/*.php
+
+# Local databases and database exports
+/database/*.sqlite
+/database/*.sqlite-*
+/database/*.sql
+/database/*.dump
+/database/*.bak
+
+# Private keys / certificates
+*.pem
+*.p12
+*.pfx
+*.key
+id_rsa*
+id_ed25519*
+
+# Logs and local tooling
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+pnpm-debug.log*
+.phpunit.result.cache
+/.phpunit.cache/
+/.idea/
+/.vscode/
+.DS_Store
 Thumbs.db
+
+# Keep public/build tracked in this project because the current shared-hosting
+# workflow uses prebuilt Vite assets. Remove or ignore it only after CI/CD builds
+# assets on the server.

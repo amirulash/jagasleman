@@ -1,5 +1,6 @@
 import {
-    MousePointerClick,
+    FileWarning,
+    Map,
     ShieldCheck,
 } from 'lucide-react';
 
@@ -17,7 +18,7 @@ type HomeHeroProps = {
 
 export function HomeHero({ title, subtitle }: HomeHeroProps) {
     return (
-        <section className="relative isolate overflow-hidden bg-[#061F32] text-white">
+        <section className="jaga-home-hero jaga-home-hero-special relative isolate overflow-hidden bg-[#061F32] text-white">
             <style>{`
                 @keyframes jagaMascotFloat {
                     0%, 100% { transform: translate3d(0, 0, 0) rotate(-1deg); }
@@ -51,7 +52,7 @@ export function HomeHero({ title, subtitle }: HomeHeroProps) {
                 <div className="absolute right-16 top-20 h-44 w-44 rounded-full border border-[#BDE7E1]/15" />
             </div>
 
-            <div className="mx-auto grid max-w-7xl items-center gap-8 px-4 pb-10 pt-9 md:px-8 md:pb-12 md:pt-10 lg:grid-cols-[1.08fr_.92fr] lg:gap-10">
+            <div className="jaga-home-hero-inner mx-auto grid max-w-7xl items-center gap-8 px-4 md:px-8 lg:grid-cols-[1.08fr_.92fr] lg:gap-10">
                 <div className="relative z-10 max-w-3xl">
                     <div className="inline-flex items-center gap-2 rounded-full border border-white/15 bg-white/10 px-4 py-2 text-xs font-black uppercase tracking-[0.22em] text-[#BDE7E1] shadow-lg shadow-black/10 backdrop-blur">
                         <ShieldCheck className="h-4 w-4" />
@@ -66,14 +67,26 @@ export function HomeHero({ title, subtitle }: HomeHeroProps) {
                         {subtitle}
                     </p>
 
-                    <div className="mt-6 inline-flex items-center gap-3 rounded-2xl border border-white/12 bg-white/10 px-4 py-3 text-sm font-semibold text-[#E9F8F3]/78 backdrop-blur">
-                        <MousePointerClick className="h-4 w-4 text-[#F2A20B]" />
-                        WebGIS interaktif untuk membaca peta, laporan, statistik, berita, dan kontak darurat.
+                    <div className="mt-6 flex flex-wrap items-center gap-3">
+                        <a
+                            href="/webgis"
+                            className="inline-flex items-center justify-center gap-2 rounded-2xl bg-[#0FA3A0] px-5 py-3 text-sm font-black text-white shadow-[0_18px_40px_rgba(15,163,160,.28)] transition duration-200 hover:-translate-y-0.5 hover:bg-[#0C8A88] focus:outline-none focus:ring-4 focus:ring-[#BDE7E1]/50"
+                        >
+                            <Map className="h-4 w-4" />
+                            Peta Kejadian
+                        </a>
+                        <a
+                            href="/report"
+                            className="inline-flex items-center justify-center gap-2 rounded-2xl border border-white/18 bg-white/10 px-5 py-3 text-sm font-black text-white shadow-lg shadow-black/10 backdrop-blur transition duration-200 hover:-translate-y-0.5 hover:bg-white/18 focus:outline-none focus:ring-4 focus:ring-[#BDE7E1]/45"
+                        >
+                            <FileWarning className="h-4 w-4 text-[#F2A20B]" />
+                            Laporkan Kejadian
+                        </a>
                     </div>
 
                 </div>
 
-                <div className="relative mx-auto flex min-h-[300px] w-full max-w-[390px] items-end justify-center lg:min-h-[390px]">
+                <div className="jaga-home-mascot-wrap relative mx-auto flex w-full max-w-[390px] items-end justify-center">
                     <div className="jaga-home-mascot-glow pointer-events-none absolute bottom-6 h-[72%] w-[72%] rounded-full bg-[#BDE7E1]/25 blur-3xl" />
                     <button
                         type="button"

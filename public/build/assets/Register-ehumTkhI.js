@@ -1,0 +1,1 @@
+import{t as e}from"./app-DfjvhbN_.js";import{t}from"./SafekeyLayout-CSqRfcjt.js";import n from"./Register-B-zYI--n.js";var r=e();function i(){return(0,r.jsx)(t,{children:(0,r.jsx)(n,{})})}export{i as default};

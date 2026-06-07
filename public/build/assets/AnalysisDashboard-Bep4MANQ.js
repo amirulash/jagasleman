@@ -1,0 +1,1 @@
+import{t as e}from"./app-BiB9DKc7.js";import{t}from"./SafekeyLayout-DVG8LFMr.js";import n from"./AnalysisDashboard-BeYNXeTp.js";var r=e();function i(){return(0,r.jsx)(t,{children:(0,r.jsx)(n,{})})}export{i as default};

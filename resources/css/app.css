@@ -4544,3 +4544,2963 @@ tbody tr:hover {
   border-radius: 6px;
   transform: rotate(45deg);
 }
+
+/* =========================================================
+   FINAL RESPONSIVE LAYOUT PATCH — 07 JUNI 2026
+   Navbar mobile, konsistensi header, dan kontrol tepi WebGIS.
+   ========================================================= */
+
+/* ---------- Navbar: ukuran stabil dan tidak terpotong ---------- */
+.jaga-top-navbar {
+  position: relative !important;
+  width: 100% !important;
+  min-width: 0 !important;
+  overflow: visible !important;
+  background: rgba(255, 255, 255, .96) !important;
+  border-color: #BDE7E1 !important;
+  box-shadow: 0 10px 30px rgba(7, 50, 74, .09) !important;
+  backdrop-filter: blur(18px) !important;
+}
+
+.jaga-top-navbar .jaga-navbar-container {
+  width: 100% !important;
+  min-width: 0 !important;
+}
+
+.jaga-top-navbar .jaga-navbar-shell {
+  display: flex !important;
+  width: 100% !important;
+  min-width: 0 !important;
+  max-width: 100% !important;
+  overflow: visible !important;
+  background: #FFFFFF !important;
+  border-color: #BDE7E1 !important;
+}
+
+.jaga-top-navbar .jaga-brand-link {
+  min-width: 0 !important;
+  max-width: calc(100% - 112px) !important;
+  flex: 0 1 auto !important;
+  overflow: visible !important;
+  background: transparent !important;
+  border: 0 !important;
+  box-shadow: none !important;
+}
+
+.jaga-top-navbar .jaga-logo-wordmark {
+  min-width: 0 !important;
+  max-width: 100% !important;
+  padding: .25rem .1rem .12rem !important;
+  overflow: visible !important;
+}
+
+.jaga-top-navbar .jaga-logo-wordmark-text {
+  max-width: 100% !important;
+  font-size: clamp(1.45rem, 7vw, 2.1rem) !important;
+  line-height: .94 !important;
+  letter-spacing: -.075em !important;
+  white-space: nowrap !important;
+}
+
+.jaga-top-navbar .jaga-logo-wordmark-line {
+  width: 80% !important;
+  height: 4px !important;
+  margin-top: 5px !important;
+}
+
+.jaga-top-navbar .jaga-mobile-menu-button {
+  display: inline-flex !important;
+  min-width: 82px !important;
+  max-width: 96px !important;
+  color: #07324A !important;
+  -webkit-text-fill-color: #07324A !important;
+  border-color: #BDE7E1 !important;
+  background: #F6FBF8 !important;
+  opacity: 1 !important;
+}
+
+.jaga-top-navbar .jaga-mobile-menu-button,
+.jaga-top-navbar .jaga-mobile-menu-button * {
+  color: #07324A !important;
+  stroke: #07324A !important;
+  -webkit-text-fill-color: #07324A !important;
+}
+
+.jaga-mobile-navigation {
+  top: 80px !important;
+  overflow: hidden !important;
+}
+
+.jaga-mobile-navigation-panel {
+  overscroll-behavior: contain;
+}
+
+.jaga-mobile-navigation .jaga-mobile-nav-link {
+  width: 100% !important;
+  min-width: 0 !important;
+  box-shadow: none !important;
+}
+
+.jaga-mobile-navigation .jaga-mobile-nav-link.is-inactive {
+  background: #FFFFFF !important;
+  color: #07324A !important;
+  border-color: #D7E9E5 !important;
+}
+
+.jaga-mobile-navigation .jaga-mobile-nav-link.is-active {
+  background: linear-gradient(135deg, #0B6E78, #0FA3A0) !important;
+  color: #FFFFFF !important;
+  border-color: #0B6E78 !important;
+  box-shadow: 0 12px 28px rgba(11, 110, 120, .18) !important;
+}
+
+.jaga-mobile-navigation .jaga-mobile-nav-link.is-active > span:not(.jaga-mobile-nav-icon),
+.jaga-mobile-navigation .jaga-mobile-nav-link.is-active .jaga-mobile-nav-arrow {
+  color: #FFFFFF !important;
+  -webkit-text-fill-color: #FFFFFF !important;
+}
+
+.jaga-mobile-navigation .jaga-mobile-nav-icon {
+  background: #E9F8F3 !important;
+  border-color: #BDE7E1 !important;
+  color: #0B6E78 !important;
+}
+
+.jaga-mobile-navigation .jaga-mobile-nav-icon svg {
+  color: #0B6E78 !important;
+  stroke: #0B6E78 !important;
+}
+
+.jaga-mobile-navigation .jaga-mobile-nav-arrow {
+  flex: 0 0 auto;
+  color: #5C7186 !important;
+  font-size: 1.25rem;
+  font-weight: 900;
+}
+
+.jaga-top-navbar .jaga-auth-login-link,
+.jaga-top-navbar .jaga-auth-login-link * {
+  color: #FFFFFF !important;
+  -webkit-text-fill-color: #FFFFFF !important;
+  stroke: currentColor !important;
+}
+
+@media (min-width: 1280px) {
+  .jaga-top-navbar .jaga-mobile-menu-button {
+    display: none !important;
+  }
+
+  .jaga-top-navbar .jaga-brand-link {
+    max-width: 240px !important;
+  }
+
+  .jaga-top-navbar .jaga-logo-wordmark {
+    min-width: 150px !important;
+  }
+
+  .jaga-top-navbar .jaga-logo-wordmark-text {
+    font-size: clamp(1.65rem, 2vw, 2.25rem) !important;
+  }
+}
+
+@media (min-width: 640px) and (max-width: 1279px) {
+  .jaga-mobile-navigation {
+    top: 84px !important;
+  }
+}
+
+@media (max-width: 380px) {
+  .jaga-top-navbar .jaga-navbar-container {
+    padding-left: .5rem !important;
+    padding-right: .5rem !important;
+  }
+
+  .jaga-top-navbar .jaga-navbar-shell {
+    min-height: 60px !important;
+    gap: .4rem !important;
+    padding-left: .65rem !important;
+    padding-right: .55rem !important;
+    border-radius: 1.1rem !important;
+  }
+
+  .jaga-top-navbar .jaga-brand-link {
+    max-width: calc(100% - 61px) !important;
+  }
+
+  .jaga-top-navbar .jaga-logo-wordmark-text {
+    font-size: clamp(1.25rem, 7.4vw, 1.55rem) !important;
+  }
+
+  .jaga-top-navbar .jaga-mobile-menu-button {
+    width: 46px !important;
+    min-width: 46px !important;
+    max-width: 46px !important;
+    padding-left: 0 !important;
+    padding-right: 0 !important;
+  }
+
+  .jaga-top-navbar .jaga-mobile-menu-label {
+    display: none !important;
+  }
+
+  .jaga-mobile-navigation {
+    top: 76px !important;
+  }
+}
+
+/* ---------- Header halaman: satu sistem ukuran ---------- */
+.jaga-page-hero {
+  min-height: 196px !important;
+}
+
+.jaga-page-hero .jaga-page-hero-inner {
+  min-height: 196px !important;
+  padding-top: 1.75rem !important;
+  padding-bottom: 2rem !important;
+}
+
+.jaga-page-hero .jaga-page-hero-title {
+  font-size: clamp(2rem, 4.2vw, 3.25rem) !important;
+  line-height: 1.06 !important;
+}
+
+.jaga-page-hero .jaga-page-hero-subtitle {
+  font-size: clamp(.92rem, 1.3vw, 1.05rem) !important;
+  line-height: 1.75 !important;
+}
+
+.jaga-page-hero .jaga-page-hero-eyebrow {
+  min-height: 34px !important;
+}
+
+.jaga-home-hero .jaga-home-hero-inner {
+  min-height: 480px !important;
+  padding-top: 2.4rem !important;
+  padding-bottom: 2.8rem !important;
+}
+
+.jaga-home-hero .jaga-home-hero-title {
+  font-size: clamp(2.45rem, 5vw, 4rem) !important;
+  line-height: 1.03 !important;
+}
+
+.jaga-home-hero .jaga-home-mascot-wrap {
+  min-height: 330px !important;
+}
+
+.jaga-map-page-header {
+  flex: 0 0 auto;
+  padding-top: 1rem !important;
+  padding-bottom: 1rem !important;
+}
+
+.jaga-map-page-title {
+  font-size: clamp(1.75rem, 3vw, 2.4rem) !important;
+  line-height: 1.08 !important;
+}
+
+.jaga-map-page-subtitle {
+  font-size: clamp(.88rem, 1.2vw, 1rem) !important;
+  line-height: 1.65 !important;
+}
+
+.jaga-map-guide {
+  max-width: 850px !important;
+}
+
+@media (max-width: 767px) {
+  .jaga-page-hero,
+  .jaga-page-hero .jaga-page-hero-inner {
+    min-height: 166px !important;
+  }
+
+  .jaga-page-hero .jaga-page-hero-inner {
+    padding-top: 1.3rem !important;
+    padding-bottom: 1.55rem !important;
+  }
+
+  .jaga-page-hero .jaga-page-hero-title {
+    font-size: clamp(1.72rem, 8vw, 2.25rem) !important;
+  }
+
+  .jaga-home-hero .jaga-home-hero-inner {
+    min-height: auto !important;
+    gap: 1.25rem !important;
+    padding-top: 1.7rem !important;
+    padding-bottom: 2rem !important;
+  }
+
+  .jaga-home-hero .jaga-home-hero-title {
+    font-size: clamp(2.05rem, 10vw, 2.8rem) !important;
+  }
+
+  .jaga-home-hero .jaga-home-mascot-wrap {
+    min-height: 220px !important;
+    max-height: 260px !important;
+  }
+
+  .jaga-home-hero .jaga-home-mascot-only img {
+    max-height: 245px !important;
+  }
+
+  .jaga-map-page-header {
+    padding-top: .85rem !important;
+    padding-bottom: .9rem !important;
+  }
+
+  .jaga-map-guide ol {
+    grid-template-columns: 1fr !important;
+  }
+}
+
+/* ---------- WebGIS: tata letak kontrol tepi seperti referensi ---------- */
+.jagasleman-leaflet-map {
+  isolation: isolate;
+  min-height: 100% !important;
+  background: #DCEBE8 !important;
+}
+
+.jagasleman-district-search {
+  position: absolute;
+  top: 14px;
+  left: 50%;
+  z-index: 900;
+  display: flex;
+  width: min(330px, calc(100% - 420px));
+  min-width: 230px;
+  height: 44px;
+  align-items: center;
+  transform: translateX(-50%);
+  overflow: hidden;
+  border: 1px solid #BDE7E1;
+  border-radius: 10px;
+  background: rgba(255,255,255,.97);
+  box-shadow: 0 12px 30px rgba(7,50,74,.16);
+  backdrop-filter: blur(14px);
+  pointer-events: auto;
+}
+
+.jagasleman-district-search-icon {
+  display: flex;
+  width: 42px;
+  height: 100%;
+  flex: 0 0 42px;
+  align-items: center;
+  justify-content: center;
+  border-right: 1px solid #D7E9E5;
+  color: #0B6E78;
+  font-size: 1.25rem;
+  font-weight: 950;
+}
+
+.jagasleman-district-search select {
+  width: 100%;
+  min-width: 0;
+  height: 100%;
+  appearance: auto;
+  border: 0 !important;
+  outline: 0 !important;
+  background: transparent !important;
+  padding: 0 .75rem;
+  color: #07324A !important;
+  font-size: .8rem;
+  font-weight: 850;
+  box-shadow: none !important;
+}
+
+.jagasleman-map-action-controls {
+  left: 14px !important;
+  top: 14px !important;
+  z-index: 905 !important;
+  display: grid !important;
+  gap: 0 !important;
+  padding: 0 !important;
+  overflow: hidden !important;
+  border: 1px solid #BDE7E1 !important;
+  border-radius: 10px !important;
+  background: rgba(255,255,255,.97) !important;
+  box-shadow: 0 12px 30px rgba(7,50,74,.16) !important;
+  backdrop-filter: blur(14px) !important;
+}
+
+.jagasleman-map-action-controls button {
+  width: 40px !important;
+  height: 40px !important;
+  border: 0 !important;
+  border-bottom: 1px solid #D7E9E5 !important;
+  border-radius: 0 !important;
+  background: #FFFFFF !important;
+  color: #0B6E78 !important;
+  font-size: 17px !important;
+  box-shadow: none !important;
+}
+
+.jagasleman-map-action-controls button:last-child {
+  border-bottom: 0 !important;
+}
+
+.jagasleman-map-action-controls button:hover,
+.jagasleman-map-action-controls button.is-active {
+  transform: none !important;
+  background: #0B6E78 !important;
+  color: #FFFFFF !important;
+}
+
+.jagasleman-map-right-stack {
+  position: absolute;
+  top: 14px;
+  right: 14px;
+  z-index: 895;
+  display: flex;
+  width: min(286px, calc(100% - 92px));
+  max-height: calc(100% - 28px);
+  flex-direction: column;
+  gap: 8px;
+  overflow-y: auto;
+  overscroll-behavior: contain;
+  scrollbar-width: none;
+  pointer-events: none;
+}
+
+.jagasleman-map-right-stack::-webkit-scrollbar {
+  display: none;
+}
+
+.jagasleman-map-right-stack > * {
+  flex: 0 0 auto;
+  pointer-events: auto;
+}
+
+.jagasleman-map-right-stack .jagasleman-map-edge-panel,
+.jagasleman-map-right-stack .jagasleman-kde-layer-control,
+.jagasleman-map-right-stack .jagasleman-kde-legend,
+.jagasleman-map-right-stack .jagasleman-basemap-panel {
+  position: static !important;
+  inset: auto !important;
+  width: 100% !important;
+  min-width: 0 !important;
+  padding: 0 !important;
+  overflow: hidden !important;
+  border: 1px solid #BDE7E1 !important;
+  border-radius: 10px !important;
+  background: rgba(255,255,255,.97) !important;
+  box-shadow: 0 12px 30px rgba(7,50,74,.16) !important;
+  color: #07324A !important;
+  backdrop-filter: blur(14px) !important;
+}
+
+.jagasleman-map-edge-heading,
+.jagasleman-map-right-stack .jagasleman-basemap-toggle {
+  display: flex !important;
+  width: 100% !important;
+  min-width: 0 !important;
+  height: 42px !important;
+  align-items: center !important;
+  justify-content: space-between !important;
+  gap: .65rem !important;
+  padding: 0 .75rem !important;
+  border: 0 !important;
+  border-radius: 0 !important;
+  background: #FFFFFF !important;
+  color: #07324A !important;
+  font-size: .78rem !important;
+  font-weight: 950 !important;
+  box-shadow: none !important;
+  text-align: left !important;
+}
+
+.jagasleman-map-edge-heading:hover,
+.jagasleman-map-right-stack .jagasleman-basemap-toggle:hover {
+  background: #F2FAF6 !important;
+  color: #07324A !important;
+  transform: none !important;
+}
+
+.jagasleman-map-edge-heading-main {
+  display: inline-flex;
+  min-width: 0;
+  align-items: center;
+  gap: .55rem;
+}
+
+.jagasleman-map-edge-heading-icon {
+  display: inline-flex;
+  width: 24px;
+  height: 24px;
+  flex: 0 0 24px;
+  align-items: center;
+  justify-content: center;
+  border-radius: 7px;
+  background: #E9F8F3;
+  color: #0B6E78;
+  font-size: .75rem;
+  font-weight: 950;
+}
+
+.jagasleman-map-edge-chevron {
+  color: #0B6E78;
+  font-size: .62rem;
+  font-weight: 950;
+}
+
+.jagasleman-map-edge-content {
+  width: 100% !important;
+  padding: .7rem !important;
+  border-top: 1px solid #D7E9E5 !important;
+  background: #FFFFFF !important;
+}
+
+.jagasleman-map-right-stack .jagasleman-kde-layer-title {
+  margin: 0 0 .55rem !important;
+  padding: 0 0 .5rem !important;
+  font-size: .64rem !important;
+}
+
+.jagasleman-map-right-stack .jagasleman-kde-layer-options {
+  gap: .42rem !important;
+}
+
+.jagasleman-map-right-stack .jagasleman-kde-layer-option {
+  grid-template-columns: 20px minmax(0, 1fr) !important;
+  gap: .45rem !important;
+  padding: .58rem !important;
+  border-radius: 8px !important;
+}
+
+.jagasleman-map-right-stack .jagasleman-kde-layer-option b {
+  font-size: .72rem !important;
+}
+
+.jagasleman-map-right-stack .jagasleman-kde-layer-option span span {
+  font-size: .62rem !important;
+  line-height: 1.35 !important;
+}
+
+.jagasleman-map-right-stack .jagasleman-kde-layer-note {
+  margin-top: .55rem !important;
+  padding: .55rem !important;
+  border-radius: 8px !important;
+  font-size: .62rem !important;
+}
+
+.jagasleman-map-right-stack .jagasleman-kde-legend-title {
+  margin-bottom: .4rem !important;
+  font-size: .68rem !important;
+}
+
+.jagasleman-map-right-stack .jagasleman-kde-legend-subtitle {
+  margin-bottom: .55rem !important;
+  font-size: .63rem !important;
+}
+
+.jagasleman-map-right-stack .jagasleman-kde-legend-grid {
+  gap: .35rem !important;
+  margin-top: .5rem !important;
+}
+
+.jagasleman-map-right-stack .jagasleman-kde-legend-item {
+  font-size: .63rem !important;
+}
+
+.jagasleman-map-right-stack .jagasleman-basemap-menu {
+  position: static !important;
+  width: 100% !important;
+  min-width: 0 !important;
+  margin: 0 !important;
+  border: 0 !important;
+  border-radius: 0 !important;
+  box-shadow: none !important;
+}
+
+.jagasleman-basemap-active-label {
+  margin-bottom: .55rem;
+  color: #5C7186;
+  font-size: .65rem;
+  font-weight: 850;
+}
+
+.jagasleman-map-right-stack .jagasleman-basemap-option {
+  grid-template-columns: 34px minmax(0, 1fr) !important;
+  gap: .5rem !important;
+  padding: .5rem !important;
+  border-radius: 8px !important;
+}
+
+.jagasleman-map-right-stack .jagasleman-basemap-option-icon {
+  width: 32px !important;
+  height: 32px !important;
+  border-radius: 8px !important;
+}
+
+.jagasleman-map-right-stack .jagasleman-basemap-option-title {
+  font-size: .7rem !important;
+}
+
+.jagasleman-map-right-stack .jagasleman-basemap-option-desc {
+  font-size: .61rem !important;
+}
+
+.jaga-map-status-chip {
+  top: 66px !important;
+  left: 62px !important;
+  max-width: min(340px, calc(100% - 390px)) !important;
+  border-radius: 9px !important;
+}
+
+.jaga-map-canvas {
+  height: 70dvh;
+  min-height: 520px;
+}
+
+.jaga-map-filter-panel,
+.jaga-map-analysis-panel {
+  max-height: none;
+}
+
+@media (min-width: 1280px) {
+  .jaga-map-canvas {
+    height: auto !important;
+    min-height: 0 !important;
+  }
+
+  .jaga-map-filter-panel,
+  .jaga-map-analysis-panel {
+    max-height: 100% !important;
+  }
+}
+
+@media (max-width: 900px) {
+  .jagasleman-district-search {
+    left: 62px;
+    right: 10px;
+    width: auto;
+    min-width: 0;
+    transform: none;
+  }
+
+  .jagasleman-map-right-stack {
+    top: 66px;
+    right: 10px;
+    width: min(228px, calc(100% - 74px));
+    max-height: calc(100% - 78px);
+  }
+
+  .jagasleman-map-action-controls {
+    left: 10px !important;
+    top: 10px !important;
+  }
+
+  .jagasleman-map-action-controls button {
+    width: 40px !important;
+    height: 40px !important;
+  }
+
+  .jaga-map-status-chip {
+    display: none !important;
+  }
+}
+
+@media (max-width: 640px) {
+  .jaga-map-dashboard-grid {
+    display: flex !important;
+    flex-direction: column !important;
+  }
+
+  .jaga-map-canvas {
+    height: 68dvh !important;
+    min-height: 500px !important;
+  }
+
+  .jaga-map-filter-panel,
+  .jaga-map-analysis-panel {
+    border-left: 0 !important;
+    border-right: 0 !important;
+    border-top: 1px solid #D7E9E5 !important;
+  }
+
+  .jagasleman-district-search {
+    height: 42px;
+    left: 58px;
+  }
+
+  .jagasleman-district-search-icon {
+    width: 36px;
+    flex-basis: 36px;
+  }
+
+  .jagasleman-district-search select {
+    padding-left: .55rem;
+    padding-right: .4rem;
+    font-size: .72rem;
+  }
+
+  .jagasleman-map-right-stack {
+    top: 62px;
+    width: min(214px, calc(100% - 68px));
+  }
+
+  .jagasleman-map-edge-heading,
+  .jagasleman-map-right-stack .jagasleman-basemap-toggle {
+    height: 40px !important;
+    padding-left: .62rem !important;
+    padding-right: .62rem !important;
+    font-size: .72rem !important;
+  }
+
+  .jagasleman-map-edge-content {
+    padding: .58rem !important;
+  }
+
+  .jagasleman-map-right-stack .jagasleman-kde-layer-option span span,
+  .jagasleman-map-right-stack .jagasleman-kde-layer-note,
+  .jagasleman-map-right-stack .jagasleman-basemap-option-desc {
+    display: none !important;
+  }
+}
+
+/* Logo gambar pada navbar Inertia/Safekey mengikuti ruang yang tersedia. */
+.jaga-top-navbar .jaga-brand-logo {
+  width: auto !important;
+  height: auto !important;
+  max-width: min(168px, 100%) !important;
+  max-height: 50px !important;
+  object-fit: contain !important;
+  object-position: left center !important;
+}
+
+@media (max-width: 639px) {
+  .jaga-top-navbar .jaga-brand-logo {
+    max-width: min(148px, 100%) !important;
+    max-height: 44px !important;
+  }
+}
+
+@media (max-width: 380px) {
+  .jaga-top-navbar .jaga-brand-logo {
+    max-width: min(132px, 100%) !important;
+    max-height: 40px !important;
+  }
+}
+
+.jaga-top-navbar .jaga-mobile-navigation {
+  position: absolute !important;
+  top: 100% !important;
+  bottom: auto !important;
+  height: calc(100dvh - 80px) !important;
+}
+
+.jaga-mobile-navigation-backdrop {
+  border: 0 !important;
+  border-radius: 0 !important;
+  background: rgba(4, 20, 33, .48) !important;
+  box-shadow: none !important;
+}
+
+.jaga-mobile-navigation-panel {
+  background: #FFFFFF !important;
+  border-color: #BDE7E1 !important;
+}
+
+@media (min-width: 640px) and (max-width: 1279px) {
+  .jaga-top-navbar .jaga-mobile-navigation {
+    height: calc(100dvh - 84px) !important;
+  }
+}
+
+@media (max-width: 380px) {
+  .jaga-top-navbar .jaga-mobile-navigation {
+    height: calc(100dvh - 76px) !important;
+  }
+}
+
+/* =========================================================
+   FINAL MOBILE NAV + BANTARA-STYLE MAP CONTROLS PATCH
+   Revisi lanjutan: menu mobile harus terbaca penuh dan seluruh
+   kontrol WebGIS tetap terlihat pada layar kecil.
+   ========================================================= */
+
+/* ---------- Mobile navigation: portal drawer, opaque, full viewport ---------- */
+.jaga-mobile-navigation {
+  position: fixed !important;
+  inset: 0 !important;
+  top: 0 !important;
+  right: 0 !important;
+  bottom: 0 !important;
+  left: 0 !important;
+  width: 100vw !important;
+  height: 100dvh !important;
+  overflow: hidden !important;
+  z-index: 9999 !important;
+  isolation: isolate;
+}
+
+.jaga-mobile-navigation-backdrop {
+  position: absolute !important;
+  inset: 0 !important;
+  width: 100% !important;
+  height: 100% !important;
+  border: 0 !important;
+  border-radius: 0 !important;
+  background: rgba(4, 20, 33, .64) !important;
+  box-shadow: none !important;
+  backdrop-filter: blur(4px) !important;
+}
+
+.jaga-mobile-navigation-panel {
+  position: absolute !important;
+  top: 0 !important;
+  right: 0 !important;
+  bottom: 0 !important;
+  left: auto !important;
+  display: flex !important;
+  width: min(420px, calc(100vw - 18px)) !important;
+  max-width: 100% !important;
+  height: 100dvh !important;
+  max-height: 100dvh !important;
+  flex-direction: column !important;
+  overflow: hidden !important;
+  border: 0 !important;
+  border-left: 1px solid #BDE7E1 !important;
+  border-radius: 0 !important;
+  background: #FFFFFF !important;
+  color: #07324A !important;
+  box-shadow: -24px 0 70px rgba(4, 20, 33, .30) !important;
+  opacity: 1 !important;
+  overscroll-behavior: contain;
+}
+
+.jaga-mobile-navigation-header,
+.jaga-mobile-navigation-footer {
+  background: #FFFFFF !important;
+  opacity: 1 !important;
+}
+
+.jaga-mobile-navigation-body {
+  background:
+    radial-gradient(circle at 90% 4%, rgba(15, 163, 160, .09), transparent 14rem),
+    linear-gradient(180deg, #FFFFFF 0%, #F7FCFA 100%) !important;
+  scrollbar-width: thin;
+  scrollbar-color: #BDE7E1 transparent;
+}
+
+.jaga-mobile-drawer-brand {
+  display: flex !important;
+  min-width: 0 !important;
+  max-width: calc(100% - 60px) !important;
+  align-items: center !important;
+  overflow: visible !important;
+}
+
+.jaga-mobile-drawer-logo {
+  width: auto !important;
+  height: auto !important;
+  max-width: min(176px, 100%) !important;
+  max-height: 52px !important;
+  object-fit: contain !important;
+  object-position: left center !important;
+  opacity: 1 !important;
+  filter: none !important;
+}
+
+.jaga-mobile-navigation .jaga-logo-wordmark {
+  min-width: 0 !important;
+  max-width: 100% !important;
+  padding: .2rem .1rem !important;
+}
+
+.jaga-mobile-navigation .jaga-logo-wordmark-text {
+  font-size: clamp(1.55rem, 7vw, 2rem) !important;
+  line-height: .92 !important;
+  white-space: nowrap !important;
+}
+
+.jaga-mobile-navigation .jaga-logo-wordmark-line {
+  width: 80% !important;
+  height: 4px !important;
+  margin-top: 5px !important;
+}
+
+.jaga-mobile-drawer-close,
+.jaga-mobile-drawer-close * {
+  color: #07324A !important;
+  stroke: #07324A !important;
+  opacity: 1 !important;
+}
+
+.jaga-mobile-navigation nav {
+  display: grid !important;
+  width: 100% !important;
+  min-width: 0 !important;
+  background: transparent !important;
+  border: 0 !important;
+  box-shadow: none !important;
+}
+
+.jaga-mobile-navigation .jaga-mobile-nav-link {
+  display: flex !important;
+  width: 100% !important;
+  min-width: 0 !important;
+  min-height: 58px !important;
+  grid-template-columns: none !important;
+  align-items: center !important;
+  justify-content: flex-start !important;
+  gap: .8rem !important;
+  padding: .75rem .9rem !important;
+  border: 1px solid #D7E9E5 !important;
+  border-radius: 16px !important;
+  background: #FFFFFF !important;
+  color: #07324A !important;
+  box-shadow: 0 7px 18px rgba(7, 50, 74, .06) !important;
+  opacity: 1 !important;
+  overflow: visible !important;
+  text-decoration: none !important;
+  -webkit-text-fill-color: #07324A !important;
+}
+
+.jaga-mobile-navigation .jaga-mobile-nav-link:hover {
+  border-color: #0FA3A0 !important;
+  background: #F2FAF6 !important;
+  transform: translateX(-2px) !important;
+}
+
+.jaga-mobile-navigation .jaga-mobile-nav-link.is-active {
+  border-color: #0B6E78 !important;
+  background: linear-gradient(135deg, #0B6E78, #0FA3A0) !important;
+  color: #FFFFFF !important;
+  box-shadow: 0 14px 30px rgba(11, 110, 120, .22) !important;
+  -webkit-text-fill-color: #FFFFFF !important;
+}
+
+.jaga-mobile-navigation .jaga-mobile-nav-label {
+  display: block !important;
+  min-width: 0 !important;
+  flex: 1 1 auto !important;
+  overflow: visible !important;
+  color: #07324A !important;
+  font-size: .92rem !important;
+  font-weight: 900 !important;
+  line-height: 1.25 !important;
+  opacity: 1 !important;
+  white-space: normal !important;
+  text-overflow: clip !important;
+  -webkit-text-fill-color: #07324A !important;
+}
+
+.jaga-mobile-navigation .jaga-mobile-nav-link.is-active .jaga-mobile-nav-label,
+.jaga-mobile-navigation .jaga-mobile-nav-link.is-active .jaga-mobile-nav-arrow {
+  color: #FFFFFF !important;
+  -webkit-text-fill-color: #FFFFFF !important;
+}
+
+.jaga-mobile-navigation .jaga-mobile-nav-icon {
+  display: inline-flex !important;
+  width: 40px !important;
+  height: 40px !important;
+  flex: 0 0 40px !important;
+  align-items: center !important;
+  justify-content: center !important;
+  border: 1px solid #BDE7E1 !important;
+  border-radius: 12px !important;
+  background: #E9F8F3 !important;
+  color: #0B6E78 !important;
+  opacity: 1 !important;
+}
+
+.jaga-mobile-navigation .jaga-mobile-nav-icon svg {
+  width: 19px !important;
+  height: 19px !important;
+  color: #0B6E78 !important;
+  stroke: #0B6E78 !important;
+  opacity: 1 !important;
+}
+
+.jaga-mobile-navigation .jaga-mobile-nav-link.is-active .jaga-mobile-nav-icon {
+  border-color: rgba(255,255,255,.92) !important;
+  background: #FFFFFF !important;
+  color: #0B6E78 !important;
+}
+
+.jaga-mobile-navigation .jaga-mobile-nav-arrow {
+  display: inline-flex !important;
+  width: 20px !important;
+  flex: 0 0 20px !important;
+  align-items: center !important;
+  justify-content: center !important;
+  color: #0B6E78 !important;
+  font-size: 1.35rem !important;
+  font-weight: 950 !important;
+  line-height: 1 !important;
+  opacity: 1 !important;
+  -webkit-text-fill-color: #0B6E78 !important;
+}
+
+.jaga-mobile-navigation .jaga-mobile-login-button,
+.jaga-mobile-navigation .jaga-mobile-login-button *,
+.jaga-mobile-navigation .jaga-auth-dashboard-link,
+.jaga-mobile-navigation .jaga-auth-dashboard-link * {
+  color: #FFFFFF !important;
+  stroke: currentColor !important;
+  opacity: 1 !important;
+  -webkit-text-fill-color: #FFFFFF !important;
+}
+
+@media (max-width: 420px) {
+  .jaga-mobile-navigation-panel {
+    width: calc(100vw - 10px) !important;
+  }
+
+  .jaga-mobile-navigation-header,
+  .jaga-mobile-navigation-body,
+  .jaga-mobile-navigation-footer {
+    padding-left: .8rem !important;
+    padding-right: .8rem !important;
+  }
+
+  .jaga-mobile-navigation .jaga-mobile-nav-link {
+    min-height: 54px !important;
+    padding: .65rem .75rem !important;
+  }
+
+  .jaga-mobile-navigation .jaga-mobile-nav-label {
+    font-size: .86rem !important;
+  }
+}
+
+/* ---------- WebGIS controls: BANTARA-inspired edge layout ---------- */
+.jagasleman-leaflet-map {
+  isolation: isolate !important;
+  background: #DCEBE8 !important;
+}
+
+.jagasleman-map-action-controls {
+  position: absolute !important;
+  top: 12px !important;
+  left: 12px !important;
+  z-index: 910 !important;
+  display: grid !important;
+  grid-template-columns: 42px !important;
+  gap: 0 !important;
+  padding: 0 !important;
+  overflow: hidden !important;
+  border: 1px solid #BDE7E1 !important;
+  border-radius: 10px !important;
+  background: rgba(255,255,255,.98) !important;
+  box-shadow: 0 14px 34px rgba(7,50,74,.17) !important;
+  backdrop-filter: blur(14px) !important;
+  pointer-events: auto !important;
+}
+
+.jagasleman-map-action-controls button {
+  display: inline-flex !important;
+  width: 42px !important;
+  height: 42px !important;
+  align-items: center !important;
+  justify-content: center !important;
+  border: 0 !important;
+  border-bottom: 1px solid #D7E9E5 !important;
+  border-radius: 0 !important;
+  background: #FFFFFF !important;
+  color: #0B6E78 !important;
+  box-shadow: none !important;
+  cursor: pointer !important;
+  touch-action: manipulation;
+}
+
+.jagasleman-map-action-controls button:last-child {
+  border-bottom: 0 !important;
+}
+
+.jagasleman-map-action-controls button svg {
+  width: 18px !important;
+  height: 18px !important;
+  stroke-width: 2.5 !important;
+  color: currentColor !important;
+  stroke: currentColor !important;
+}
+
+.jagasleman-map-action-controls button:hover,
+.jagasleman-map-action-controls button:focus-visible,
+.jagasleman-map-action-controls button.is-active {
+  background: #0B6E78 !important;
+  color: #FFFFFF !important;
+  outline: 0 !important;
+  transform: none !important;
+}
+
+.jagasleman-district-search {
+  position: absolute !important;
+  top: 12px !important;
+  left: 50% !important;
+  z-index: 905 !important;
+  display: flex !important;
+  width: clamp(260px, 31vw, 390px) !important;
+  min-width: 0 !important;
+  height: 44px !important;
+  align-items: center !important;
+  transform: translateX(-50%) !important;
+  overflow: hidden !important;
+  border: 1px solid #BDE7E1 !important;
+  border-radius: 10px !important;
+  background: rgba(255,255,255,.98) !important;
+  box-shadow: 0 14px 34px rgba(7,50,74,.17) !important;
+  backdrop-filter: blur(14px) !important;
+  pointer-events: auto !important;
+}
+
+.jagasleman-district-search-icon {
+  display: inline-flex !important;
+  width: 42px !important;
+  height: 100% !important;
+  flex: 0 0 42px !important;
+  align-items: center !important;
+  justify-content: center !important;
+  border-right: 1px solid #D7E9E5 !important;
+  color: #0B6E78 !important;
+}
+
+.jagasleman-district-search-icon svg {
+  width: 18px !important;
+  height: 18px !important;
+  stroke: currentColor !important;
+}
+
+.jagasleman-district-search select {
+  display: block !important;
+  width: 100% !important;
+  min-width: 0 !important;
+  height: 100% !important;
+  border: 0 !important;
+  outline: 0 !important;
+  background: transparent !important;
+  padding: 0 .8rem !important;
+  color: #07324A !important;
+  font-size: .8rem !important;
+  font-weight: 850 !important;
+  box-shadow: none !important;
+}
+
+.jagasleman-map-right-stack {
+  position: absolute !important;
+  top: 12px !important;
+  right: 12px !important;
+  z-index: 900 !important;
+  display: flex !important;
+  width: min(286px, calc(100% - 100px)) !important;
+  max-height: calc(100% - 24px) !important;
+  flex-direction: column !important;
+  gap: 8px !important;
+  overflow-x: hidden !important;
+  overflow-y: auto !important;
+  overscroll-behavior: contain !important;
+  scrollbar-width: thin !important;
+  scrollbar-color: #BDE7E1 transparent !important;
+  pointer-events: none !important;
+}
+
+.jagasleman-map-right-stack > * {
+  flex: 0 0 auto !important;
+  pointer-events: auto !important;
+}
+
+.jagasleman-map-right-stack .jagasleman-map-edge-panel,
+.jagasleman-map-right-stack .jagasleman-kde-layer-control,
+.jagasleman-map-right-stack .jagasleman-kde-legend,
+.jagasleman-map-right-stack .jagasleman-basemap-panel {
+  position: static !important;
+  inset: auto !important;
+  width: 100% !important;
+  min-width: 0 !important;
+  margin: 0 !important;
+  padding: 0 !important;
+  overflow: hidden !important;
+  border: 1px solid #BDE7E1 !important;
+  border-radius: 10px !important;
+  background: rgba(255,255,255,.98) !important;
+  box-shadow: 0 14px 34px rgba(7,50,74,.17) !important;
+  color: #07324A !important;
+  backdrop-filter: blur(14px) !important;
+}
+
+.jagasleman-map-edge-heading,
+.jagasleman-map-right-stack .jagasleman-basemap-toggle {
+  display: flex !important;
+  width: 100% !important;
+  min-width: 0 !important;
+  height: 42px !important;
+  align-items: center !important;
+  justify-content: space-between !important;
+  gap: .65rem !important;
+  padding: 0 .75rem !important;
+  border: 0 !important;
+  border-radius: 0 !important;
+  background: #FFFFFF !important;
+  color: #07324A !important;
+  font-size: .78rem !important;
+  font-weight: 950 !important;
+  box-shadow: none !important;
+  text-align: left !important;
+  cursor: pointer !important;
+}
+
+.jagasleman-map-edge-heading:hover,
+.jagasleman-map-edge-heading:focus-visible,
+.jagasleman-map-right-stack .jagasleman-basemap-toggle:hover,
+.jagasleman-map-right-stack .jagasleman-basemap-toggle:focus-visible {
+  background: #F2FAF6 !important;
+  color: #07324A !important;
+  outline: 0 !important;
+  transform: none !important;
+}
+
+.jagasleman-map-edge-heading-main {
+  display: inline-flex !important;
+  min-width: 0 !important;
+  align-items: center !important;
+  gap: .55rem !important;
+}
+
+.jagasleman-map-edge-heading-icon {
+  display: inline-flex !important;
+  width: 25px !important;
+  height: 25px !important;
+  flex: 0 0 25px !important;
+  align-items: center !important;
+  justify-content: center !important;
+  border-radius: 7px !important;
+  background: #E9F8F3 !important;
+  color: #0B6E78 !important;
+  font-size: .75rem !important;
+  font-weight: 950 !important;
+}
+
+.jagasleman-map-edge-heading-icon svg {
+  width: 15px !important;
+  height: 15px !important;
+  color: currentColor !important;
+  stroke: currentColor !important;
+}
+
+.jagasleman-map-edge-chevron {
+  display: inline-flex !important;
+  width: 18px !important;
+  height: 18px !important;
+  flex: 0 0 18px !important;
+  align-items: center !important;
+  justify-content: center !important;
+  color: #0B6E78 !important;
+}
+
+.jagasleman-map-edge-chevron svg {
+  width: 14px !important;
+  height: 14px !important;
+  stroke: currentColor !important;
+}
+
+.jagasleman-map-edge-content {
+  width: 100% !important;
+  max-height: min(52dvh, 410px) !important;
+  overflow-y: auto !important;
+  padding: .72rem !important;
+  border-top: 1px solid #D7E9E5 !important;
+  background: #FFFFFF !important;
+  scrollbar-width: thin !important;
+  scrollbar-color: #BDE7E1 transparent !important;
+}
+
+.jagasleman-map-right-stack .jagasleman-kde-layer-title {
+  margin: 0 0 .55rem !important;
+  padding: 0 0 .5rem !important;
+  border-bottom: 1px solid #E3EFEC !important;
+  font-size: .64rem !important;
+}
+
+.jagasleman-map-right-stack .jagasleman-kde-layer-options {
+  display: grid !important;
+  gap: .42rem !important;
+}
+
+.jagasleman-map-right-stack .jagasleman-kde-layer-option {
+  display: grid !important;
+  grid-template-columns: 20px minmax(0, 1fr) !important;
+  gap: .5rem !important;
+  align-items: start !important;
+  width: 100% !important;
+  padding: .58rem !important;
+  border: 1px solid #DDECE8 !important;
+  border-radius: 8px !important;
+  background: #FFFFFF !important;
+  color: #07324A !important;
+  text-align: left !important;
+}
+
+.jagasleman-map-right-stack .jagasleman-kde-layer-option:hover,
+.jagasleman-map-right-stack .jagasleman-kde-layer-option.is-active {
+  border-color: #0FA3A0 !important;
+  background: #F2FAF6 !important;
+}
+
+.jagasleman-map-right-stack .jagasleman-kde-layer-option b {
+  display: block !important;
+  color: #07324A !important;
+  font-size: .72rem !important;
+  line-height: 1.25 !important;
+}
+
+.jagasleman-map-right-stack .jagasleman-kde-layer-option span span {
+  display: block !important;
+  margin-top: 2px !important;
+  color: #5C7186 !important;
+  font-size: .62rem !important;
+  line-height: 1.35 !important;
+}
+
+.jagasleman-data-layer-section-title {
+  margin: .75rem 0 .5rem !important;
+  padding-top: .65rem !important;
+  border-top: 1px solid #E3EFEC !important;
+  color: #0B6E78 !important;
+  font-size: .64rem !important;
+  font-weight: 950 !important;
+  letter-spacing: .08em !important;
+  text-transform: uppercase !important;
+}
+
+.jagasleman-data-layer-options {
+  display: grid !important;
+  gap: .42rem !important;
+}
+
+.jagasleman-data-layer-option {
+  display: grid !important;
+  grid-template-columns: 22px minmax(0,1fr) !important;
+  gap: .5rem !important;
+  align-items: start !important;
+  width: 100% !important;
+  padding: .56rem !important;
+  border: 1px solid #DDECE8 !important;
+  border-radius: 8px !important;
+  background: #FFFFFF !important;
+  color: #07324A !important;
+  text-align: left !important;
+  cursor: pointer !important;
+}
+
+.jagasleman-data-layer-option:hover,
+.jagasleman-data-layer-option.is-active {
+  border-color: #0FA3A0 !important;
+  background: #F2FAF6 !important;
+}
+
+.jagasleman-data-layer-check {
+  display: inline-flex !important;
+  width: 20px !important;
+  height: 20px !important;
+  align-items: center !important;
+  justify-content: center !important;
+  border: 1px solid #BDE7E1 !important;
+  border-radius: 6px !important;
+  background: #FFFFFF !important;
+  color: #FFFFFF !important;
+  font-size: .72rem !important;
+  font-weight: 950 !important;
+}
+
+.jagasleman-data-layer-option.is-active .jagasleman-data-layer-check {
+  border-color: #0B6E78 !important;
+  background: #0B6E78 !important;
+}
+
+.jagasleman-data-layer-copy b {
+  display: block !important;
+  color: #07324A !important;
+  font-size: .71rem !important;
+  line-height: 1.25 !important;
+}
+
+.jagasleman-data-layer-copy span {
+  display: block !important;
+  margin-top: 2px !important;
+  color: #5C7186 !important;
+  font-size: .61rem !important;
+  line-height: 1.35 !important;
+}
+
+.jagasleman-map-right-stack .jagasleman-kde-layer-note {
+  margin-top: .6rem !important;
+  padding: .55rem !important;
+  border: 1px solid #DDECE8 !important;
+  border-radius: 8px !important;
+  background: #F8FCFA !important;
+  color: #5C7186 !important;
+  font-size: .61rem !important;
+  line-height: 1.45 !important;
+}
+
+.jagasleman-map-right-stack .jagasleman-kde-legend-title {
+  margin-bottom: .4rem !important;
+  color: #07324A !important;
+  font-size: .72rem !important;
+  font-weight: 950 !important;
+}
+
+.jagasleman-map-right-stack .jagasleman-kde-legend-subtitle {
+  margin-bottom: .55rem !important;
+  color: #5C7186 !important;
+  font-size: .63rem !important;
+  line-height: 1.45 !important;
+}
+
+.jagasleman-map-right-stack .jagasleman-kde-gradient {
+  height: 8px !important;
+  border-radius: 999px !important;
+}
+
+.jagasleman-map-right-stack .jagasleman-kde-legend-grid {
+  display: grid !important;
+  grid-template-columns: repeat(2, minmax(0,1fr)) !important;
+  gap: .38rem !important;
+  margin-top: .5rem !important;
+}
+
+.jagasleman-map-right-stack .jagasleman-kde-legend-item {
+  display: flex !important;
+  align-items: center !important;
+  gap: .35rem !important;
+  color: #07324A !important;
+  font-size: .62rem !important;
+}
+
+.jagasleman-map-symbol-list {
+  display: grid !important;
+  gap: .45rem !important;
+  margin-top: .7rem !important;
+  padding-top: .65rem !important;
+  border-top: 1px solid #E3EFEC !important;
+}
+
+.jagasleman-map-symbol-item {
+  display: flex !important;
+  min-width: 0 !important;
+  align-items: center !important;
+  gap: .5rem !important;
+  color: #07324A !important;
+  font-size: .64rem !important;
+}
+
+.jagasleman-map-symbol {
+  display: inline-flex !important;
+  width: 18px !important;
+  height: 18px !important;
+  flex: 0 0 18px !important;
+}
+
+.jagasleman-map-symbol--point {
+  border: 3px solid #FFFFFF !important;
+  border-radius: 999px !important;
+  background: #E11D48 !important;
+  box-shadow: 0 0 0 1px #E11D48 !important;
+}
+
+.jagasleman-map-symbol--district {
+  height: 0 !important;
+  border-top: 3px solid #0B6E78 !important;
+}
+
+.jagasleman-map-symbol--village {
+  height: 0 !important;
+  border-top: 2px dashed #F2A20B !important;
+}
+
+.jagasleman-map-symbol--contact {
+  border-radius: 5px !important;
+  background: #16A34A !important;
+  box-shadow: inset 0 0 0 4px #FFFFFF, 0 0 0 1px #16A34A !important;
+}
+
+.jagasleman-map-right-stack .jagasleman-basemap-menu {
+  position: static !important;
+  width: 100% !important;
+  min-width: 0 !important;
+  margin: 0 !important;
+  border: 0 !important;
+  border-radius: 0 !important;
+  box-shadow: none !important;
+}
+
+.jagasleman-map-right-stack .jagasleman-basemap-option {
+  display: grid !important;
+  grid-template-columns: 34px minmax(0, 1fr) !important;
+  gap: .55rem !important;
+  width: 100% !important;
+  padding: .5rem !important;
+  border: 1px solid #DDECE8 !important;
+  border-radius: 8px !important;
+  background: #FFFFFF !important;
+  color: #07324A !important;
+  text-align: left !important;
+}
+
+.jagasleman-map-right-stack .jagasleman-basemap-option:hover,
+.jagasleman-map-right-stack .jagasleman-basemap-option.is-active {
+  border-color: #0FA3A0 !important;
+  background: #F2FAF6 !important;
+}
+
+.jagasleman-map-right-stack .jagasleman-basemap-option-icon {
+  display: inline-flex !important;
+  width: 32px !important;
+  height: 32px !important;
+  align-items: center !important;
+  justify-content: center !important;
+  border-radius: 8px !important;
+  background: linear-gradient(135deg, #0B6E78, #0FA3A0) !important;
+  color: #FFFFFF !important;
+  font-size: .95rem !important;
+}
+
+.jagasleman-map-right-stack .jagasleman-basemap-option-title {
+  color: #07324A !important;
+  font-size: .7rem !important;
+  font-weight: 950 !important;
+}
+
+.jagasleman-map-right-stack .jagasleman-basemap-option-desc {
+  color: #5C7186 !important;
+  font-size: .61rem !important;
+  line-height: 1.35 !important;
+}
+
+.jaga-map-status-chip {
+  top: 64px !important;
+  left: 64px !important;
+  max-width: min(340px, calc(100% - 382px)) !important;
+}
+
+.jagasleman-leaflet-map:fullscreen,
+.jagasleman-leaflet-map:-webkit-full-screen {
+  width: 100vw !important;
+  height: 100vh !important;
+}
+
+@media (max-width: 980px) {
+  .jagasleman-district-search {
+    left: 62px !important;
+    right: 10px !important;
+    width: auto !important;
+    transform: none !important;
+  }
+
+  .jagasleman-map-right-stack {
+    top: 64px !important;
+    right: 10px !important;
+    width: min(240px, calc(100% - 72px)) !important;
+    max-height: calc(100% - 74px) !important;
+  }
+
+  .jaga-map-status-chip {
+    display: none !important;
+  }
+}
+
+@media (max-width: 640px) {
+  .jaga-map-canvas {
+    height: 72dvh !important;
+    min-height: 560px !important;
+  }
+
+  .jagasleman-map-action-controls {
+    top: 10px !important;
+    left: 10px !important;
+    grid-template-columns: 40px !important;
+    border-radius: 9px !important;
+  }
+
+  .jagasleman-map-action-controls button {
+    width: 40px !important;
+    height: 40px !important;
+  }
+
+  .jagasleman-map-action-controls button svg {
+    width: 17px !important;
+    height: 17px !important;
+  }
+
+  .jagasleman-district-search {
+    top: 10px !important;
+    left: 58px !important;
+    right: 10px !important;
+    width: auto !important;
+    height: 42px !important;
+    transform: none !important;
+  }
+
+  .jagasleman-district-search-icon {
+    width: 38px !important;
+    flex-basis: 38px !important;
+  }
+
+  .jagasleman-district-search select {
+    padding-left: .55rem !important;
+    padding-right: .35rem !important;
+    font-size: .72rem !important;
+  }
+
+  .jagasleman-map-right-stack {
+    top: 60px !important;
+    right: 10px !important;
+    width: min(238px, calc(100% - 68px)) !important;
+    max-height: calc(100% - 70px) !important;
+    gap: 7px !important;
+  }
+
+  .jagasleman-map-edge-heading,
+  .jagasleman-map-right-stack .jagasleman-basemap-toggle {
+    height: 40px !important;
+    padding: 0 .62rem !important;
+    font-size: .72rem !important;
+  }
+
+  .jagasleman-map-edge-content {
+    max-height: min(48dvh, 330px) !important;
+    padding: .6rem !important;
+  }
+
+  .jagasleman-map-right-stack .jagasleman-kde-legend-grid {
+    grid-template-columns: 1fr !important;
+  }
+
+  .jagasleman-map-right-stack .jagasleman-kde-layer-option span span,
+  .jagasleman-data-layer-copy span,
+  .jagasleman-map-right-stack .jagasleman-basemap-option-desc {
+    display: block !important;
+  }
+
+  .jagasleman-map-right-stack .jagasleman-kde-layer-note {
+    display: none !important;
+  }
+}
+
+@media (max-width: 420px) {
+  .jaga-map-canvas {
+    height: 74dvh !important;
+    min-height: 590px !important;
+  }
+
+  .jagasleman-map-right-stack {
+    width: calc(100% - 68px) !important;
+  }
+
+  .jagasleman-map-edge-content {
+    max-height: min(45dvh, 300px) !important;
+  }
+}
+
+/* Pastikan logo gambar Safekey tidak tampil sekecil thumbnail pada navbar mobile. */
+.jaga-top-navbar .jaga-brand-logo {
+  width: 168px !important;
+  height: 50px !important;
+  max-width: 100% !important;
+  max-height: 50px !important;
+  object-fit: contain !important;
+  object-position: left center !important;
+}
+
+@media (max-width: 639px) {
+  .jaga-top-navbar .jaga-brand-logo {
+    width: 148px !important;
+    height: 44px !important;
+    max-height: 44px !important;
+  }
+}
+
+@media (max-width: 380px) {
+  .jaga-top-navbar .jaga-brand-logo {
+    width: 132px !important;
+    height: 40px !important;
+    max-height: 40px !important;
+  }
+}
+
+/* ========================================================================== */
+/* FINAL WEBGIS + NAVBAR RESPONSIVE OVERRIDES                                 */
+/* Diletakkan paling akhir agar mengakhiri konflik dari revisi CSS terdahulu. */
+/* ========================================================================== */
+
+/* ---------- Brand/navbar yang konsisten dan terbaca ---------- */
+.jaga-top-navbar {
+  position: relative !important;
+  z-index: 1200 !important;
+  width: 100% !important;
+  background: #ffffff !important;
+  color: #07324A !important;
+}
+
+.jaga-top-navbar .jaga-navbar-container {
+  width: 100% !important;
+  padding: .5rem clamp(.65rem, 2vw, 1.25rem) !important;
+}
+
+.jaga-top-navbar .jaga-navbar-shell {
+  min-height: 68px !important;
+  width: 100% !important;
+  gap: .75rem !important;
+  overflow: visible !important;
+  border: 1px solid #BDE7E1 !important;
+  border-radius: 1.15rem !important;
+  background: #ffffff !important;
+  padding: .45rem .75rem !important;
+  box-shadow: 0 10px 30px rgba(7, 50, 74, .10) !important;
+}
+
+.jaga-top-navbar .jaga-brand-link,
+.jaga-mobile-navigation .jaga-mobile-drawer-brand {
+  min-width: 0 !important;
+  color: #07324A !important;
+  text-decoration: none !important;
+}
+
+.jaga-brand-mark {
+  display: inline-flex !important;
+  width: 42px !important;
+  height: 42px !important;
+  flex: 0 0 42px !important;
+  align-items: center !important;
+  justify-content: center !important;
+  border: 1px solid #BDE7E1 !important;
+  border-radius: 13px !important;
+  background: linear-gradient(145deg, #E9F8F3, #ffffff) !important;
+  color: #E8483F !important;
+  box-shadow: 0 8px 20px rgba(7, 50, 74, .08) !important;
+}
+
+.jaga-brand-mark svg {
+  width: 22px !important;
+  height: 22px !important;
+  stroke: currentColor !important;
+  stroke-width: 2.5 !important;
+}
+
+.jaga-brand-copy {
+  display: block !important;
+  min-width: 0 !important;
+  max-width: 190px !important;
+}
+
+.jaga-brand-name {
+  overflow: hidden !important;
+  color: #07324A !important;
+  font-size: clamp(.94rem, 1.4vw, 1.12rem) !important;
+  font-weight: 900 !important;
+  line-height: 1.05 !important;
+  text-overflow: ellipsis !important;
+  white-space: nowrap !important;
+}
+
+.jaga-brand-tagline {
+  margin-top: 4px !important;
+  overflow: hidden !important;
+  color: #5C7186 !important;
+  font-size: .61rem !important;
+  font-weight: 750 !important;
+  line-height: 1.15 !important;
+  text-overflow: ellipsis !important;
+  white-space: nowrap !important;
+}
+
+.jaga-top-navbar .jaga-mobile-menu-button {
+  display: inline-flex !important;
+  min-width: 44px !important;
+  height: 44px !important;
+  flex: 0 0 auto !important;
+  align-items: center !important;
+  justify-content: center !important;
+  border: 1px solid #BDE7E1 !important;
+  border-radius: 13px !important;
+  background: #F6FBF8 !important;
+  color: #07324A !important;
+  opacity: 1 !important;
+  visibility: visible !important;
+  box-shadow: none !important;
+}
+
+.jaga-top-navbar .jaga-mobile-menu-button svg,
+.jaga-top-navbar .jaga-mobile-menu-button span {
+  color: currentColor !important;
+  opacity: 1 !important;
+  visibility: visible !important;
+}
+
+@media (min-width: 1280px) {
+  .jaga-top-navbar .jaga-mobile-menu-button {
+    display: none !important;
+  }
+}
+
+/* ---------- Drawer mobile: selalu opaque, semua menu terbaca ---------- */
+.jaga-mobile-navigation {
+  position: fixed !important;
+  inset: 0 !important;
+  z-index: 2147483000 !important;
+  display: block !important;
+  color: #07324A !important;
+  font-family: "Plus Jakarta Sans", system-ui, sans-serif !important;
+  opacity: 1 !important;
+  isolation: isolate !important;
+}
+
+.jaga-mobile-navigation-backdrop {
+  position: absolute !important;
+  inset: 0 !important;
+  width: 100% !important;
+  height: 100% !important;
+  border: 0 !important;
+  background: rgba(4, 20, 33, .62) !important;
+  opacity: 1 !important;
+  backdrop-filter: blur(4px) !important;
+}
+
+.jaga-mobile-navigation-panel {
+  position: absolute !important;
+  top: 0 !important;
+  right: 0 !important;
+  bottom: 0 !important;
+  display: flex !important;
+  width: min(390px, 100vw) !important;
+  max-width: 100vw !important;
+  height: 100dvh !important;
+  flex-direction: column !important;
+  overflow: hidden !important;
+  border-left: 1px solid #BDE7E1 !important;
+  background: #ffffff !important;
+  color: #07324A !important;
+  opacity: 1 !important;
+  box-shadow: -24px 0 70px rgba(4, 20, 33, .30) !important;
+  transform: none !important;
+}
+
+.jaga-mobile-navigation-header,
+.jaga-mobile-navigation-footer {
+  flex: 0 0 auto !important;
+  border-color: #DDECE8 !important;
+  background: #ffffff !important;
+  color: #07324A !important;
+}
+
+.jaga-mobile-navigation-header {
+  min-height: 76px !important;
+  padding: .8rem 1rem !important;
+}
+
+.jaga-mobile-navigation-body {
+  min-height: 0 !important;
+  flex: 1 1 auto !important;
+  overflow-y: auto !important;
+  overscroll-behavior: contain !important;
+  background: #F8FCFA !important;
+  padding: .9rem 1rem !important;
+  color: #07324A !important;
+}
+
+.jaga-mobile-navigation .jaga-mobile-nav-link {
+  display: flex !important;
+  width: 100% !important;
+  min-height: 56px !important;
+  align-items: center !important;
+  gap: .75rem !important;
+  border: 1px solid #DDECE8 !important;
+  border-radius: 14px !important;
+  background: #ffffff !important;
+  padding: .65rem .75rem !important;
+  color: #07324A !important;
+  opacity: 1 !important;
+  visibility: visible !important;
+  text-decoration: none !important;
+  box-shadow: 0 5px 16px rgba(7, 50, 74, .04) !important;
+}
+
+.jaga-mobile-navigation .jaga-mobile-nav-link.is-active {
+  border-color: #0FA3A0 !important;
+  background: #0B6E78 !important;
+  color: #ffffff !important;
+}
+
+.jaga-mobile-navigation .jaga-mobile-nav-label,
+.jaga-mobile-navigation .jaga-mobile-nav-arrow {
+  display: block !important;
+  color: currentColor !important;
+  font-size: .86rem !important;
+  font-weight: 850 !important;
+  opacity: 1 !important;
+  visibility: visible !important;
+}
+
+.jaga-mobile-navigation .jaga-mobile-nav-icon {
+  display: inline-flex !important;
+  width: 38px !important;
+  height: 38px !important;
+  flex: 0 0 38px !important;
+  align-items: center !important;
+  justify-content: center !important;
+  border: 1px solid #BDE7E1 !important;
+  border-radius: 11px !important;
+  background: #E9F8F3 !important;
+  color: #0B6E78 !important;
+  opacity: 1 !important;
+}
+
+.jaga-mobile-navigation .jaga-mobile-nav-link.is-active .jaga-mobile-nav-icon {
+  border-color: rgba(255,255,255,.32) !important;
+  background: rgba(255,255,255,.14) !important;
+  color: #ffffff !important;
+}
+
+.jaga-mobile-navigation .jaga-mobile-nav-icon svg,
+.jaga-mobile-drawer-close svg {
+  color: currentColor !important;
+  stroke: currentColor !important;
+  opacity: 1 !important;
+}
+
+.jaga-mobile-drawer-close {
+  display: inline-flex !important;
+  width: 44px !important;
+  height: 44px !important;
+  flex: 0 0 44px !important;
+  align-items: center !important;
+  justify-content: center !important;
+  border: 1px solid #BDE7E1 !important;
+  border-radius: 13px !important;
+  background: #F6FBF8 !important;
+  color: #07324A !important;
+  opacity: 1 !important;
+}
+
+@media (max-width: 430px) {
+  .jaga-mobile-navigation-panel {
+    width: 100vw !important;
+    border-left: 0 !important;
+  }
+
+  .jaga-top-navbar .jaga-navbar-shell {
+    min-height: 62px !important;
+    padding: .4rem .55rem !important;
+  }
+
+  .jaga-brand-mark {
+    width: 38px !important;
+    height: 38px !important;
+    flex-basis: 38px !important;
+    border-radius: 11px !important;
+  }
+
+  .jaga-brand-mark svg {
+    width: 20px !important;
+    height: 20px !important;
+  }
+
+  .jaga-brand-copy {
+    max-width: min(170px, calc(100vw - 126px)) !important;
+  }
+
+  .jaga-brand-name {
+    font-size: .94rem !important;
+  }
+
+  .jaga-brand-tagline {
+    font-size: .56rem !important;
+  }
+
+  .jaga-top-navbar .jaga-mobile-menu-button {
+    width: 42px !important;
+    min-width: 42px !important;
+    height: 42px !important;
+    padding-inline: .6rem !important;
+  }
+}
+
+/* ---------- WebGIS: zona kontrol tidak saling bertumpukan ---------- */
+.jaga-analysis-page .jagasleman-leaflet-map {
+  position: relative !important;
+  isolation: isolate !important;
+  background: #DCEBE8 !important;
+}
+
+/* kiri: zoom, extent, geolocation, fullscreen */
+.jaga-analysis-page .jagasleman-map-action-controls {
+  position: absolute !important;
+  top: 14px !important;
+  left: 14px !important;
+  z-index: 940 !important;
+  display: grid !important;
+  grid-template-columns: 44px !important;
+  gap: 0 !important;
+  width: 44px !important;
+  padding: 0 !important;
+  overflow: hidden !important;
+  border: 1px solid #BDE7E1 !important;
+  border-radius: 11px !important;
+  background: rgba(255,255,255,.98) !important;
+  box-shadow: 0 14px 34px rgba(7,50,74,.17) !important;
+  backdrop-filter: blur(14px) !important;
+  pointer-events: auto !important;
+}
+
+.jaga-analysis-page .jagasleman-map-action-controls button {
+  display: inline-flex !important;
+  width: 44px !important;
+  height: 44px !important;
+  align-items: center !important;
+  justify-content: center !important;
+  border: 0 !important;
+  border-bottom: 1px solid #D7E9E5 !important;
+  border-radius: 0 !important;
+  background: #ffffff !important;
+  color: #0B6E78 !important;
+  box-shadow: none !important;
+  transform: none !important;
+}
+
+.jaga-analysis-page .jagasleman-map-action-controls button:last-child {
+  border-bottom: 0 !important;
+}
+
+.jaga-analysis-page .jagasleman-map-action-controls button:hover,
+.jaga-analysis-page .jagasleman-map-action-controls button:focus-visible,
+.jaga-analysis-page .jagasleman-map-action-controls button.is-active {
+  background: #0B6E78 !important;
+  color: #ffffff !important;
+  outline: 0 !important;
+}
+
+.jaga-analysis-page .jagasleman-map-action-controls button svg {
+  width: 18px !important;
+  height: 18px !important;
+  color: currentColor !important;
+  stroke: currentColor !important;
+  stroke-width: 2.5 !important;
+}
+
+/* tengah atas: pencarian kecamatan */
+.jaga-analysis-page .jagasleman-district-search {
+  position: absolute !important;
+  top: 14px !important;
+  left: 50% !important;
+  z-index: 935 !important;
+  display: flex !important;
+  width: clamp(280px, 31vw, 390px) !important;
+  min-width: 0 !important;
+  height: 44px !important;
+  align-items: center !important;
+  transform: translateX(-50%) !important;
+  overflow: hidden !important;
+  border: 1px solid #BDE7E1 !important;
+  border-radius: 11px !important;
+  background: rgba(255,255,255,.98) !important;
+  box-shadow: 0 14px 34px rgba(7,50,74,.17) !important;
+  backdrop-filter: blur(14px) !important;
+  pointer-events: auto !important;
+}
+
+.jaga-analysis-page .jagasleman-district-search-icon {
+  display: inline-flex !important;
+  width: 42px !important;
+  height: 100% !important;
+  flex: 0 0 42px !important;
+  align-items: center !important;
+  justify-content: center !important;
+  border-right: 1px solid #D7E9E5 !important;
+  color: #0B6E78 !important;
+}
+
+.jaga-analysis-page .jagasleman-district-search-icon svg {
+  width: 18px !important;
+  height: 18px !important;
+  stroke: currentColor !important;
+}
+
+.jaga-analysis-page .jagasleman-district-search select {
+  display: block !important;
+  width: 100% !important;
+  min-width: 0 !important;
+  height: 100% !important;
+  border: 0 !important;
+  outline: 0 !important;
+  background: transparent !important;
+  padding: 0 .8rem !important;
+  color: #07324A !important;
+  font-size: .8rem !important;
+  font-weight: 850 !important;
+  box-shadow: none !important;
+}
+
+/* kanan: Keterangan, Layer, Basemap dalam satu stack scrollable */
+.jaga-analysis-page .jagasleman-map-right-stack {
+  position: absolute !important;
+  top: 14px !important;
+  right: 14px !important;
+  bottom: 38px !important;
+  z-index: 930 !important;
+  display: flex !important;
+  width: 292px !important;
+  max-width: calc(100% - 90px) !important;
+  max-height: none !important;
+  flex-direction: column !important;
+  gap: 8px !important;
+  overflow-x: hidden !important;
+  overflow-y: auto !important;
+  overscroll-behavior: contain !important;
+  scrollbar-width: thin !important;
+  scrollbar-color: #BDE7E1 transparent !important;
+  pointer-events: none !important;
+}
+
+.jaga-analysis-page .jagasleman-map-right-stack > * {
+  flex: 0 0 auto !important;
+  pointer-events: auto !important;
+}
+
+.jaga-analysis-page .jagasleman-map-right-stack .jagasleman-map-edge-panel,
+.jaga-analysis-page .jagasleman-map-right-stack .jagasleman-kde-layer-control,
+.jaga-analysis-page .jagasleman-map-right-stack .jagasleman-kde-legend,
+.jaga-analysis-page .jagasleman-map-right-stack .jagasleman-basemap-panel {
+  position: static !important;
+  inset: auto !important;
+  width: 100% !important;
+  min-width: 0 !important;
+  margin: 0 !important;
+  padding: 0 !important;
+  overflow: hidden !important;
+  border: 1px solid #BDE7E1 !important;
+  border-radius: 11px !important;
+  background: rgba(255,255,255,.98) !important;
+  color: #07324A !important;
+  box-shadow: 0 14px 34px rgba(7,50,74,.17) !important;
+  backdrop-filter: blur(14px) !important;
+}
+
+.jaga-analysis-page .jagasleman-map-edge-heading,
+.jaga-analysis-page .jagasleman-map-right-stack .jagasleman-basemap-toggle {
+  display: flex !important;
+  width: 100% !important;
+  min-width: 0 !important;
+  height: 44px !important;
+  align-items: center !important;
+  justify-content: space-between !important;
+  gap: .65rem !important;
+  padding: 0 .75rem !important;
+  border: 0 !important;
+  border-radius: 0 !important;
+  background: #ffffff !important;
+  color: #07324A !important;
+  font-size: .78rem !important;
+  font-weight: 900 !important;
+  box-shadow: none !important;
+  text-align: left !important;
+  transform: none !important;
+}
+
+.jaga-analysis-page .jagasleman-map-edge-heading:hover,
+.jaga-analysis-page .jagasleman-map-edge-heading:focus-visible,
+.jaga-analysis-page .jagasleman-map-right-stack .jagasleman-basemap-toggle:hover,
+.jaga-analysis-page .jagasleman-map-right-stack .jagasleman-basemap-toggle:focus-visible {
+  background: #F2FAF6 !important;
+  color: #07324A !important;
+  outline: 0 !important;
+}
+
+.jaga-analysis-page .jagasleman-map-edge-heading-main {
+  display: inline-flex !important;
+  min-width: 0 !important;
+  align-items: center !important;
+  gap: .55rem !important;
+}
+
+.jaga-analysis-page .jagasleman-map-edge-heading-icon {
+  display: inline-flex !important;
+  width: 26px !important;
+  height: 26px !important;
+  flex: 0 0 26px !important;
+  align-items: center !important;
+  justify-content: center !important;
+  border-radius: 8px !important;
+  background: #E9F8F3 !important;
+  color: #0B6E78 !important;
+}
+
+.jaga-analysis-page .jagasleman-map-edge-heading-icon svg,
+.jaga-analysis-page .jagasleman-map-edge-chevron svg {
+  width: 15px !important;
+  height: 15px !important;
+  color: currentColor !important;
+  stroke: currentColor !important;
+}
+
+.jaga-analysis-page .jagasleman-map-edge-chevron {
+  display: inline-flex !important;
+  width: 18px !important;
+  height: 18px !important;
+  flex: 0 0 18px !important;
+  align-items: center !important;
+  justify-content: center !important;
+  color: #0B6E78 !important;
+}
+
+.jaga-analysis-page .jagasleman-map-edge-content {
+  position: static !important;
+  width: 100% !important;
+  max-height: min(52dvh, 420px) !important;
+  overflow-y: auto !important;
+  padding: .72rem !important;
+  border-top: 1px solid #D7E9E5 !important;
+  background: #ffffff !important;
+  scrollbar-width: thin !important;
+  scrollbar-color: #BDE7E1 transparent !important;
+  box-shadow: none !important;
+}
+
+.jaga-analysis-page .jagasleman-map-right-stack .jagasleman-basemap-menu {
+  position: static !important;
+  inset: auto !important;
+  width: 100% !important;
+  min-width: 0 !important;
+  margin: 0 !important;
+  border: 0 !important;
+  border-radius: 0 !important;
+  background: #ffffff !important;
+  box-shadow: none !important;
+}
+
+.jaga-analysis-page .jagasleman-basemap-active-label {
+  margin-bottom: .5rem !important;
+  color: #5C7186 !important;
+  font-size: .64rem !important;
+  font-weight: 800 !important;
+}
+
+.jaga-analysis-page .jagasleman-map-right-stack .jagasleman-basemap-option {
+  display: grid !important;
+  grid-template-columns: 34px minmax(0, 1fr) !important;
+  gap: .55rem !important;
+  width: 100% !important;
+  margin: 0 0 .4rem !important;
+  padding: .5rem !important;
+  border: 1px solid #DDECE8 !important;
+  border-radius: 9px !important;
+  background: #ffffff !important;
+  color: #07324A !important;
+  text-align: left !important;
+}
+
+.jaga-analysis-page .jagasleman-map-right-stack .jagasleman-basemap-option:last-child {
+  margin-bottom: 0 !important;
+}
+
+.jaga-analysis-page .jagasleman-map-right-stack .jagasleman-basemap-option:hover,
+.jaga-analysis-page .jagasleman-map-right-stack .jagasleman-basemap-option.is-active {
+  border-color: #0FA3A0 !important;
+  background: #F2FAF6 !important;
+  transform: none !important;
+}
+
+.jaga-analysis-page .jagasleman-map-right-stack .jagasleman-basemap-option-icon {
+  display: inline-flex !important;
+  width: 32px !important;
+  height: 32px !important;
+  align-items: center !important;
+  justify-content: center !important;
+  border-radius: 8px !important;
+  background: #0B6E78 !important;
+  color: #ffffff !important;
+  font-size: .95rem !important;
+}
+
+.jaga-analysis-page .jagasleman-map-right-stack .jagasleman-basemap-option-title {
+  color: #07324A !important;
+  font-size: .72rem !important;
+  font-weight: 900 !important;
+}
+
+.jaga-analysis-page .jagasleman-map-right-stack .jagasleman-basemap-option-desc {
+  display: block !important;
+  margin-top: 2px !important;
+  color: #5C7186 !important;
+  font-size: .62rem !important;
+  line-height: 1.35 !important;
+}
+
+/* Konten layer/legenda tetap ringkas dan dapat discroll. */
+.jaga-analysis-page .jagasleman-map-right-stack .jagasleman-kde-layer-options,
+.jaga-analysis-page .jagasleman-data-layer-options {
+  display: grid !important;
+  gap: .42rem !important;
+}
+
+.jaga-analysis-page .jagasleman-map-right-stack .jagasleman-kde-layer-option,
+.jaga-analysis-page .jagasleman-data-layer-option {
+  width: 100% !important;
+  border-radius: 9px !important;
+}
+
+.jaga-analysis-page .jagasleman-map-right-stack .jagasleman-kde-legend {
+  pointer-events: auto !important;
+}
+
+.jaga-analysis-page .jagasleman-map-right-stack::-webkit-scrollbar,
+.jaga-analysis-page .jagasleman-map-edge-content::-webkit-scrollbar {
+  width: 6px !important;
+}
+
+.jaga-analysis-page .jagasleman-map-right-stack::-webkit-scrollbar-thumb,
+.jaga-analysis-page .jagasleman-map-edge-content::-webkit-scrollbar-thumb {
+  border-radius: 999px !important;
+  background: #BDE7E1 !important;
+}
+
+/* Tablet: search memakai lajur atas; panel dan kontrol mulai di bawahnya. */
+@media (max-width: 1023px) {
+  .jaga-analysis-page .jagasleman-district-search {
+    top: 12px !important;
+    left: 68px !important;
+    right: 12px !important;
+    width: auto !important;
+    transform: none !important;
+  }
+
+  .jaga-analysis-page .jagasleman-map-action-controls {
+    top: 68px !important;
+    left: 12px !important;
+  }
+
+  .jaga-analysis-page .jagasleman-map-right-stack {
+    top: 68px !important;
+    right: 12px !important;
+    bottom: 38px !important;
+    width: 250px !important;
+    max-width: calc(100% - 78px) !important;
+  }
+}
+
+/* Mobile: sisakan lajur kiri 56px untuk navigasi; panel kanan tidak menimpa. */
+@media (max-width: 640px) {
+  .jaga-analysis-page .jagasleman-district-search {
+    top: 10px !important;
+    left: 64px !important;
+    right: 10px !important;
+    height: 42px !important;
+  }
+
+  .jaga-analysis-page .jagasleman-district-search-icon {
+    width: 38px !important;
+    flex-basis: 38px !important;
+  }
+
+  .jaga-analysis-page .jagasleman-district-search select {
+    padding: 0 .55rem !important;
+    font-size: .72rem !important;
+  }
+
+  .jaga-analysis-page .jagasleman-map-action-controls {
+    top: 62px !important;
+    left: 10px !important;
+    width: 42px !important;
+    grid-template-columns: 42px !important;
+    border-radius: 10px !important;
+  }
+
+  .jaga-analysis-page .jagasleman-map-action-controls button {
+    width: 42px !important;
+    height: 42px !important;
+  }
+
+  .jaga-analysis-page .jagasleman-map-right-stack {
+    top: 62px !important;
+    right: 10px !important;
+    bottom: 34px !important;
+    width: min(290px, calc(100% - 72px)) !important;
+    max-width: calc(100% - 72px) !important;
+    gap: 7px !important;
+  }
+
+  .jaga-analysis-page .jagasleman-map-edge-heading,
+  .jaga-analysis-page .jagasleman-map-right-stack .jagasleman-basemap-toggle {
+    height: 40px !important;
+    padding: 0 .62rem !important;
+    font-size: .72rem !important;
+  }
+
+  .jaga-analysis-page .jagasleman-map-edge-content {
+    max-height: min(46dvh, 330px) !important;
+    padding: .6rem !important;
+  }
+
+  .jaga-analysis-page .jagasleman-map-right-stack .jagasleman-kde-legend-grid {
+    grid-template-columns: 1fr !important;
+  }
+
+  .jaga-analysis-page .leaflet-control-attribution {
+    max-width: calc(100% - 66px) !important;
+    overflow: hidden !important;
+    text-overflow: ellipsis !important;
+    white-space: nowrap !important;
+  }
+}
+
+@media (max-width: 390px) {
+  .jaga-analysis-page .jagasleman-map-right-stack {
+    width: calc(100% - 72px) !important;
+  }
+
+  .jaga-analysis-page .jagasleman-map-edge-content {
+    max-height: min(43dvh, 305px) !important;
+  }
+}
+
+/* Fullscreen Leaflet harus mengisi viewport dan tetap menampilkan semua kontrol. */
+.jaga-analysis-page .jagasleman-leaflet-map:fullscreen,
+.jaga-analysis-page .jagasleman-leaflet-map:-webkit-full-screen {
+  width: 100vw !important;
+  height: 100vh !important;
+  min-height: 100vh !important;
+  border-radius: 0 !important;
+}
+
+/* Final safeguard: brand navbar tidak boleh mewarisi warna putih dari revisi lama. */
+.jaga-top-navbar .jaga-brand-link .jaga-brand-name,
+.jaga-mobile-navigation .jaga-mobile-drawer-brand .jaga-brand-name {
+  color: #07324A !important;
+  -webkit-text-fill-color: #07324A !important;
+}
+
+.jaga-top-navbar .jaga-brand-link .jaga-brand-tagline,
+.jaga-mobile-navigation .jaga-mobile-drawer-brand .jaga-brand-tagline {
+  color: #5C7186 !important;
+  -webkit-text-fill-color: #5C7186 !important;
+}
+
+.jaga-top-navbar .jaga-brand-link .jaga-brand-mark,
+.jaga-top-navbar .jaga-brand-link .jaga-brand-mark svg,
+.jaga-mobile-navigation .jaga-mobile-drawer-brand .jaga-brand-mark,
+.jaga-mobile-navigation .jaga-mobile-drawer-brand .jaga-brand-mark svg {
+  color: #E8483F !important;
+  stroke: currentColor !important;
+  -webkit-text-fill-color: #E8483F !important;
+}
+
+/* Specificity guard against legacy universal navbar selectors. */
+html body .jaga-top-navbar a.jaga-brand-link span.jaga-brand-name,
+html body .jaga-mobile-navigation a.jaga-mobile-drawer-brand span.jaga-brand-name {
+  color: #07324A !important;
+  -webkit-text-fill-color: #07324A !important;
+}
+html body .jaga-top-navbar a.jaga-brand-link span.jaga-brand-tagline,
+html body .jaga-mobile-navigation a.jaga-mobile-drawer-brand span.jaga-brand-tagline {
+  color: #5C7186 !important;
+  -webkit-text-fill-color: #5C7186 !important;
+}
+html body .jaga-top-navbar a.jaga-brand-link span.jaga-brand-mark,
+html body .jaga-top-navbar a.jaga-brand-link span.jaga-brand-mark svg,
+html body .jaga-mobile-navigation a.jaga-mobile-drawer-brand span.jaga-brand-mark,
+html body .jaga-mobile-navigation a.jaga-mobile-drawer-brand span.jaga-brand-mark svg {
+  color: #E8483F !important;
+  stroke: #E8483F !important;
+  -webkit-text-fill-color: #E8483F !important;
+}
+
+/* Root-level guard: overrides old generic navbar rules with deterministic colors. */
+#root .jaga-top-navbar a.jaga-brand-link .jaga-brand-name,
+#root .jaga-mobile-navigation a.jaga-mobile-drawer-brand .jaga-brand-name {
+  color: #07324A !important;
+  -webkit-text-fill-color: #07324A !important;
+}
+#root .jaga-top-navbar a.jaga-brand-link .jaga-brand-tagline,
+#root .jaga-mobile-navigation a.jaga-mobile-drawer-brand .jaga-brand-tagline {
+  color: #5C7186 !important;
+  -webkit-text-fill-color: #5C7186 !important;
+}
+#root .jaga-top-navbar a.jaga-brand-link .jaga-brand-mark,
+#root .jaga-top-navbar a.jaga-brand-link .jaga-brand-mark svg,
+#root .jaga-mobile-navigation a.jaga-mobile-drawer-brand .jaga-brand-mark,
+#root .jaga-mobile-navigation a.jaga-mobile-drawer-brand .jaga-brand-mark svg {
+  color: #E8483F !important;
+  stroke: #E8483F !important;
+  -webkit-text-fill-color: #E8483F !important;
+}
+
+/* ========================================================================== */
+/* WEBGIS CONTROL PANEL V3 — BANTARA-STYLE ACCORDION                          */
+/* ========================================================================== */
+
+/* This block is intentionally last. It replaces the former mobile bottom dock
+   with the compact top-right accordion pattern used by the reference WebGIS. */
+
+#root .jagasleman-mobile-panel-backdrop {
+  display: none !important;
+}
+
+#root .jagasleman-bantara-control-stack {
+  position: absolute !important;
+  top: 12px !important;
+  right: 12px !important;
+  bottom: auto !important;
+  left: auto !important;
+  z-index: 980 !important;
+  display: flex !important;
+  width: min(286px, calc(100% - 84px)) !important;
+  max-height: calc(100% - 24px) !important;
+  flex-direction: column !important;
+  grid-template-columns: none !important;
+  grid-auto-flow: row !important;
+  gap: 7px !important;
+  overflow-x: hidden !important;
+  overflow-y: auto !important;
+  padding: 0 !important;
+  border: 0 !important;
+  border-radius: 0 !important;
+  background: transparent !important;
+  box-shadow: none !important;
+  backdrop-filter: none !important;
+  overscroll-behavior: contain !important;
+  scrollbar-width: thin !important;
+  scrollbar-color: #BDE7E1 transparent !important;
+  pointer-events: none !important;
+}
+
+#root .jagasleman-bantara-control-stack > * {
+  position: static !important;
+  inset: auto !important;
+  width: 100% !important;
+  min-width: 0 !important;
+  height: auto !important;
+  flex: 0 0 auto !important;
+  margin: 0 !important;
+  padding: 0 !important;
+  overflow: hidden !important;
+  border: 1px solid rgba(189, 231, 225, .98) !important;
+  border-radius: 11px !important;
+  background: rgba(255, 255, 255, .985) !important;
+  box-shadow: 0 12px 30px rgba(7, 50, 74, .16) !important;
+  backdrop-filter: blur(14px) !important;
+  pointer-events: auto !important;
+}
+
+#root .jagasleman-bantara-control-stack .jagasleman-map-edge-heading,
+#root .jagasleman-bantara-control-stack .jagasleman-basemap-toggle {
+  display: flex !important;
+  width: 100% !important;
+  height: 43px !important;
+  min-height: 43px !important;
+  align-items: center !important;
+  justify-content: space-between !important;
+  gap: .55rem !important;
+  padding: 0 .72rem !important;
+  overflow: visible !important;
+  border: 0 !important;
+  border-radius: 0 !important;
+  background: rgba(255, 255, 255, .99) !important;
+  color: #07324A !important;
+  box-shadow: none !important;
+  font-size: .76rem !important;
+  font-weight: 900 !important;
+  line-height: 1 !important;
+  text-align: left !important;
+  transform: none !important;
+  touch-action: manipulation !important;
+  -webkit-tap-highlight-color: transparent !important;
+  cursor: pointer !important;
+}
+
+#root .jagasleman-bantara-control-stack .jagasleman-map-edge-heading:hover,
+#root .jagasleman-bantara-control-stack .jagasleman-map-edge-heading:focus-visible,
+#root .jagasleman-bantara-control-stack .jagasleman-basemap-toggle:hover,
+#root .jagasleman-bantara-control-stack .jagasleman-basemap-toggle:focus-visible,
+#root .jagasleman-bantara-control-stack .jagasleman-map-edge-heading.is-active,
+#root .jagasleman-bantara-control-stack .jagasleman-basemap-toggle.is-active {
+  background: #F2FAF6 !important;
+  color: #075D66 !important;
+  outline: none !important;
+}
+
+#root .jagasleman-bantara-control-stack .jagasleman-map-edge-heading-main {
+  display: inline-flex !important;
+  min-width: 0 !important;
+  max-width: calc(100% - 24px) !important;
+  flex-direction: row !important;
+  align-items: center !important;
+  justify-content: flex-start !important;
+  gap: .5rem !important;
+}
+
+#root .jagasleman-bantara-control-stack .jagasleman-map-edge-heading-main > span:last-child {
+  display: block !important;
+  width: auto !important;
+  min-width: 0 !important;
+  max-width: 100% !important;
+  overflow: hidden !important;
+  color: inherit !important;
+  font-size: .76rem !important;
+  font-weight: 900 !important;
+  line-height: 1.15 !important;
+  text-overflow: ellipsis !important;
+  white-space: nowrap !important;
+}
+
+#root .jagasleman-bantara-control-stack .jagasleman-map-edge-heading-icon {
+  display: inline-flex !important;
+  width: 25px !important;
+  height: 25px !important;
+  min-width: 25px !important;
+  flex: 0 0 25px !important;
+  align-items: center !important;
+  justify-content: center !important;
+  border: 1px solid #CBEAE5 !important;
+  border-radius: 7px !important;
+  background: #EAF8F5 !important;
+  color: #08737C !important;
+}
+
+#root .jagasleman-bantara-control-stack .jagasleman-map-edge-heading-icon svg {
+  width: 14px !important;
+  height: 14px !important;
+  stroke: currentColor !important;
+}
+
+#root .jagasleman-bantara-control-stack .jagasleman-map-edge-chevron {
+  display: inline-flex !important;
+  width: 18px !important;
+  height: 18px !important;
+  flex: 0 0 18px !important;
+  align-items: center !important;
+  justify-content: center !important;
+  color: #0B6E78 !important;
+}
+
+#root .jagasleman-bantara-control-stack .jagasleman-map-edge-chevron svg {
+  width: 14px !important;
+  height: 14px !important;
+}
+
+#root .jagasleman-bantara-control-stack .jagasleman-map-edge-content,
+#root .jagasleman-bantara-control-stack .jagasleman-basemap-menu.jagasleman-map-edge-content {
+  position: static !important;
+  inset: auto !important;
+  display: block !important;
+  width: 100% !important;
+  min-width: 0 !important;
+  max-height: min(50dvh, 410px) !important;
+  margin: 0 !important;
+  overflow-x: hidden !important;
+  overflow-y: auto !important;
+  overscroll-behavior: contain !important;
+  padding: .72rem !important;
+  border: 0 !important;
+  border-top: 1px solid #DCECE8 !important;
+  border-radius: 0 !important;
+  background: #FFFFFF !important;
+  color: #07324A !important;
+  box-shadow: none !important;
+  scrollbar-width: thin !important;
+  scrollbar-color: #BDE7E1 transparent !important;
+  -webkit-overflow-scrolling: touch !important;
+  pointer-events: auto !important;
+}
+
+#root .jagasleman-bantara-control-stack .jagasleman-map-edge-content::before {
+  display: none !important;
+  content: none !important;
+}
+
+#root .jagasleman-bantara-control-stack .jagasleman-kde-layer-title {
+  display: flex !important;
+  align-items: center !important;
+  justify-content: space-between !important;
+  gap: .6rem !important;
+  margin: 0 0 .55rem !important;
+  padding: 0 0 .5rem !important;
+  border-bottom: 1px solid #E3EFEC !important;
+  color: #0B6E78 !important;
+  font-size: .62rem !important;
+  font-weight: 950 !important;
+  letter-spacing: .06em !important;
+  text-transform: uppercase !important;
+}
+
+#root .jagasleman-bantara-control-stack .jagasleman-kde-layer-options,
+#root .jagasleman-bantara-control-stack .jagasleman-data-layer-options {
+  display: grid !important;
+  grid-template-columns: 1fr !important;
+  gap: .4rem !important;
+}
+
+#root .jagasleman-bantara-control-stack .jagasleman-kde-layer-option,
+#root .jagasleman-bantara-control-stack .jagasleman-data-layer-option {
+  display: grid !important;
+  width: 100% !important;
+  min-height: 42px !important;
+  grid-template-columns: 21px minmax(0, 1fr) !important;
+  align-items: center !important;
+  gap: .48rem !important;
+  padding: .5rem .55rem !important;
+  overflow: visible !important;
+  border: 1px solid #DCECE8 !important;
+  border-radius: 8px !important;
+  background: #FFFFFF !important;
+  color: #07324A !important;
+  box-shadow: none !important;
+  text-align: left !important;
+  transform: none !important;
+  touch-action: manipulation !important;
+  cursor: pointer !important;
+}
+
+#root .jagasleman-bantara-control-stack .jagasleman-kde-layer-option:hover,
+#root .jagasleman-bantara-control-stack .jagasleman-data-layer-option:hover,
+#root .jagasleman-bantara-control-stack .jagasleman-kde-layer-option.is-active,
+#root .jagasleman-bantara-control-stack .jagasleman-data-layer-option.is-active {
+  border-color: #0FA3A0 !important;
+  background: #F2FAF6 !important;
+}
+
+#root .jagasleman-bantara-control-stack .jagasleman-kde-layer-option b,
+#root .jagasleman-bantara-control-stack .jagasleman-data-layer-copy b {
+  display: block !important;
+  color: #07324A !important;
+  font-size: .69rem !important;
+  font-weight: 900 !important;
+  line-height: 1.25 !important;
+}
+
+#root .jagasleman-bantara-control-stack .jagasleman-kde-layer-option span span,
+#root .jagasleman-bantara-control-stack .jagasleman-data-layer-copy span {
+  display: block !important;
+  margin-top: 2px !important;
+  color: #5C7186 !important;
+  font-size: .59rem !important;
+  line-height: 1.35 !important;
+}
+
+#root .jagasleman-bantara-control-stack .jagasleman-data-layer-section-title {
+  margin: .72rem 0 .48rem !important;
+  padding-top: .62rem !important;
+  border-top: 1px solid #E3EFEC !important;
+  color: #0B6E78 !important;
+  font-size: .61rem !important;
+  font-weight: 950 !important;
+  letter-spacing: .07em !important;
+  text-transform: uppercase !important;
+}
+
+#root .jagasleman-bantara-control-stack .jagasleman-data-layer-check {
+  display: inline-flex !important;
+  width: 19px !important;
+  height: 19px !important;
+  align-items: center !important;
+  justify-content: center !important;
+  border: 1px solid #BDE7E1 !important;
+  border-radius: 5px !important;
+  background: #FFFFFF !important;
+  color: #FFFFFF !important;
+  font-size: .68rem !important;
+  font-weight: 950 !important;
+}
+
+#root .jagasleman-bantara-control-stack .jagasleman-data-layer-option.is-active .jagasleman-data-layer-check {
+  border-color: #0B6E78 !important;
+  background: #0B6E78 !important;
+}
+
+#root .jagasleman-bantara-control-stack .jagasleman-kde-layer-note {
+  display: none !important;
+}
+
+#root .jagasleman-bantara-control-stack .jagasleman-basemap-menu {
+  position: static !important;
+  width: 100% !important;
+  margin: 0 !important;
+}
+
+#root .jagasleman-bantara-control-stack .jagasleman-basemap-active-label {
+  margin-bottom: .5rem !important;
+  color: #5C7186 !important;
+  font-size: .61rem !important;
+  font-weight: 800 !important;
+}
+
+#root .jagasleman-bantara-control-stack .jagasleman-basemap-option {
+  display: grid !important;
+  width: 100% !important;
+  min-height: 42px !important;
+  grid-template-columns: 30px minmax(0, 1fr) !important;
+  align-items: center !important;
+  gap: .5rem !important;
+  padding: .48rem .52rem !important;
+  border: 1px solid #DCECE8 !important;
+  border-radius: 8px !important;
+  background: #FFFFFF !important;
+  color: #07324A !important;
+  text-align: left !important;
+  touch-action: manipulation !important;
+}
+
+#root .jagasleman-bantara-control-stack .jagasleman-basemap-option:hover,
+#root .jagasleman-bantara-control-stack .jagasleman-basemap-option.is-active {
+  border-color: #0FA3A0 !important;
+  background: #F2FAF6 !important;
+}
+
+#root .jagasleman-bantara-control-stack .jagasleman-basemap-option-icon {
+  display: inline-flex !important;
+  width: 28px !important;
+  height: 28px !important;
+  align-items: center !important;
+  justify-content: center !important;
+  border-radius: 7px !important;
+  background: linear-gradient(135deg, #0B6E78, #0FA3A0) !important;
+  color: #FFFFFF !important;
+  font-size: .82rem !important;
+}
+
+#root .jagasleman-bantara-control-stack .jagasleman-basemap-option-title {
+  display: block !important;
+  color: #07324A !important;
+  font-size: .68rem !important;
+  font-weight: 900 !important;
+}
+
+#root .jagasleman-bantara-control-stack .jagasleman-basemap-option-desc {
+  display: block !important;
+  margin-top: 2px !important;
+  color: #5C7186 !important;
+  font-size: .58rem !important;
+  line-height: 1.3 !important;
+}
+
+/* Keep navigation actions visible; the right accordion never crosses them. */
+#root .jagasleman-map-action-controls,
+#root .jagasleman-map-action-controls.is-edge-panel-open {
+  visibility: visible !important;
+  opacity: 1 !important;
+  pointer-events: auto !important;
+}
+
+@media (max-width: 767px) {
+  #root .jagasleman-map-action-controls {
+    top: 9px !important;
+    left: 9px !important;
+    grid-template-columns: 39px !important;
+    border-radius: 10px !important;
+    z-index: 985 !important;
+  }
+
+  #root .jagasleman-map-action-controls button {
+    width: 39px !important;
+    height: 39px !important;
+  }
+
+  #root .jagasleman-bantara-control-stack {
+    top: 9px !important;
+    right: 9px !important;
+    bottom: auto !important;
+    left: auto !important;
+    width: 158px !important;
+    max-width: calc(100% - 66px) !important;
+    max-height: calc(100% - 18px) !important;
+    gap: 5px !important;
+    overflow-y: auto !important;
+    transition: width .18s ease !important;
+  }
+
+  #root .jagasleman-bantara-control-stack.has-open-panel {
+    width: min(310px, calc(100% - 66px)) !important;
+  }
+
+  #root .jagasleman-bantara-control-stack > * {
+    border-radius: 9px !important;
+    box-shadow: 0 9px 22px rgba(7, 50, 74, .15) !important;
+  }
+
+  #root .jagasleman-bantara-control-stack .jagasleman-map-edge-heading,
+  #root .jagasleman-bantara-control-stack .jagasleman-basemap-toggle {
+    height: 39px !important;
+    min-height: 39px !important;
+    padding: 0 .58rem !important;
+    font-size: .68rem !important;
+  }
+
+  #root .jagasleman-bantara-control-stack .jagasleman-map-edge-heading-main {
+    gap: .42rem !important;
+  }
+
+  #root .jagasleman-bantara-control-stack .jagasleman-map-edge-heading-main > span:last-child {
+    font-size: .68rem !important;
+  }
+
+  #root .jagasleman-bantara-control-stack .jagasleman-map-edge-heading-icon {
+    width: 23px !important;
+    height: 23px !important;
+    min-width: 23px !important;
+    flex-basis: 23px !important;
+    border-radius: 6px !important;
+  }
+
+  #root .jagasleman-bantara-control-stack .jagasleman-map-edge-heading-icon svg {
+    width: 13px !important;
+    height: 13px !important;
+  }
+
+  #root .jagasleman-bantara-control-stack .jagasleman-map-edge-content,
+  #root .jagasleman-bantara-control-stack .jagasleman-basemap-menu.jagasleman-map-edge-content {
+    max-height: min(54dvh, 390px) !important;
+    padding: .65rem !important;
+  }
+
+  #root .jagasleman-bantara-control-stack .jagasleman-kde-layer-option span span,
+  #root .jagasleman-bantara-control-stack .jagasleman-data-layer-copy span,
+  #root .jagasleman-bantara-control-stack .jagasleman-basemap-option-desc {
+    display: none !important;
+  }
+
+  #root .jagasleman-bantara-control-stack .jagasleman-kde-layer-option,
+  #root .jagasleman-bantara-control-stack .jagasleman-data-layer-option,
+  #root .jagasleman-bantara-control-stack .jagasleman-basemap-option {
+    min-height: 40px !important;
+    padding: .46rem .5rem !important;
+  }
+
+  #root .jagasleman-bantara-control-stack .jagasleman-kde-legend-subtitle {
+    font-size: .61rem !important;
+    line-height: 1.4 !important;
+  }
+
+  #root .jagasleman-bantara-control-stack .jagasleman-kde-legend-grid {
+    grid-template-columns: repeat(2, minmax(0, 1fr)) !important;
+    gap: .36rem !important;
+  }
+
+  #root .jagasleman-leaflet-map .leaflet-control-attribution {
+    margin: 0 !important;
+    max-width: calc(100% - 60px) !important;
+    font-size: 8px !important;
+  }
+}
+
+@media (max-width: 360px) {
+  #root .jagasleman-bantara-control-stack {
+    right: 7px !important;
+    width: 146px !important;
+    max-width: calc(100% - 61px) !important;
+  }
+
+  #root .jagasleman-bantara-control-stack.has-open-panel {
+    width: calc(100% - 61px) !important;
+  }
+
+  #root .jagasleman-bantara-control-stack .jagasleman-map-edge-heading,
+  #root .jagasleman-bantara-control-stack .jagasleman-basemap-toggle {
+    padding-right: .48rem !important;
+    padding-left: .48rem !important;
+  }
+
+  #root .jagasleman-bantara-control-stack .jagasleman-map-edge-heading-main > span:last-child {
+    font-size: .64rem !important;
+  }
+}

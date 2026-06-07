@@ -11,6 +11,19 @@ import {
     useMapEvents,
 } from 'react-leaflet';
 import L from 'leaflet';
+import {
+    ChevronDown,
+    ChevronUp,
+    Crosshair,
+    Info,
+    Layers3,
+    LocateFixed,
+    Map as MapIcon,
+    Maximize2,
+    Minimize2,
+    Minus,
+    Plus,
+} from 'lucide-react';
 import 'leaflet.heat';
 import 'leaflet/dist/leaflet.css';
 import officialKde20202025Raw from '@/data/kde_2020_2025.geojson?raw';
@@ -19,7 +32,6 @@ import { Incident, EmergencyContact } from '@/data/dummy';
 import { KDEZone } from '@/lib/kdeAnalysis';
 import { UserLocation } from '@/lib/geolocation';
 import { batasKecamatanGeojson } from '@/data/districtBoundaryGeojson';
-import { batasDesaGeojson } from '@/data/villageBoundaryGeojson';
 
 delete (L.Icon.Default.prototype as any)._getIconUrl;
 
@@ -45,7 +57,10 @@ interface MapViewProps {
     fitDistrictBoundary?: boolean;
     showVillageBoundary?: boolean;
     showIncidentMarkers?: boolean;
+    onShowIncidentMarkersChange?: (visible: boolean) => void;
     showMapControls?: boolean;
+    onLocateRequest?: () => void;
+    showEdgePanels?: boolean;
     showKdeLegend?: boolean;
     showRiskInfo?: boolean;
     kdeLayerMode?: 'official' | 'automatic' | 'none';
@@ -66,6 +81,8 @@ const SLEMAN_EXTENT: L.LatLngBoundsExpression = [
     [SLEMAN_BOUNDS.minLat, SLEMAN_BOUNDS.minLng],
     [SLEMAN_BOUNDS.maxLat, SLEMAN_BOUNDS.maxLng],
 ];
+
+const VILLAGE_BOUNDARY_GEOJSON_URL = '/geojson/batas_desa.geojson';
 
 
 function parseOfficialKdeGeojson(raw: string) {
@@ -198,7 +215,8 @@ const districtColorPalette = [
 
 const districtColorMap = new Map<string, string>();
 
-type BasemapKey = 'jalan' | 'satelit' | 'gelap';
+type BasemapKey = 'jalan' | 'satelit' | 'topo';
+type MapPanelKey = 'legend' | 'layers' | 'basemap' | null;
 
 const BASEMAP_OPTIONS: Array<{
     key: BasemapKey;
@@ -212,33 +230,34 @@ const BASEMAP_OPTIONS: Array<{
 }> = [
     {
         key: 'jalan',
-        title: 'Peta Jalan',
-        desc: 'Detail jalan dan permukiman',
-        icon: '🗺️',
+        title: 'Streets',
+        desc: 'Jalan, bangunan, dan permukiman',
+        icon: '▦',
         attribution: '&copy; OpenStreetMap contributors &copy; CARTO',
         url: 'https://{s}.basemaps.cartocdn.com/rastertiles/voyager/{z}/{x}/{y}{r}.png',
         subdomains: ['a', 'b', 'c', 'd'],
     },
     {
         key: 'satelit',
-        title: 'Satelit',
-        desc: 'Citra hybrid Google',
-        icon: '🛰️',
-        attribution: '&copy; Google Maps',
-        url: 'https://{s}.google.com/vt/lyrs=y&x={x}&y={y}&z={z}',
-        subdomains: ['mt0', 'mt1', 'mt2', 'mt3'],
-        maxZoom: 20,
+        title: 'Satellite',
+        desc: 'Citra satelit dan nama jalan',
+        icon: '◉',
+        attribution: 'Tiles &copy; Esri — Sources: Esri, Maxar, Earthstar Geographics',
+        url: 'https://server.arcgisonline.com/ArcGIS/rest/services/World_Imagery/MapServer/tile/{z}/{y}/{x}',
+        maxZoom: 19,
     },
     {
-        key: 'gelap',
-        title: 'Gelap',
-        desc: 'Basemap kontras malam',
-        icon: '🌙',
-        attribution: '&copy; OpenStreetMap contributors &copy; CARTO',
-        url: 'https://{s}.basemaps.cartocdn.com/dark_all/{z}/{x}/{y}{r}.png',
-        subdomains: ['a', 'b', 'c', 'd'],
+        key: 'topo',
+        title: 'Topo',
+        desc: 'Kontur dan bentuk permukaan wilayah',
+        icon: '≋',
+        attribution: 'Map data: &copy; OpenStreetMap contributors, SRTM | Map style: &copy; OpenTopoMap',
+        url: 'https://{s}.tile.opentopomap.org/{z}/{x}/{y}.png',
+        subdomains: ['a', 'b', 'c'],
+        maxZoom: 17,
     },
 ];
+
 
 
 function MapStyle() {
@@ -1598,32 +1617,57 @@ function getIncidentPhotoUrl(incident: any) {
 }
 
 function getIncidentDate(incident: any) {
+    const props = incident?.properties || {};
+
     return (
         incident?.date ||
         incident?.incident_date ||
         incident?.tanggal ||
         incident?.tanggal_kejadian ||
+        incident?.incident_at ||
+        props?.date ||
+        props?.incident_date ||
+        props?.tanggal ||
+        props?.tanggal_kejadian ||
+        props?.incident_at ||
         incident?.created_at ||
+        props?.created_at ||
         '-'
     );
 }
 
 function getIncidentTime(incident: any) {
+    const props = incident?.properties || {};
+
     return (
         incident?.time ||
         incident?.incident_time ||
         incident?.jam ||
         incident?.jam_kejadian ||
+        props?.time ||
+        props?.incident_time ||
+        props?.jam ||
+        props?.jam_kejadian ||
+        incident?.incident_at ||
+        props?.incident_at ||
         ''
     );
 }
 
 function getIncidentLocation(incident: any) {
+    const props = incident?.properties || {};
+
     return (
         incident?.location ||
         incident?.address ||
         incident?.alamat ||
         incident?.alamat_kejadian ||
+        incident?.lokasi ||
+        props?.location ||
+        props?.address ||
+        props?.alamat ||
+        props?.alamat_kejadian ||
+        props?.lokasi ||
         '-'
     );
 }
@@ -1637,14 +1681,68 @@ function getIncidentDistrict(incident: any) {
 }
 
 function getIncidentDescription(incident: any) {
-    return (
+    const props = incident?.properties || {};
+    const value =
         incident?.description ||
         incident?.deskripsi ||
+        incident?.description_full ||
+        incident?.full_description ||
         incident?.keterangan ||
         incident?.chronology ||
         incident?.kronologi ||
-        '-'
-    );
+        incident?.uraian ||
+        incident?.detail ||
+        incident?.catatan ||
+        props?.description ||
+        props?.deskripsi ||
+        props?.description_full ||
+        props?.full_description ||
+        props?.keterangan ||
+        props?.chronology ||
+        props?.kronologi ||
+        props?.uraian ||
+        props?.detail ||
+        props?.catatan ||
+        '-';
+
+    return String(value ?? '-').replace(/\r\n/g, '\n').trim() || '-';
+}
+
+function formatIncidentDate(value: any) {
+    const text = String(value || '').trim();
+    if (!text || text === '-') return '-';
+
+    const match = text.match(/^(\d{4})-(\d{2})-(\d{2})/);
+    if (match) {
+        const [, year, month, day] = match;
+        const monthNames = [
+            'Januari', 'Februari', 'Maret', 'April', 'Mei', 'Juni',
+            'Juli', 'Agustus', 'September', 'Oktober', 'November', 'Desember',
+        ];
+        const monthIndex = Number(month) - 1;
+        if (monthNames[monthIndex]) return `${Number(day)} ${monthNames[monthIndex]} ${year}`;
+    }
+
+    const date = new Date(text);
+    if (!Number.isNaN(date.getTime())) {
+        return new Intl.DateTimeFormat('id-ID', {
+            day: 'numeric',
+            month: 'long',
+            year: 'numeric',
+        }).format(date);
+    }
+
+    return text;
+}
+
+function formatIncidentTime(value: any) {
+    const text = String(value || '').trim();
+    if (!text || text === '-') return '-';
+
+    const match = text.match(/(?:T|\s)?(\d{1,2}):(\d{2})/);
+    if (match) return `${match[1].padStart(2, '0')}:${match[2]}`;
+
+    return text;
 }
 
 function getIncidentColor(type: string) {
@@ -1950,13 +2048,56 @@ function MapInvalidation() {
     const map = useMap();
 
     useEffect(() => {
+        let disposed = false;
+        const animationFrames = new Set<number>();
+
+        const invalidate = () => {
+            if (disposed) return;
+
+            const frameId = window.requestAnimationFrame(() => {
+                animationFrames.delete(frameId);
+                if (disposed) return;
+
+                const leafletMap = map as L.Map & {
+                    _mapPane?: HTMLElement;
+                    _loaded?: boolean;
+                };
+                const container = leafletMap.getContainer();
+
+                // React can remove the Leaflet map before a delayed resize callback runs.
+                // Skip invalidation once the map pane/container is no longer mounted.
+                if (!leafletMap._mapPane || !leafletMap._loaded || !container?.isConnected) return;
+
+                leafletMap.invalidateSize({ animate: false, pan: false });
+            });
+
+            animationFrames.add(frameId);
+        };
+
         const timers = [
-            window.setTimeout(() => map.invalidateSize(), 100),
-            window.setTimeout(() => map.invalidateSize(), 350),
-            window.setTimeout(() => map.invalidateSize(), 800),
+            window.setTimeout(invalidate, 80),
+            window.setTimeout(invalidate, 260),
+            window.setTimeout(invalidate, 700),
         ];
 
-        return () => timers.forEach((timer) => window.clearTimeout(timer));
+        const container = map.getContainer();
+        const resizeObserver = typeof ResizeObserver !== 'undefined'
+            ? new ResizeObserver(invalidate)
+            : null;
+
+        resizeObserver?.observe(container);
+        window.addEventListener('resize', invalidate);
+        document.addEventListener('fullscreenchange', invalidate);
+
+        return () => {
+            disposed = true;
+            timers.forEach((timer) => window.clearTimeout(timer));
+            animationFrames.forEach((frameId) => window.cancelAnimationFrame(frameId));
+            animationFrames.clear();
+            resizeObserver?.disconnect();
+            window.removeEventListener('resize', invalidate);
+            document.removeEventListener('fullscreenchange', invalidate);
+        };
     }, [map]);
 
     return null;
@@ -2101,21 +2242,51 @@ function VillageBoundaryLayer({
 }) {
     const map = useMap();
     const geojsonRef = useRef<L.GeoJSON | null>(null);
+    const [villageBoundaryData, setVillageBoundaryData] = useState<any>(null);
 
     useEffect(() => {
-        if (!geojsonRef.current || !fitVillageBoundary) return;
+        const controller = new AbortController();
+        let active = true;
+
+        fetch(VILLAGE_BOUNDARY_GEOJSON_URL, {
+            signal: controller.signal,
+            headers: { Accept: 'application/geo+json, application/json' },
+        })
+            .then((response) => {
+                if (!response.ok) throw new Error(`HTTP ${response.status}`);
+                return response.json();
+            })
+            .then((data) => {
+                if (active) setVillageBoundaryData(data);
+            })
+            .catch((error) => {
+                if (error?.name !== 'AbortError') {
+                    console.warn('Batas kalurahan tidak berhasil dimuat:', error);
+                }
+            });
+
+        return () => {
+            active = false;
+            controller.abort();
+        };
+    }, []);
+
+    useEffect(() => {
+        if (!geojsonRef.current || !fitVillageBoundary || !villageBoundaryData) return;
 
         const bounds = geojsonRef.current.getBounds();
 
         safeFitBounds(map, bounds, { maxZoom: 12 });
-    }, [map, fitVillageBoundary]);
+    }, [map, fitVillageBoundary, villageBoundaryData]);
+
+    if (!villageBoundaryData) return null;
 
     return (
         <GeoJSON
             ref={(layer) => {
                 geojsonRef.current = layer;
             }}
-            data={batasDesaGeojson as any}
+            data={villageBoundaryData as any}
             interactive={interactive}
             style={(feature?: any) => {
                 const { kecamatan } = getFeatureInfo(feature);
@@ -2187,9 +2358,20 @@ function VillageBoundaryLayer({
 }
 
 
-function BasemapControl() {
+function BasemapControl({
+    open: controlledOpen,
+    onToggle,
+}: {
+    open?: boolean;
+    onToggle?: () => void;
+} = {}) {
     const [selected, setSelected] = useState<BasemapKey>('jalan');
-    const [open, setOpen] = useState(false);
+    const [internalOpen, setInternalOpen] = useState(false);
+    const open = controlledOpen ?? internalOpen;
+    const toggleOpen = () => {
+        if (onToggle) onToggle();
+        else setInternalOpen((value) => !value);
+    };
     const controlRef = useRef<HTMLDivElement | null>(null);
     const active = BASEMAP_OPTIONS.find((item) => item.key === selected) ?? BASEMAP_OPTIONS[0];
 
@@ -2205,33 +2387,34 @@ function BasemapControl() {
                 key={active.key}
                 attribution={active.attribution}
                 url={active.url}
-                subdomains={active.subdomains}
                 maxZoom={active.maxZoom}
+                {...(active.subdomains ? { subdomains: active.subdomains } : {})}
             />
 
-            <div ref={controlRef} className="jagasleman-basemap-panel" aria-label="Pilihan basemap">
+            <div ref={controlRef} className={`jagasleman-basemap-panel jagasleman-map-edge-panel ${open ? 'is-open' : ''}`} aria-label="Pilihan basemap">
                 <button
                     type="button"
-                    className="jagasleman-basemap-toggle"
-                    onClick={() => setOpen((value) => !value)}
+                    className={`jagasleman-map-edge-heading jagasleman-basemap-toggle ${open ? 'is-active' : ''}`}
+                    onClick={toggleOpen}
                     aria-expanded={open}
                     title={`Basemap aktif: ${active.title}`}
                 >
-                    <span className="jagasleman-basemap-toggle-icon">{active.icon}</span>
+                    <span className="jagasleman-map-edge-heading-main">
+                        <span className="jagasleman-map-edge-heading-icon" aria-hidden="true"><MapIcon /></span>
+                        <span>Basemap</span>
+                    </span>
+                    <span className="jagasleman-map-edge-chevron" aria-hidden="true">{open ? <ChevronUp /> : <ChevronDown />}</span>
                 </button>
 
                 {open && (
-                    <div className="jagasleman-basemap-menu">
-                        <div className="jagasleman-basemap-title">Basemap</div>
+                    <div className="jagasleman-basemap-menu jagasleman-map-edge-content">
+                        <div className="jagasleman-basemap-active-label">Aktif: {active.title}</div>
                         <div className="space-y-2">
                             {BASEMAP_OPTIONS.map((option) => (
                                 <button
                                     key={option.key}
                                     type="button"
-                                    onClick={() => {
-                                        setSelected(option.key);
-                                        setOpen(false);
-                                    }}
+                                    onClick={() => setSelected(option.key)}
                                     className={`jagasleman-basemap-option ${selected === option.key ? 'is-active' : ''}`}
                                     aria-pressed={selected === option.key}
                                     title={option.desc}
@@ -2252,7 +2435,13 @@ function BasemapControl() {
 }
 
 
-function MapControlPanel() {
+function MapControlPanel({
+    onLocateRequest,
+    panelOpen = false,
+}: {
+    onLocateRequest?: () => void;
+    panelOpen?: boolean;
+}) {
     const map = useMap();
     const [isFullscreen, setIsFullscreen] = useState(false);
 
@@ -2287,19 +2476,34 @@ function MapControlPanel() {
     };
 
     const locateUser = () => {
+        if (onLocateRequest) {
+            onLocateRequest();
+            return;
+        }
+
         map.locate({ setView: true, maxZoom: 16, enableHighAccuracy: true });
     };
 
     return (
-        <div className="jagasleman-map-action-controls">
-            <button type="button" onClick={() => map.zoomIn()} aria-label="Zoom in" title="Zoom in">+</button>
-            <button type="button" onClick={() => map.zoomOut()} aria-label="Zoom out" title="Zoom out">−</button>
-            <button type="button" onClick={fitSlemanExtent} aria-label="Zoom to extent Kabupaten Sleman" title="Zoom to extent Kabupaten Sleman">⌖</button>
-            <button type="button" onClick={locateUser} aria-label="Lokasi saya" title="Lokasi saya">⌾</button>
-            <button type="button" onClick={handleFullscreen} className={isFullscreen ? 'is-active' : ''} aria-label="Layar penuh" title="Layar penuh">⛶</button>
+        <div className={`jagasleman-map-action-controls ${panelOpen ? 'is-edge-panel-open' : ''}`} role="group" aria-label="Kontrol navigasi peta">
+            <button type="button" onClick={() => map.zoomIn()} aria-label="Perbesar peta" title="Perbesar peta"><Plus /></button>
+            <button type="button" onClick={() => map.zoomOut()} aria-label="Perkecil peta" title="Perkecil peta"><Minus /></button>
+            <button type="button" onClick={fitSlemanExtent} aria-label="Tampilkan seluruh Kabupaten Sleman" title="Tampilkan seluruh Kabupaten Sleman"><Crosshair /></button>
+            <button type="button" onClick={locateUser} aria-label="Tampilkan lokasi saya" title="Tampilkan lokasi saya"><LocateFixed /></button>
+            <button
+                type="button"
+                onClick={handleFullscreen}
+                className={isFullscreen ? 'is-active' : ''}
+                aria-label={isFullscreen ? 'Keluar dari layar penuh' : 'Buka layar penuh'}
+                title={isFullscreen ? 'Keluar dari layar penuh' : 'Layar penuh'}
+            >
+                {isFullscreen ? <Minimize2 /> : <Maximize2 />}
+            </button>
         </div>
     );
 }
+
+
 
 
 type KdeLayerMode = 'official' | 'automatic' | 'none';
@@ -2326,12 +2530,29 @@ const KDE_LAYER_OPTIONS: Array<{
     },
 ];
 
+type DataLayerKey = 'incidents' | 'districts' | 'villages' | 'contacts';
+
+type DataLayerOption = {
+    key: DataLayerKey;
+    title: string;
+    description: string;
+    checked: boolean;
+};
+
 function KdeLayerControl({
     mode,
     onChange,
+    dataLayers,
+    onDataLayerChange,
+    open: controlledOpen,
+    onToggle,
 }: {
     mode: KdeLayerMode;
     onChange: (mode: KdeLayerMode) => void;
+    dataLayers: DataLayerOption[];
+    onDataLayerChange: (key: DataLayerKey, visible: boolean) => void;
+    open?: boolean;
+    onToggle?: () => void;
 }) {
     const controlRef = useRef<HTMLDivElement | null>(null);
 
@@ -2343,45 +2564,108 @@ function KdeLayerControl({
 
     const activeOption = KDE_LAYER_OPTIONS.find((item) => item.value === mode) ?? KDE_LAYER_OPTIONS[0];
 
+    const [internalOpen, setInternalOpen] = useState(false);
+    const open = controlledOpen ?? internalOpen;
+    const toggleOpen = () => {
+        if (onToggle) onToggle();
+        else setInternalOpen((value) => !value);
+    };
+
     return (
-        <div ref={controlRef} className="jagasleman-kde-layer-control" aria-label="Kontrol layer KDE">
-            <div className="jagasleman-kde-layer-title">
-                <span>Peta Kerawanan</span>
-                <span>{activeOption.title}</span>
-            </div>
+        <div ref={controlRef} className={`jagasleman-kde-layer-control jagasleman-map-edge-panel ${open ? 'is-open' : ''}`} aria-label="Kontrol Layer Peta">
+            <button
+                type="button"
+                className={`jagasleman-map-edge-heading ${open ? 'is-active' : ''}`}
+                onClick={toggleOpen}
+                aria-expanded={open}
+            >
+                <span className="jagasleman-map-edge-heading-main">
+                    <span className="jagasleman-map-edge-heading-icon" aria-hidden="true"><Layers3 /></span>
+                    <span>Layer Peta</span>
+                </span>
+                <span className="jagasleman-map-edge-chevron" aria-hidden="true">{open ? <ChevronUp /> : <ChevronDown />}</span>
+            </button>
 
-            <div className="jagasleman-kde-layer-options">
-                {KDE_LAYER_OPTIONS.map((option) => (
-                    <button
-                        key={option.value}
-                        type="button"
-                        className={`jagasleman-kde-layer-option ${mode === option.value ? 'is-active' : ''}`}
-                        onClick={() => onChange(option.value)}
-                        aria-pressed={mode === option.value}
-                    >
-                        <input
-                            className="jagasleman-kde-layer-radio"
-                            type="radio"
-                            checked={mode === option.value}
-                            readOnly
-                            tabIndex={-1}
-                        />
-                        <span>
-                            <b>{option.title}</b>
-                            <span>{option.description}</span>
-                        </span>
-                    </button>
-                ))}
-            </div>
+            {open && (
+                <div className="jagasleman-map-edge-content">
+                    <div className="jagasleman-kde-layer-title">
+                        <span>Peta Tematik</span>
+                        <span>{activeOption.title}</span>
+                    </div>
 
-            <div className="jagasleman-kde-layer-note">
-                KDE 2020–2025 menunjukkan peta daerah rawan utama. KDE otomatis mengikuti data yang sedang difilter.
-            </div>
+                    <div className="jagasleman-kde-layer-options">
+                        {KDE_LAYER_OPTIONS.map((option) => (
+                            <button
+                                key={option.value}
+                                type="button"
+                                className={`jagasleman-kde-layer-option ${mode === option.value ? 'is-active' : ''}`}
+                                onClick={() => onChange(option.value)}
+                                aria-pressed={mode === option.value}
+                            >
+                                <input
+                                    className="jagasleman-kde-layer-radio"
+                                    type="radio"
+                                    checked={mode === option.value}
+                                    readOnly
+                                    tabIndex={-1}
+                                />
+                                <span>
+                                    <b>{option.title}</b>
+                                    <span>{option.description}</span>
+                                </span>
+                            </button>
+                        ))}
+                    </div>
+
+                    {dataLayers.length > 0 && (
+                        <>
+                            <div className="jagasleman-data-layer-section-title">Data & Batas Peta</div>
+                            <div className="jagasleman-data-layer-options">
+                                {dataLayers.map((layer) => (
+                                    <button
+                                        key={layer.key}
+                                        type="button"
+                                        className={`jagasleman-data-layer-option ${layer.checked ? 'is-active' : ''}`}
+                                        onClick={() => onDataLayerChange(layer.key, !layer.checked)}
+                                        aria-pressed={layer.checked}
+                                    >
+                                        <span className="jagasleman-data-layer-check" aria-hidden="true">{layer.checked ? '✓' : ''}</span>
+                                        <span className="jagasleman-data-layer-copy">
+                                            <b>{layer.title}</b>
+                                            <span>{layer.description}</span>
+                                        </span>
+                                    </button>
+                                ))}
+                            </div>
+                        </>
+                    )}
+
+                    <div className="jagasleman-kde-layer-note">
+                        Aktifkan layer yang dibutuhkan. Kontrol ini mengikuti pola panel layer pada peta referensi.
+                    </div>
+                </div>
+            )}
         </div>
     );
 }
 
-function KdeLegendControl({ mode }: { mode: KdeLayerMode }) {
+function KdeLegendControl({
+    mode,
+    showIncidents,
+    showDistricts,
+    showVillages,
+    showContacts,
+    open: controlledOpen,
+    onToggle,
+}: {
+    mode: KdeLayerMode;
+    showIncidents: boolean;
+    showDistricts: boolean;
+    showVillages: boolean;
+    showContacts: boolean;
+    open?: boolean;
+    onToggle?: () => void;
+}) {
     const riskLevels = [
         { label: 'Rendah', color: '#22C55E' },
         { label: 'Sedang', color: '#FACC15' },
@@ -2396,27 +2680,82 @@ function KdeLegendControl({ mode }: { mode: KdeLayerMode }) {
         { label: 'Pekat', color: '#F97316' },
         { label: 'Terpekat', color: '#E11D48' },
     ];
-    const levels = mode === 'official' ? riskLevels : densityLevels;
+    const levels = mode === 'official' ? riskLevels : mode === 'automatic' ? densityLevels : [];
 
     const subtitle = mode === 'official'
         ? 'Daerah rawan berdasarkan data kejadian periode 2020–2025.'
-        : 'Intensitas warna KDE otomatis mengikuti kepadatan titik, bukan klasifikasi tingkat risiko.';
+        : mode === 'automatic'
+            ? 'Intensitas warna mengikuti kepadatan titik yang sedang aktif.'
+            : 'Layer kerawanan sedang dinonaktifkan. Simbol data peta tetap dapat digunakan.';
+
+    const [internalOpen, setInternalOpen] = useState(false);
+    const open = controlledOpen ?? internalOpen;
+    const toggleOpen = () => {
+        if (onToggle) onToggle();
+        else setInternalOpen((value) => !value);
+    };
+    const controlRef = useRef<HTMLDivElement | null>(null);
+
+    useEffect(() => {
+        if (!controlRef.current) return;
+        L.DomEvent.disableClickPropagation(controlRef.current);
+        L.DomEvent.disableScrollPropagation(controlRef.current);
+    }, []);
+
+    const symbols = [
+        showIncidents ? { key: 'incidents', label: 'Titik Kejadian', type: 'point' } : null,
+        showDistricts ? { key: 'districts', label: 'Batas Kecamatan', type: 'district' } : null,
+        showVillages ? { key: 'villages', label: 'Batas Kalurahan', type: 'village' } : null,
+        showContacts ? { key: 'contacts', label: 'Lokasi Bantuan', type: 'contact' } : null,
+    ].filter(Boolean) as Array<{ key: string; label: string; type: string }>;
 
     return (
-        <div className="jagasleman-kde-legend">
-            <div className="jagasleman-kde-legend-title">
-                {mode === 'official' ? 'Kerawanan 2020–2025' : 'Kepadatan Otomatis'}
-            </div>
-            <div className="jagasleman-kde-legend-subtitle">{subtitle}</div>
-            <div className="jagasleman-kde-gradient" />
-            <div className="jagasleman-kde-legend-grid">
-                {levels.map((level) => (
-                    <div key={level.label} className="jagasleman-kde-legend-item">
-                        <span style={{ backgroundColor: level.color }} />
-                        <b>{level.label}</b>
+        <div ref={controlRef} className={`jagasleman-kde-legend jagasleman-map-edge-panel ${open ? 'is-open' : ''}`}>
+            <button
+                type="button"
+                className={`jagasleman-map-edge-heading ${open ? 'is-active' : ''}`}
+                onClick={toggleOpen}
+                aria-expanded={open}
+            >
+                <span className="jagasleman-map-edge-heading-main">
+                    <span className="jagasleman-map-edge-heading-icon" aria-hidden="true"><Info /></span>
+                    <span>Keterangan Peta</span>
+                </span>
+                <span className="jagasleman-map-edge-chevron" aria-hidden="true">{open ? <ChevronUp /> : <ChevronDown />}</span>
+            </button>
+
+            {open && (
+                <div className="jagasleman-map-edge-content">
+                    <div className="jagasleman-kde-legend-title">
+                        {mode === 'official' ? 'Kerawanan 2020–2025' : mode === 'automatic' ? 'Kepadatan Otomatis' : 'Simbol Data Peta'}
                     </div>
-                ))}
-            </div>
+                    <div className="jagasleman-kde-legend-subtitle">{subtitle}</div>
+                    {levels.length > 0 && (
+                        <>
+                            <div className="jagasleman-kde-gradient" />
+                            <div className="jagasleman-kde-legend-grid">
+                                {levels.map((level) => (
+                                    <div key={level.label} className="jagasleman-kde-legend-item">
+                                        <span style={{ backgroundColor: level.color }} />
+                                        <b>{level.label}</b>
+                                    </div>
+                                ))}
+                            </div>
+                        </>
+                    )}
+
+                    {symbols.length > 0 && (
+                        <div className="jagasleman-map-symbol-list">
+                            {symbols.map((symbol) => (
+                                <div key={symbol.key} className="jagasleman-map-symbol-item">
+                                    <span className={`jagasleman-map-symbol jagasleman-map-symbol--${symbol.type}`} aria-hidden="true" />
+                                    <b>{symbol.label}</b>
+                                </div>
+                            ))}
+                        </div>
+                    )}
+                </div>
+            )}
         </div>
     );
 }
@@ -2839,18 +3178,13 @@ function IncidentMarker({ incident, showRiskInfo = true }: { incident: any; show
     const [activePhotoIndex, setActivePhotoIndex] = useState(0);
     const activePhotoUrl = photoUrls[activePhotoIndex] ?? photoUrls[0] ?? null;
     const color = getIncidentColor(displayType);
-    const date = getIncidentDate(incident);
-    const time = getIncidentTime(incident);
+    const date = formatIncidentDate(getIncidentDate(incident));
+    const time = formatIncidentTime(getIncidentTime(incident));
     const location = getIncidentLocation(incident);
-    const district = titleCase(getIncidentDistrict(incident));
-    const village = titleCase(getIncidentVillage(incident));
     const description = getIncidentDescription(incident);
 
     const lat = Number(incident.lat);
     const lng = Number(incident.lng);
-    const locationContext = makeLocationContext(lat, lng);
-    const displayDistrict = district && district !== '-' ? district : locationContext.district;
-    const displayVillage = village && village !== '-' ? village : locationContext.village;
 
     const accent = isReport ? '#F2A20B' : '#0B6E78';
     const softAccent = isReport ? '#FFF7ED' : '#EAFBF8';
@@ -2858,8 +3192,8 @@ function IncidentMarker({ incident, showRiskInfo = true }: { incident: any; show
 
     return (
         <Marker position={[lat, lng]} icon={createIncidentIcon(displayType, source)}>
-            <Popup className="incident-popup modern-popup compact-map-popup" minWidth={250} maxWidth={310}>
-                <div className="jaga-map-popup-card w-[min(82vw,290px)] max-w-[290px] overflow-hidden bg-white text-[#07324A]">
+            <Popup className="incident-popup modern-popup compact-map-popup" minWidth={270} maxWidth={350}>
+                <div className="jaga-map-popup-card w-[min(86vw,330px)] max-w-[330px] overflow-hidden bg-white text-[#07324A]">
                     <div
                         className="relative overflow-hidden border-b border-slate-200 px-4 pb-3 pt-4"
                         style={{ background: `linear-gradient(135deg, ${softAccent} 0%, #FFFFFF 60%, rgba(216,228,237,.55) 100%)` }}
@@ -2950,43 +3284,34 @@ function IncidentMarker({ incident, showRiskInfo = true }: { incident: any; show
                         </div>
                     )}
 
-                    <div className="space-y-2 p-3">
+                    <div className="space-y-2.5 p-3">
+                        <div className="rounded-xl border border-slate-200 bg-white p-3 shadow-sm">
+                            <p className="text-[10px] font-black uppercase tracking-[0.14em] text-slate-500">Jenis Kejadian</p>
+                            <p className="mt-1.5 text-sm font-black leading-relaxed text-[#07324A]">{typeLabel || '-'}</p>
+                        </div>
+
                         <div className="grid grid-cols-2 gap-2">
-                            <div className="rounded-xl border border-slate-200 bg-slate-50 p-2">
-                                <p className="text-[10px] font-black uppercase tracking-[0.14em] text-slate-500">Tanggal</p>
-                                <p className="mt-1 text-sm font-black text-[#07324A]">{date || '-'}</p>
+                            <div className="rounded-xl border border-slate-200 bg-slate-50 p-3">
+                                <p className="text-[10px] font-black uppercase tracking-[0.14em] text-slate-500">Tanggal Kejadian</p>
+                                <p className="mt-1.5 text-sm font-black leading-relaxed text-[#07324A]">{date || '-'}</p>
                             </div>
-                            <div className="rounded-xl border border-slate-200 bg-slate-50 p-2">
-                                <p className="text-[10px] font-black uppercase tracking-[0.14em] text-slate-500">Waktu</p>
-                                <p className="mt-1 text-sm font-black text-[#07324A]">{time || '-'}</p>
+                            <div className="rounded-xl border border-slate-200 bg-slate-50 p-3">
+                                <p className="text-[10px] font-black uppercase tracking-[0.14em] text-slate-500">Waktu Kejadian</p>
+                                <p className="mt-1.5 text-sm font-black leading-relaxed text-[#07324A]">{time || '-'}</p>
                             </div>
                         </div>
 
-                        <div className="rounded-xl border border-slate-200 bg-white p-2 shadow-sm">
-                            <p className="text-[10px] font-black uppercase tracking-[0.14em] text-slate-500">Lokasi</p>
-                            <p className="mt-1 text-sm font-bold leading-relaxed text-[#07324A]">{location || '-'}</p>
-                            <p className="mt-2 text-[11px] font-black text-slate-500">{displayVillage}, {displayDistrict}</p>
+                        <div className="rounded-xl border border-slate-200 bg-white p-3 shadow-sm">
+                            <p className="text-[10px] font-black uppercase tracking-[0.14em] text-slate-500">Alamat Kejadian</p>
+                            <p className="mt-1.5 break-words text-sm font-bold leading-relaxed text-[#07324A]">{location || '-'}</p>
                         </div>
 
-                        {showRiskInfo && (
-                            <div className="rounded-xl border border-slate-200 bg-white p-2 shadow-sm">
-                                <div className="flex items-center justify-between gap-2">
-                                    <p className="text-[10px] font-black uppercase tracking-[0.14em] text-slate-500">Kecamatan & Kerawanan</p>
-                                    <span className="rounded-full px-2 py-1 text-[10px] font-black text-white" style={{ backgroundColor: locationContext.riskColor }}>
-                                        {locationContext.risk}
-                                    </span>
-                                </div>
-                                <p className="mt-1 text-sm font-black text-[#07324A]">Kecamatan {displayDistrict}</p>
-                                <p className="mt-1 text-[11px] font-semibold leading-relaxed text-slate-500">{locationContext.riskNote}</p>
-                            </div>
-                        )}
-
-                        {description && description !== '-' && (
-                            <div className="rounded-xl border border-slate-200 bg-slate-50 p-2">
-                                <p className="text-[10px] font-black uppercase tracking-[0.14em] text-slate-500">Keterangan</p>
-                                <p className="mt-1 line-clamp-3 text-xs font-semibold leading-relaxed text-[#07324A]">{description}</p>
-                            </div>
-                        )}
+                        <div className="rounded-xl border border-slate-200 bg-slate-50 p-3">
+                            <p className="text-[10px] font-black uppercase tracking-[0.14em] text-slate-500">Deskripsi Kejadian</p>
+                            <p className="mt-1.5 whitespace-pre-wrap break-words text-xs font-semibold leading-relaxed text-[#07324A]">
+                                {description && description !== '-' ? description : 'Deskripsi kejadian belum tersedia.'}
+                            </p>
+                        </div>
 
                         <a
                             href={`https://www.google.com/maps/search/?api=1&query=${lat},${lng}`}
@@ -3232,7 +3557,10 @@ function MapViewContent({
     fitVillageBoundary = false,
     villageBoundaryInteractive = true,
     showIncidentMarkers = true,
+    onShowIncidentMarkersChange,
     showMapControls = true,
+    onLocateRequest,
+    showEdgePanels = false,
     showKdeLegend = true,
     showRiskInfo = true,
     kdeLayerMode = showHeatmap ? 'automatic' : 'official',
@@ -3252,19 +3580,101 @@ function MapViewContent({
     const showOfficialKde = activeKdeLayerMode === 'official';
     const showAutomaticKde = activeKdeLayerMode === 'automatic';
     const userAccuracy = Number(userLocation?.accuracy ?? 80);
+    const [incidentLayerVisible, setIncidentLayerVisible] = useState(showIncidentMarkers);
+    const [districtLayerVisible, setDistrictLayerVisible] = useState(showDistrictBoundary);
+    const [villageLayerVisible, setVillageLayerVisible] = useState(showVillageBoundary);
+    const [contactLayerVisible, setContactLayerVisible] = useState(contacts.length > 0);
+    const [activeEdgePanel, setActiveEdgePanel] = useState<MapPanelKey>(null);
+
+    useEffect(() => setIncidentLayerVisible(showIncidentMarkers), [showIncidentMarkers]);
+    useEffect(() => setDistrictLayerVisible(showDistrictBoundary), [showDistrictBoundary]);
+    useEffect(() => setVillageLayerVisible(showVillageBoundary), [showVillageBoundary]);
+    useEffect(() => setContactLayerVisible(contacts.length > 0), [contacts.length]);
+
+    const dataLayers: DataLayerOption[] = [
+        {
+            key: 'incidents',
+            title: 'Titik Kejadian',
+            description: 'Marker data kepolisian dan laporan masyarakat.',
+            checked: incidentLayerVisible,
+        },
+        ...(showDistrictBoundary ? [{
+            key: 'districts' as DataLayerKey,
+            title: 'Batas Kecamatan',
+            description: 'Garis administrasi kecamatan Kabupaten Sleman.',
+            checked: districtLayerVisible,
+        }] : []),
+        ...(showVillageBoundary ? [{
+            key: 'villages' as DataLayerKey,
+            title: 'Batas Kalurahan',
+            description: 'Garis administrasi kalurahan/desa.',
+            checked: villageLayerVisible,
+        }] : []),
+        ...(contacts.length > 0 ? [{
+            key: 'contacts' as DataLayerKey,
+            title: 'Lokasi Bantuan',
+            description: 'Polisi dan fasilitas kesehatan terdekat.',
+            checked: contactLayerVisible,
+        }] : []),
+    ];
+
+    const changeDataLayer = (key: DataLayerKey, visible: boolean) => {
+        if (key === 'incidents') {
+            setIncidentLayerVisible(visible);
+            onShowIncidentMarkersChange?.(visible);
+            return;
+        }
+        if (key === 'districts') setDistrictLayerVisible(visible);
+        if (key === 'villages') setVillageLayerVisible(visible);
+        if (key === 'contacts') setContactLayerVisible(visible);
+    };
 
     return (
         <>
             <MapStyle />
-            <BasemapControl />
-            {showMapControls && <MapControlPanel />}
-            {showKdeLegend && activeKdeLayerMode !== 'none' && <KdeLegendControl mode={activeKdeLayerMode} />}
+            {showMapControls && <MapControlPanel onLocateRequest={onLocateRequest} />}
+            {showEdgePanels ? (
+                <>
+                    <div
+                        className={`jagasleman-map-right-stack jagasleman-bantara-control-stack ${activeEdgePanel ? 'has-open-panel' : ''}`}
+                        data-open-panel={activeEdgePanel ?? 'none'}
+                        role="region"
+                        aria-label="Kontrol peta"
+                    >
+                        {showKdeLegend && (
+                            <KdeLegendControl
+                                mode={activeKdeLayerMode}
+                                showIncidents={incidentLayerVisible}
+                                showDistricts={districtLayerVisible}
+                                showVillages={villageLayerVisible}
+                                showContacts={contactLayerVisible}
+                                open={activeEdgePanel === 'legend'}
+                                onToggle={() => setActiveEdgePanel((current) => current === 'legend' ? null : 'legend')}
+                            />
+                        )}
+                        <KdeLayerControl
+                            mode={activeKdeLayerMode}
+                            onChange={changeKdeLayerMode}
+                            dataLayers={dataLayers}
+                            onDataLayerChange={changeDataLayer}
+                            open={activeEdgePanel === 'layers'}
+                            onToggle={() => setActiveEdgePanel((current) => current === 'layers' ? null : 'layers')}
+                        />
+                        <BasemapControl
+                            open={activeEdgePanel === 'basemap'}
+                            onToggle={() => setActiveEdgePanel((current) => current === 'basemap' ? null : 'basemap')}
+                        />
+                    </div>
+                </>
+            ) : (
+                <BasemapControl />
+            )}
             <MapInvalidation />
             <ClickHandler onClick={onClick} />
 
-            {showDistrictBoundary && <DistrictBoundaryLayer fitDistrictBoundary={fitDistrictBoundary} incidents={cleanIncidents} />}
+            {districtLayerVisible && <DistrictBoundaryLayer fitDistrictBoundary={fitDistrictBoundary} incidents={cleanIncidents} />}
 
-            {showVillageBoundary && (
+            {villageLayerVisible && (
                 <VillageBoundaryLayer
                     fitVillageBoundary={fitVillageBoundary}
                     interactive={villageBoundaryInteractive}
@@ -3334,10 +3744,10 @@ function MapViewContent({
                 <HotspotClusterLayer hotspotClusters={hotspotClusters} onClusterClick={onClusterClick} />
             )}
 
-            {showIncidentMarkers && <ClusteredIncidentMarkers incidents={cleanIncidents} showRiskInfo={showRiskInfo} />}
+            {incidentLayerVisible && <ClusteredIncidentMarkers incidents={cleanIncidents} showRiskInfo={showRiskInfo} />}
 
-            <EmergencyContactLegend contacts={contacts} />
-            <EmergencyContactMarkers contacts={contacts} />
+            {contactLayerVisible && !showEdgePanels && <EmergencyContactLegend contacts={contacts} />}
+            {contactLayerVisible && <EmergencyContactMarkers contacts={contacts} />}
 
             <SelectedLocationMarker clickMarker={clickMarker || null} showRiskInfo={showRiskInfo} />
         </>
@@ -3364,7 +3774,10 @@ export const MapView = forwardRef<L.Map | null, MapViewProps>(
             fitVillageBoundary = false,
             villageBoundaryInteractive = true,
             showIncidentMarkers = true,
+            onShowIncidentMarkersChange,
             showMapControls = true,
+            onLocateRequest,
+            showEdgePanels = false,
             showKdeLegend = true,
             showRiskInfo = true,
             kdeLayerMode,
@@ -3408,7 +3821,10 @@ export const MapView = forwardRef<L.Map | null, MapViewProps>(
                     fitVillageBoundary={fitVillageBoundary}
                     villageBoundaryInteractive={villageBoundaryInteractive}
                     showIncidentMarkers={showIncidentMarkers}
+                    onShowIncidentMarkersChange={onShowIncidentMarkersChange}
                     showMapControls={showMapControls}
+                    onLocateRequest={onLocateRequest}
+                    showEdgePanels={showEdgePanels}
                     showKdeLegend={resolvedShowKdeLegend}
                     showRiskInfo={resolvedShowRiskInfo}
                     kdeLayerMode={resolvedKdeLayerMode}

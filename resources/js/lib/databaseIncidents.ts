@@ -361,7 +361,7 @@ function buildIncidentFromPlain(item: Record<string, any>, index = 0): MapIncide
     const photoUrls = normalizePhotoUrls(item);
 
     return {
-        id: String(rawId).startsWith('report-') ? String(rawId) : `report-`,
+        id: String(rawId).startsWith('report-') ? String(rawId) : `report-${rawId}`,
         reportCode: String(reportCode),
         title: item.title ?? `Laporan ${incidentType}`,
 
@@ -382,7 +382,19 @@ function buildIncidentFromPlain(item: Record<string, any>, index = 0): MapIncide
         incident_type: incidentType,
         crime_type: incidentType,
 
-        description: normalizeText(item.description ?? item.deskripsi ?? item.keterangan, '-'),
+        description: normalizeText(
+            item.description ??
+                item.deskripsi ??
+                item.description_full ??
+                item.full_description ??
+                item.keterangan ??
+                item.chronology ??
+                item.kronologi ??
+                item.uraian ??
+                item.detail ??
+                item.catatan,
+            '-',
+        ),
         location: normalizeText(location, '-'),
         address: normalizeText(location, '-'),
 

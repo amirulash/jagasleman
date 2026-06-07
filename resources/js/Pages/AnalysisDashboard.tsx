@@ -1566,91 +1566,21 @@ export default function AnalysisDashboard() {
             <style>{`
                 .jaga-analysis-page,
                 .jaga-analysis-page * {
-                    text-shadow: none !important;
                     box-sizing: border-box;
+                    text-shadow: none !important;
                 }
 
-                .jaga-analysis-page .leaflet-control-zoom,
-                .jaga-analysis-page .jagasleman-map-action-controls,
-                .jaga-analysis-page .jagasleman-kde-legend {
-                    display: none !important;
-                }
-
-                .jaga-analysis-map-tools {
-                    max-width: min(92vw, 560px);
-                }
-
-                .jaga-analysis-tool-card {
-                    display: inline-flex;
-                    align-items: center;
-                    gap: 6px;
-                    border: 1px solid rgba(255,255,255,.82);
-                    border-radius: 1.25rem;
-                    background: rgba(255,255,255,.95);
-                    padding: 6px;
-                    box-shadow: 0 16px 38px rgba(15,31,46,.12);
-                    backdrop-filter: blur(16px);
-                }
-
-                .jaga-analysis-page .jagasleman-basemap-panel {
-                    top: 86px !important;
-                    left: 16px !important;
-                    z-index: 646 !important;
-                }
-
-                .jaga-analysis-page .jagasleman-basemap-inline {
-                    width: min(288px, calc(100vw - 2rem)) !important;
-                    border-radius: 1.25rem !important;
-                    border-color: rgba(255,255,255,.82) !important;
-                    background: rgba(255,255,255,.95) !important;
-                    padding: 8px !important;
-                    box-shadow: 0 16px 38px rgba(15,31,46,.12) !important;
-                }
-
-                .jaga-analysis-page .jagasleman-basemap-inline .jagasleman-basemap-title {
-                    margin-bottom: 6px !important;
-                    padding-bottom: 6px !important;
-                    font-size: 9px !important;
-                }
-
-                .jaga-analysis-page .jagasleman-basemap-inline-options {
-                    gap: 6px !important;
-                }
-
-                .jaga-analysis-page .jagasleman-basemap-inline .jagasleman-basemap-option {
-                    min-height: 50px !important;
-                    border-radius: 14px !important;
-                    padding: 6px 4px !important;
-                }
-
-                .jaga-analysis-page .jagasleman-basemap-inline .jagasleman-basemap-option-icon {
-                    height: 26px !important;
-                    width: 26px !important;
-                    border-radius: 11px !important;
-                    font-size: 13px !important;
-                }
-
-                .jaga-analysis-page .jagasleman-basemap-inline .jagasleman-basemap-option-title {
-                    font-size: 9px !important;
-                }
-
-                @media (max-width: 768px) {
-                    .jaga-analysis-map-tools {
-                        max-width: calc(100vw - 2rem);
-                    }
-
-                    .jaga-analysis-page .jagasleman-basemap-panel {
-                        top: 142px !important;
-                        left: 16px !important;
-                    }
+                .jaga-analysis-map-shell {
+                    height: clamp(620px, calc(100dvh - 170px), 860px);
+                    min-height: 620px;
                 }
 
                 .jaga-analysis-map-shell .leaflet-popup-content-wrapper {
-                    border-radius: 20px !important;
                     overflow: hidden !important;
                     border: 1px solid #BDE7E1 !important;
-                    box-shadow: 0 24px 60px rgba(15, 23, 42, 0.22) !important;
+                    border-radius: 20px !important;
                     background: #ffffff !important;
+                    box-shadow: 0 24px 60px rgba(15, 23, 42, 0.22) !important;
                 }
 
                 .jaga-analysis-map-shell .leaflet-popup-content {
@@ -1662,45 +1592,37 @@ export default function AnalysisDashboard() {
                     background: #ffffff !important;
                 }
 
-                .jaga-analysis-kde-gradient {
-                    background: linear-gradient(90deg, #22C55E 0%, #A3E635 24%, #FACC15 50%, #F97316 74%, #E11D48 100%);
-                }
-
                 .jaga-analysis-page table thead th {
-                    color: #FFFFFF !important;
-                    background: #07324A !important;
                     border-color: rgba(189, 231, 225, 0.35) !important;
-                    text-shadow: none !important;
+                    background: #07324A !important;
+                    color: #FFFFFF !important;
                 }
 
-                .jaga-analysis-page table thead th:first-child {
-                    border-top-left-radius: 0.9rem;
-                }
-
-                .jaga-analysis-page table thead th:last-child {
-                    border-top-right-radius: 0.9rem;
-                }
-
-                .jaga-analysis-control-scroll::-webkit-scrollbar {
-                    width: 7px;
-                }
-
+                .jaga-analysis-control-scroll::-webkit-scrollbar { width: 7px; }
                 .jaga-analysis-control-scroll::-webkit-scrollbar-thumb {
-                    background: rgba(100, 116, 139, 0.34);
                     border-radius: 999px;
+                    background: rgba(100, 116, 139, 0.34);
                 }
 
-                @media (max-width: 1024px) {
-                    .jaga-analysis-map-height {
-                        height: 540px !important;
-                        min-height: 520px !important;
+                @media (max-width: 1023px) {
+                    .jaga-analysis-map-shell {
+                        height: min(760px, 76dvh);
+                        min-height: 600px;
                     }
                 }
 
                 @media (max-width: 640px) {
-                    .jaga-analysis-map-height {
-                        height: 460px !important;
-                        min-height: 430px !important;
+                    .jaga-analysis-map-shell {
+                        height: 680px;
+                        min-height: 680px;
+                        border-radius: 1.35rem !important;
+                    }
+                }
+
+                @media (max-width: 390px) {
+                    .jaga-analysis-map-shell {
+                        height: 720px;
+                        min-height: 720px;
                     }
                 }
             `}</style>
@@ -1742,6 +1664,48 @@ export default function AnalysisDashboard() {
                                 </div>
                             </div>
                         </section>
+
+                        <section className="mb-5 rounded-[1.7rem] border border-[#BDE7E1] bg-white p-4 shadow-sm">
+                            <div className="mb-4 flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
+                                <div className="flex items-start gap-3">
+                                    <span className="flex h-10 w-10 shrink-0 items-center justify-center rounded-2xl bg-[#E9F8F3] text-[#0B6E78]">
+                                        <Filter className="h-5 w-5" />
+                                    </span>
+                                    <div>
+                                        <h2 className="text-sm font-black text-[#07324A]">Filter Data Peta</h2>
+                                        <p className="mt-1 text-xs font-semibold leading-5 text-slate-500">Filter ditempatkan di luar muka peta agar kontrol navigasi tidak saling menutupi.</p>
+                                    </div>
+                                </div>
+
+                                <div className="flex items-center gap-2">
+                                    <span className="rounded-full border border-[#BDE7E1] bg-[#F2FAF6] px-3 py-1.5 text-xs font-black text-[#0B6E78]">
+                                        {formatNumber(filteredIncidents.length)} titik
+                                    </span>
+                                    <button
+                                        type="button"
+                                        onClick={() => {
+                                            setSelectedSource('all');
+                                            setSelectedType('all');
+                                            setSelectedKecamatan('all');
+                                            setSelectedPeriod('all');
+                                            setSearchQuery('');
+                                        }}
+                                        disabled={activeFilterCount === 0}
+                                        className="inline-flex h-9 items-center gap-2 rounded-xl border border-[#BDE7E1] bg-white px-3 text-xs font-black text-[#07324A] transition hover:border-[#0FA3A0] hover:bg-[#F2FAF6] disabled:cursor-not-allowed disabled:opacity-45"
+                                    >
+                                        <RefreshCcw className="h-3.5 w-3.5" />
+                                        Reset
+                                    </button>
+                                </div>
+                            </div>
+
+                            <div className="grid gap-3 sm:grid-cols-2 xl:grid-cols-4">
+                                <SelectField label="Sumber Data" value={selectedSource} onChange={setSelectedSource} options={sourceOptions} />
+                                <SelectField label="Jenis Kejadian" value={selectedType} onChange={setSelectedType} options={typeOptions} />
+                                <SelectField label="Kecamatan" value={selectedKecamatan} onChange={setSelectedKecamatan} options={kecamatanOptions} />
+                                <SelectField label="Periode" value={selectedPeriod} onChange={setSelectedPeriod} options={periodOptions} />
+                            </div>
+                        </section>
                     </>
                 )}
 
@@ -1766,119 +1730,48 @@ export default function AnalysisDashboard() {
                             fitDistrictBoundary
                             showVillageBoundary={false}
                             villageBoundaryInteractive={false}
-                            showMapControls={false}
-                            showKdeLegend={false}
+                            showIncidentMarkers={showIncident}
+                            onShowIncidentMarkersChange={setShowIncident}
+                            showMapControls
+                            onLocateRequest={locateUser}
+                            showEdgePanels
+                            showKdeLegend
                             kdeLayerMode={kdeLayerMode}
                             onKdeLayerModeChange={setKdeLayerMode}
                         />
 
-                        <div className="pointer-events-none absolute inset-x-4 top-4 z-[640] flex items-start justify-between gap-3">
-                            <div className="jaga-analysis-map-tools pointer-events-auto flex flex-col items-start gap-2">
-                                <div className="jaga-analysis-tool-card" aria-label="Kontrol zoom peta">
-                                    <SmallButton onClick={zoomIn} title="Zoom in" iconOnly><Plus className="h-4 w-4" /></SmallButton>
-                                    <SmallButton onClick={zoomOut} title="Zoom out" iconOnly><Minus className="h-4 w-4" /></SmallButton>
-                                </div>
-
-                                <div className="jaga-analysis-tool-card flex-wrap" aria-label="Kontrol navigasi peta">
-                                    <SmallButton onClick={fitSleman} title="Zoom to extent Kabupaten Sleman" label="Sleman"><Crosshair className="h-4 w-4" /></SmallButton>
-                                    <SmallButton onClick={locateUser} active={Boolean(userLocation)} title="Lokasi Saya" label="Lokasi"><LocateFixed className={cx('h-4 w-4', isLocating && 'animate-pulse')} /></SmallButton>
-                                    <SmallButton onClick={() => setIsFullscreen((value) => !value)} active={isFullscreen} title="Layar penuh" label={isFullscreen ? 'Tutup' : 'Layar'}>
-                                        {isFullscreen ? <Minimize2 className="h-4 w-4" /> : <Maximize2 className="h-4 w-4" />}
-                                    </SmallButton>
-                                </div>
-                            </div>
-                        </div>
-
-                        {userRiskInfo && (
-                            <div
-                                className={cx(
-                                    'absolute left-1/2 top-4 z-[655] w-[min(92%,430px)] -translate-x-1/2 rounded-[1.6rem] border p-4 shadow-2xl backdrop-blur-xl',
-                                    userRiskInfo.status === 'rawan'
-                                        ? 'border-red-200 bg-red-50/95 text-red-900 shadow-red-950/10'
-                                        : userRiskInfo.status === 'waspada'
-                                          ? 'border-amber-200 bg-amber-50/95 text-amber-900 shadow-amber-950/10'
-                                          : 'border-emerald-200 bg-emerald-50/95 text-emerald-900 shadow-emerald-950/10',
-                                )}
-                            >
-                                <div className="flex items-start gap-3">
-                                    <div className="flex h-11 w-11 shrink-0 items-center justify-center rounded-2xl bg-white/70 text-current">
-                                        {userRiskInfo.status === 'aman' ? <Shield className="h-5 w-5" /> : <AlertTriangle className="h-5 w-5" />}
-                                    </div>
-
-                                    <div className="min-w-0">
-                                        <p className="text-sm font-black">{userRiskInfo.title}</p>
-                                        <p className="mt-1 text-xs font-semibold leading-5 opacity-80">{userRiskInfo.message}</p>
-                                    </div>
-                                </div>
-                            </div>
-                        )}
-
-                        {controlOpen && (
-                            <aside className="absolute right-4 top-[86px] z-[650] hidden w-[310px] max-w-[calc(100%-2rem)] lg:block">
-                                <div className="jaga-analysis-control-scroll max-h-[calc(100vh-9rem)] overflow-y-auto rounded-[1.8rem] border border-white/80 bg-white/95 p-3 shadow-2xl shadow-slate-950/16 backdrop-blur-xl">
-                                    <div className="mb-3 flex items-start justify-between gap-3 rounded-[1.45rem] bg-slate-950 px-4 py-3 text-white">
-                                        <div>
-                                            <p className="text-sm font-black">Keterangan Peta</p>
-                                            <p className="mt-1 text-[11px] font-semibold leading-4 text-white/60">Atur layer, filter data, dan legenda marker.</p>
-                                        </div>
-
-                                        <button type="button" onClick={() => setControlOpen(false)} className="flex h-8 w-8 shrink-0 items-center justify-center rounded-xl bg-white/10 text-white transition hover:bg-white/20">
-                                            <X className="h-4 w-4" />
-                                        </button>
-                                    </div>
-
-                                    {controlContent}
-                                </div>
-                            </aside>
-                        )}
-
-
-                        {!controlOpen && (
-                            <button
-                                type="button"
-                                onClick={() => setControlOpen(true)}
-                                className="absolute right-4 top-[86px] z-[650] hidden items-center gap-2 rounded-2xl border border-white/70 bg-slate-950 px-4 py-3 text-sm font-black text-white shadow-2xl shadow-slate-950/20 ring-2 ring-white/50 transition hover:-translate-y-0.5 hover:bg-[#07324A] lg:inline-flex"
-                            >
-                                <SlidersHorizontal className="h-4 w-4" />
-                                Keterangan Peta
-                            </button>
-                        )}
-
-                        <button
-                            type="button"
-                            onClick={() => setMobileControlOpen(true)}
-                            className="absolute bottom-4 right-4 z-[650] inline-flex items-center gap-2 rounded-2xl bg-slate-950 px-4 py-3 text-sm font-black text-white shadow-2xl shadow-slate-950/20 lg:hidden"
-                        >
-                            <SlidersHorizontal className="h-4 w-4" />
-                            Kontrol
-                        </button>
-
-                        {kdeLayerMode !== 'none' && (
-                            <div className="absolute bottom-4 left-1/2 z-[630] w-[min(520px,calc(100%-2rem))] -translate-x-1/2 rounded-[1.35rem] border border-white/80 bg-white/95 p-3 shadow-xl shadow-slate-950/12 backdrop-blur-xl">
-                                <div className="mb-2 flex items-center justify-between gap-3">
-                                    <span className="text-[11px] font-black uppercase tracking-[0.16em] text-[#07324A]">{activeKdeLegendTitle}</span>
-                                    <span className="text-[10px] font-bold text-slate-500">{activeKdeLegendSubtitle}</span>
-                                </div>
-
-                                <div className="jaga-analysis-kde-gradient h-2.5 rounded-full" />
-
-                                <div className="mt-2 grid grid-cols-2 gap-2 text-[11px] font-black text-slate-600 sm:grid-cols-5">
-                                    {activeKdeLegendItems.map((item) => (
-                                        <div key={item.intensity} className="flex items-center gap-1.5">
-                                            <span className="h-2.5 w-2.5 rounded-full" style={{ backgroundColor: item.color }} />
-                                            {item.label}
-                                        </div>
-                                    ))}
-                                </div>
-                            </div>
-                        )}
-
-                        {reportError && (
-                            <div className="absolute left-4 top-[86px] z-[640] max-w-sm rounded-2xl border border-[#BDE7E1] bg-[#F2FAF6] p-3 text-xs font-bold leading-5 text-[#07324A] shadow-xl">
-                                {reportError}
-                            </div>
-                        )}
                     </div>
+
+                    {!isFullscreen && userRiskInfo && (
+                        <section
+                            className={cx(
+                                'rounded-[1.5rem] border p-4 shadow-sm',
+                                userRiskInfo.status === 'rawan'
+                                    ? 'border-red-200 bg-red-50 text-red-900'
+                                    : userRiskInfo.status === 'waspada'
+                                      ? 'border-amber-200 bg-amber-50 text-amber-900'
+                                      : 'border-emerald-200 bg-emerald-50 text-emerald-900',
+                            )}
+                            role="status"
+                            aria-live="polite"
+                        >
+                            <div className="flex items-start gap-3">
+                                <div className="flex h-11 w-11 shrink-0 items-center justify-center rounded-2xl bg-white/80">
+                                    {userRiskInfo.status === 'aman' ? <Shield className="h-5 w-5" /> : <AlertTriangle className="h-5 w-5" />}
+                                </div>
+                                <div className="min-w-0">
+                                    <p className="text-sm font-black">{userRiskInfo.title}</p>
+                                    <p className="mt-1 text-xs font-semibold leading-5 opacity-80">{userRiskInfo.message}</p>
+                                </div>
+                            </div>
+                        </section>
+                    )}
+
+                    {!isFullscreen && reportError && (
+                        <section className="rounded-[1.35rem] border border-[#F2C99F] bg-[#FFF8ED] px-4 py-3 text-xs font-bold leading-5 text-[#7C2D12] shadow-sm" role="alert">
+                            {reportError}
+                        </section>
+                    )}
 
                     {!isFullscreen && (
                         <section className="rounded-[2rem] border border-[#BDE7E1] bg-white p-4 shadow-sm">
@@ -1908,24 +1801,6 @@ export default function AnalysisDashboard() {
                 </section>
             </div>
 
-            {mobileControlOpen && (
-                <div className="fixed inset-0 z-[10000] bg-slate-950/45 p-4 backdrop-blur-sm lg:hidden">
-                    <div className="ml-auto flex h-full max-w-md flex-col rounded-[2rem] bg-white p-4 shadow-2xl">
-                        <div className="mb-3 flex items-center justify-between gap-3">
-                            <div>
-                                <p className="text-base font-black text-foreground">Kontrol Peta</p>
-                                <p className="text-xs font-semibold text-slate-500">Atur layer dan filter data.</p>
-                            </div>
-
-                            <button type="button" onClick={() => setMobileControlOpen(false)} className="flex h-10 w-10 items-center justify-center rounded-2xl bg-slate-100 text-slate-500">
-                                <X className="h-5 w-5" />
-                            </button>
-                        </div>
-
-                        <div className="min-h-0 flex-1 overflow-y-auto pr-1">{controlContent}</div>
-                    </div>
-                </div>
-            )}
         </main>
     );
 }

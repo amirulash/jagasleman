@@ -1,0 +1,1 @@
+import{t as e}from"./app-D_ImtsGv.js";import{t}from"./SafekeyLayout-B1_eBycj.js";import n from"./AnalysisDashboard-C_RL_k8t.js";var r=e();function i(){return(0,r.jsx)(t,{children:(0,r.jsx)(n,{})})}export{i as default};

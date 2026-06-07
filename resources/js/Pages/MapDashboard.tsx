@@ -291,7 +291,19 @@ function normalizeIncident(
         type: category,
         kategori: category,
         rawKategori: category,
-        description: cleanText(item?.description ?? item?.deskripsi, '-'),
+        description: cleanText(
+            item?.description ??
+                item?.deskripsi ??
+                item?.description_full ??
+                item?.full_description ??
+                item?.keterangan ??
+                item?.chronology ??
+                item?.kronologi ??
+                item?.uraian ??
+                item?.detail ??
+                item?.catatan,
+            '-',
+        ),
         location: cleanText(item?.location ?? item?.address ?? item?.alamat, 'Lokasi belum tersedia'),
         kecamatan: cleanText(item?.kecamatan ?? item?.district, 'Sleman'),
         desa: cleanText(item?.desa ?? item?.village, '-'),
@@ -545,9 +557,9 @@ export default function MapDashboard() {
             : 'Tidak ada data yang sesuai dengan filter.';
 
     return (
-        <div className="h-[calc(100vh-4rem)] min-h-0 overflow-hidden bg-slate-50 dark:bg-[#17324A]">
-            <div className="flex h-full min-h-0 flex-col">
-                <div className="border-b border-slate-200 dark:border-white/10 bg-white dark:bg-[#102538] px-4 py-3">
+        <div className="jaga-map-dashboard min-h-[calc(100dvh-80px)] bg-slate-50 dark:bg-[#17324A] xl:h-[calc(100dvh-84px)] xl:min-h-0 xl:overflow-hidden">
+            <div className="flex min-h-full flex-col xl:h-full xl:min-h-0">
+                <header className="jaga-map-page-header border-b border-slate-200 bg-white px-4 dark:border-white/10 dark:bg-[#102538] sm:px-6">
                     <div className="flex flex-col gap-3 xl:flex-row xl:items-center xl:justify-between">
                         <div>
                             <div className="flex flex-wrap items-center gap-2">
@@ -562,15 +574,15 @@ export default function MapDashboard() {
                                 </span>
                             </div>
 
-                            <h1 className="mt-2 text-xl font-bold tracking-tight text-foreground">
+                            <h1 className="jaga-map-page-title mt-2 font-black tracking-tight text-foreground">
                                 Peta Kejadian Sleman
                             </h1>
 
-                            <p className="mt-1 max-w-3xl text-sm font-semibold text-[#07324A] dark:text-slate-200">
+                            <p className="jaga-map-page-subtitle mt-1 max-w-3xl font-semibold text-[#07324A] dark:text-slate-200">
                                 Lihat titik kejadian, layer KDE 2020–2025, KDE otomatis, batas wilayah, dan sumber data pada peta.
                             </p>
 
-                            <div className="mt-3 rounded-2xl border border-[#BDE7E1] bg-[#F2FAF6] p-3 text-[#07324A] shadow-sm dark:border-white/10 dark:bg-white/5 dark:text-white">
+                            <div className="jaga-map-guide mt-3 rounded-2xl border border-[#BDE7E1] bg-[#F2FAF6] p-3 text-[#07324A] shadow-sm dark:border-white/10 dark:bg-white/5 dark:text-white">
                                 <div className="flex items-center gap-2 text-sm font-black">
                                     <MousePointerClick className="h-4 w-4 text-[#0B6E78] dark:text-[#5BAE8A]" />
                                     Cara Pakai Peta
@@ -629,10 +641,10 @@ export default function MapDashboard() {
                             </button>
                         </div>
                     </div>
-                </div>
+                </header>
 
-                <div className="grid min-h-0 flex-1 grid-cols-1 xl:grid-cols-[300px_minmax(0,1fr)_320px]">
-                    <aside className="min-h-0 overflow-y-auto border-r border-slate-200 dark:border-white/10 bg-white dark:bg-[#102538] p-4">
+                <div className="jaga-map-dashboard-grid grid min-h-0 flex-1 grid-cols-1 xl:grid-cols-[300px_minmax(0,1fr)_320px]">
+                    <aside className="jaga-map-filter-panel order-2 border-r border-slate-200 bg-white p-4 dark:border-white/10 dark:bg-[#102538] xl:order-1 xl:min-h-0 xl:overflow-y-auto">
                         <div className="mb-4 flex items-center gap-2">
                             <div className="flex h-9 w-9 items-center justify-center rounded-xl bg-[#F2FAF6] text-[#F47B52]">
                                 <Filter className="h-4 w-4" />
@@ -817,8 +829,8 @@ export default function MapDashboard() {
                         </div>
                     </aside>
 
-                    <main className="relative min-h-0 overflow-hidden bg-slate-100 dark:bg-[#17324A]">
-                        <div className="pointer-events-none absolute left-4 top-4 z-[520] rounded-2xl border border-[#BDE7E1] bg-white/95 px-4 py-2 text-xs font-black text-[#07324A] shadow-xl backdrop-blur">
+                    <main className="jaga-map-canvas relative order-1 min-h-[520px] overflow-hidden bg-slate-100 dark:bg-[#17324A] xl:order-2 xl:min-h-0">
+                        <div className="jaga-map-status-chip pointer-events-none absolute left-4 top-4 z-[520] rounded-2xl border border-[#BDE7E1] bg-white/95 px-4 py-2 text-xs font-black text-[#07324A] shadow-xl backdrop-blur">
                             {showIncidentPoints
                                 ? `Menampilkan ${formatNumber(filteredReports.length)} kejadian sesuai filter.`
                                 : 'Layer Titik Kejadian nonaktif.'}
@@ -831,9 +843,11 @@ export default function MapDashboard() {
                             onKdeLayerModeChange={setKdeLayerMode}
                             officialKdeUrl="/data/kde/kde_2020_2025.geojson"
                             showIncidentMarkers={showIncidentPoints}
+                            onShowIncidentMarkersChange={setShowIncidentPoints}
                             hotspotClusters={kdeLayerMode === 'none' ? kdeZones as any : []}
                             heatmapBandwidthKm={1.65}
                             showDistrictBoundary
+                            showEdgePanels
                             fitDistrictBoundary={false}
                         />
 
@@ -845,7 +859,7 @@ export default function MapDashboard() {
                     </main>
 
                     {showAnalysisPanel && (
-                        <aside className="min-h-0 overflow-y-auto border-l border-slate-200 dark:border-white/10 bg-white dark:bg-[#102538] p-4">
+                        <aside className="jaga-map-analysis-panel order-3 border-l border-slate-200 bg-white p-4 dark:border-white/10 dark:bg-[#102538] xl:min-h-0 xl:overflow-y-auto">
                             <div className="mb-4 flex items-center gap-2">
                                 <div className="flex h-9 w-9 items-center justify-center rounded-xl bg-orange-50 text-orange-700">
                                     <BarChart3 className="h-4 w-4" />

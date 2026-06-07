@@ -1,0 +1,1 @@
+import{t as e}from"./app-DIGlu05J.js";import{t}from"./SafekeyLayout-ChWvnd0O.js";import n from"./StreetCrimeAnalysis-r9PYXNj0.js";var r=e();function i(){return(0,r.jsx)(t,{children:(0,r.jsx)(n,{})})}export{i as default};
