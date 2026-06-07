@@ -21,6 +21,8 @@ export interface IncidentFeature {
     'Latitude': number;
     'Longitude': number;
     'Validasi Lokasi': boolean;
+    'kecamatan_final'?: string;
+    'status_validasi'?: string;
   };
   geometry: {
     type: string;
@@ -147,9 +149,10 @@ export function getIncidentsFromGeojson() {
 export function convertIncidentsToFormat(features: IncidentFeature[]) {
   return features.map((feature, index) => {
     const props = feature.properties;
-    const { time, kecamatan } = parseTimeAndKecamatan(props['Waktu Kejadian'], props['Alamat Fix']);
+    const { time, kecamatan: parsedKecamatan } = parseTimeAndKecamatan(props['Waktu Kejadian'], props['Alamat Fix']);
     const date = parseDate(props['Tanggal Kejadian']);
     const type = normalizeStreetCrimeType(props['Kategori']);
+    const kecamatan = String(props['kecamatan_final'] || parsedKecamatan || 'Sleman').trim();
 
     return {
       id: `incident_${index + 1}`,
@@ -162,6 +165,7 @@ export function convertIncidentsToFormat(features: IncidentFeature[]) {
       location: props['Alamat Fix'],
       status: 'Aktif' as const,
       kecamatan,
+      kecamatan_final: kecamatan,
       kategori: type,
       rawKategori: props['Kategori'],
     };

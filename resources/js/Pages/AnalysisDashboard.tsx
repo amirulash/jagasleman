@@ -33,6 +33,7 @@ import { analyzeKDE } from '@/lib/kdeAnalysis';
 import { fetchApprovedReportIncidents, type MapIncident } from '@/lib/databaseIncidents';
 import type { UserLocation } from '@/lib/geolocation';
 import { JagaPageHero } from '@/Components/JagaPageHero';
+import { batasKecamatanGeojson } from '@/data/districtBoundaryGeojson';
 
 type SourceFilter = 'all' | 'dummy' | 'report';
 type PeriodFilter = 'all' | '7d' | '30d' | '90d' | '2025' | '2024' | '2023' | '2022' | '2021' | '2020';
@@ -118,17 +119,17 @@ const KDE_AUTOMATIC_LEGEND_UI = [
 const KDE_LAYER_OPTIONS: Array<{ value: KdeLayerMode; label: string; note: string }> = [
     {
         value: 'official',
-        label: 'KDE 2020–2025',
+        label: 'Daerah Rawan 2020–2025',
         note: 'Peta daerah rawan berdasarkan data kejadian 2020–2025.',
     },
     {
         value: 'automatic',
-        label: 'KDE Otomatis',
-        note: 'Peta kepadatan yang berubah mengikuti filter data aktif.',
+        label: 'Kepadatan Otomatis',
+        note: 'Peta kepadatan kejadian yang berubah mengikuti filter data aktif.',
     },
     {
         value: 'none',
-        label: 'Tanpa KDE',
+        label: 'Tanpa Kepadatan',
         note: 'Tampilkan peta titik dan batas wilayah saja.',
     },
 ];
@@ -282,8 +283,90 @@ function getIncidentColor(type: string) {
     return crimePalette[type]?.color || crimePalette[getIncidentTypeLabel(type)]?.color || getStableIncidentColor(type);
 }
 
+function analysisPointInRing(lng: number, lat: number, ring: any[]) {
+    let inside = false;
+
+    for (let i = 0, j = ring.length - 1; i < ring.length; j = i++) {
+        const xi = Number(ring[i]?.[0]);
+        const yi = Number(ring[i]?.[1]);
+        const xj = Number(ring[j]?.[0]);
+        const yj = Number(ring[j]?.[1]);
+
+        if (!Number.isFinite(xi) || !Number.isFinite(yi) || !Number.isFinite(xj) || !Number.isFinite(yj)) {
+            continue;
+        }
+
+        const intersect = yi > lat !== yj > lat && lng < ((xj - xi) * (lat - yi)) / (yj - yi || 1e-12) + xi;
+
+        if (intersect) inside = !inside;
+    }
+
+    return inside;
+}
+
+function analysisPointInPolygon(lng: number, lat: number, polygon: any[]) {
+    if (!Array.isArray(polygon) || !polygon.length) return false;
+
+    const outerRing = polygon[0];
+
+    if (!analysisPointInRing(lng, lat, outerRing)) return false;
+
+    for (let i = 1; i < polygon.length; i++) {
+        if (analysisPointInRing(lng, lat, polygon[i])) return false;
+    }
+
+    return true;
+}
+
+function analysisGeometryContainsPoint(geometry: any, lat: number, lng: number) {
+    if (!geometry) return false;
+
+    if (geometry.type === 'Polygon') {
+        return analysisPointInPolygon(lng, lat, geometry.coordinates);
+    }
+
+    if (geometry.type === 'MultiPolygon') {
+        return geometry.coordinates.some((polygon: any[]) => analysisPointInPolygon(lng, lat, polygon));
+    }
+
+    return false;
+}
+
+function getKecamatanByCoordinate(lat: number, lng: number) {
+    if (!Number.isFinite(lat) || !Number.isFinite(lng)) return '';
+
+    try {
+        const features = (batasKecamatanGeojson as any)?.features || [];
+        const match = features.find((feature: any) => analysisGeometryContainsPoint(feature?.geometry, lat, lng));
+        const props = match?.properties || {};
+
+        return String(props.wadmkc || props.WADMKC || props.kecamatan || props.KECAMATAN || props.nama_kecamatan || '').trim();
+    } catch {
+        return '';
+    }
+}
+
 function getIncidentKecamatan(incident: any) {
-    return String(incident?.kecamatan || incident?.district || incident?.wilayah || '-').trim() || '-';
+    const props = incident?.properties || {};
+    const coordinates = incident?.geometry?.coordinates;
+    const geoLng = Array.isArray(coordinates) ? coordinates[0] : undefined;
+    const geoLat = Array.isArray(coordinates) ? coordinates[1] : undefined;
+    const lat = Number(incident?.lat ?? incident?.latitude ?? props?.lat ?? props?.latitude ?? props?.LAT ?? props?.Latitude ?? geoLat);
+    const lng = Number(incident?.lng ?? incident?.longitude ?? incident?.lon ?? props?.lng ?? props?.longitude ?? props?.LNG ?? props?.Longitude ?? geoLng);
+    const spatialKecamatan = getKecamatanByCoordinate(lat, lng);
+
+    return String(
+        spatialKecamatan ||
+            incident?.kecamatan_final ||
+            props?.kecamatan_final ||
+            incident?.kecamatan ||
+            props?.kecamatan ||
+            incident?.district ||
+            props?.district ||
+            incident?.wilayah ||
+            props?.wilayah ||
+            '-'
+    ).trim() || '-';
 }
 
 function getIncidentDesa(incident: any) {
@@ -1690,21 +1773,15 @@ export default function AnalysisDashboard() {
                         />
 
                         <div className="pointer-events-none absolute inset-x-4 top-4 z-[640] flex items-start justify-between gap-3">
-                            <div className="jaga-analysis-map-tools pointer-events-auto flex flex-wrap items-start gap-2">
+                            <div className="jaga-analysis-map-tools pointer-events-auto flex flex-col items-start gap-2">
                                 <div className="jaga-analysis-tool-card" aria-label="Kontrol zoom peta">
                                     <SmallButton onClick={zoomIn} title="Zoom in" iconOnly><Plus className="h-4 w-4" /></SmallButton>
                                     <SmallButton onClick={zoomOut} title="Zoom out" iconOnly><Minus className="h-4 w-4" /></SmallButton>
                                 </div>
 
-                                <div className="jaga-analysis-tool-card" aria-label="Zoom wilayah Sleman">
+                                <div className="jaga-analysis-tool-card flex-wrap" aria-label="Kontrol navigasi peta">
                                     <SmallButton onClick={fitSleman} title="Zoom to extent Kabupaten Sleman" label="Sleman"><Crosshair className="h-4 w-4" /></SmallButton>
-                                </div>
-
-                                <div className="jaga-analysis-tool-card" aria-label="Lokasi pengguna">
                                     <SmallButton onClick={locateUser} active={Boolean(userLocation)} title="Lokasi Saya" label="Lokasi"><LocateFixed className={cx('h-4 w-4', isLocating && 'animate-pulse')} /></SmallButton>
-                                </div>
-
-                                <div className="jaga-analysis-tool-card" aria-label="Mode layar penuh">
                                     <SmallButton onClick={() => setIsFullscreen((value) => !value)} active={isFullscreen} title="Layar penuh" label={isFullscreen ? 'Tutup' : 'Layar'}>
                                         {isFullscreen ? <Minimize2 className="h-4 w-4" /> : <Maximize2 className="h-4 w-4" />}
                                     </SmallButton>
