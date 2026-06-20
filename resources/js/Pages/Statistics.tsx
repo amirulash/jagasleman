@@ -712,7 +712,7 @@ function CombinedRecentTable({ records }: { records: RecentReport[] }) {
                                 <th className="px-4 py-3">Sumber</th>
                                 <th className="px-4 py-3">Lokasi</th>
                                 <th className="px-4 py-3">Tanggal</th>
-                                <th className="px-4 py-3">Status</th>
+                                <th className="px-4 py-3 font-black">Status</th>
                             </tr>
                         </thead>
                         <tbody className="divide-y divide-slate-100">
@@ -1209,13 +1209,13 @@ export default function Statistics() {
                     <div className="overflow-hidden rounded-2xl border border-cyan-50">
                         <div className="overflow-x-auto">
                             <table className="w-full min-w-[740px] text-left text-sm">
-                                <thead className="bg-cyan-50 text-[11px] uppercase tracking-[0.14em] text-cyan-900">
+                                <thead className="bg-[#07324A] text-[11px] uppercase tracking-[0.14em] text-white">
                                     <tr>
-                                        <th className="px-4 py-3">Rank</th>
-                                        <th className="px-4 py-3">Kecamatan</th>
-                                        <th className="px-4 py-3">Jumlah</th>
-                                        <th className="px-4 py-3">Proporsi</th>
-                                        <th className="px-4 py-3">Status</th>
+                                        <th className="px-4 py-3 font-black">Rank</th>
+                                        <th className="px-4 py-3 font-black">Kecamatan</th>
+                                        <th className="px-4 py-3 font-black">Jumlah</th>
+                                        <th className="px-4 py-3 font-black">Proporsi</th>
+                                        <th className="px-4 py-3 font-black">Status</th>
                                     </tr>
                                 </thead>
                                 <tbody className="divide-y divide-slate-100">

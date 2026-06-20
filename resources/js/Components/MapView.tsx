@@ -1223,6 +1223,7 @@ function MapStyle() {
 
                 .jagasleman-contact-legend-icon.police { background: #0B6E78; }
                 .jagasleman-contact-legend-icon.hospital { background: #16A34A; }
+                .jagasleman-contact-legend-icon.fire { background: #F97316; }
 
                 @media (max-width: 640px) {
     
@@ -1968,10 +1969,10 @@ function svgIcon(html: string, size: [number, number], anchor: [number, number])
 
 function createIncidentIcon(_type: string, source: string) {
     const isReport = source === 'report';
-    const color = isReport ? '#F2A20B' : '#0B6E78';
-    const halo = isReport ? 'rgba(242,162,11,.22)' : 'rgba(11,110,120,.20)';
-    const label = isReport ? 'LM' : 'DK';
-    const title = isReport ? 'Laporan Masyarakat' : 'Data Kepolisian';
+    const color = isReport ? '#F2A20B' : getIncidentColor(_type);
+    const halo = isReport ? 'rgba(242,162,11,.22)' : `${color}2E`;
+    const label = isReport ? 'LM' : getIncidentLabel(_type);
+    const title = isReport ? 'Laporan Masyarakat' : getIncidentTypeLabel(_type);
 
     return svgIcon(
         `<div title="${title}" style="position:relative;width:36px;height:40px;display:flex;align-items:center;justify-content:center;">
@@ -1986,15 +1987,18 @@ function createIncidentIcon(_type: string, source: string) {
     );
 }
 
-function createContactIcon(type: 'Polsek' | 'Rumah Sakit') {
+function createContactIcon(type: 'Polsek' | 'Rumah Sakit' | 'Damkar') {
     const isPolice = type === 'Polsek';
-    const color = isPolice ? '#0B6E78' : '#16A34A';
-    const ring = isPolice ? 'rgba(14,165,160,.18)' : 'rgba(22,163,74,.18)';
-    const halo = isPolice ? 'rgba(11,74,99,.16)' : 'rgba(22,163,74,.16)';
+    const isHospital = type === 'Rumah Sakit';
+    const color = isPolice ? '#0B6E78' : isHospital ? '#16A34A' : '#F97316';
+    const ring = isPolice ? 'rgba(14,165,160,.18)' : isHospital ? 'rgba(22,163,74,.18)' : 'rgba(249,115,22,.18)';
+    const halo = isPolice ? 'rgba(11,74,99,.16)' : isHospital ? 'rgba(22,163,74,.16)' : 'rgba(249,115,22,.18)';
 
     const symbol = isPolice
         ? `<svg width="19" height="19" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2.35" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3l7 4v5c0 5-3 8-7 9-4-1-7-4-7-9V7l7-4Z"/><path d="M9 12h6"/><path d="M12 9v6"/></svg>`
-        : `<svg width="19" height="19" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2.35" stroke-linecap="round" stroke-linejoin="round"><rect x="4" y="4" width="16" height="16" rx="4"/><path d="M12 7v10"/><path d="M7 12h10"/></svg>`;
+        : isHospital
+            ? `<svg width="19" height="19" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2.35" stroke-linecap="round" stroke-linejoin="round"><rect x="4" y="4" width="16" height="16" rx="4"/><path d="M12 7v10"/><path d="M7 12h10"/></svg>`
+            : `<svg width="19" height="19" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2.35" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3l2.5 5 5.5.8-4 3.9.9 5.5L12 16.6 7.1 19.2l.9-5.5-4-3.9 5.5-.8L12 3Z"/></svg>`;
 
     return svgIcon(
         `<div style="position:relative;width:44px;height:44px;border-radius:18px;background:${ring};display:flex;align-items:center;justify-content:center;box-shadow:0 16px 30px rgba(15,31,46,.18);">
@@ -2042,6 +2046,47 @@ function ClickHandler({ onClick }: { onClick?: (lat: number, lng: number) => voi
     });
 
     return null;
+}
+
+
+function PopupPanelAutoCollapse({ onPopupOpen }: { onPopupOpen: () => void }) {
+    const map = useMap();
+
+    useEffect(() => {
+        map.on('popupopen', onPopupOpen);
+        return () => {
+            map.off('popupopen', onPopupOpen);
+        };
+    }, [map, onPopupOpen]);
+
+    return null;
+}
+
+function LocationRiskAlert({ userLocation, showRiskInfo }: { userLocation: UserLocation | null; showRiskInfo: boolean }) {
+    if (!userLocation || !showRiskInfo) return null;
+
+    const lat = Number(userLocation.lat);
+    const lng = Number(userLocation.lng);
+    if (!Number.isFinite(lat) || !Number.isFinite(lng)) return null;
+
+    const insideSleman = isInsideSlemanBoundary(lat, lng);
+    const context = makeLocationContext(lat, lng);
+    const riskText = String(context.risk || '').toLowerCase();
+    const isHighRisk = riskText.includes('tinggi') || riskText.includes('ekstrem');
+
+    return (
+        <div className={`jagasleman-location-risk-alert ${insideSleman ? (isHighRisk ? 'is-high' : 'is-normal') : 'is-outside'}`} role="status" aria-live="polite">
+            <div className="jagasleman-location-risk-alert__badge">!</div>
+            <div>
+                <b>{insideSleman ? `Area ${context.district}` : 'Di luar cakupan utama Sleman'}</b>
+                <span>
+                    {insideSleman
+                        ? `Kerawanan: ${context.risk}. ${context.riskNote || 'Tetap waspada dan pilih rute ramai.'}`
+                        : 'Fitur risiko utama difokuskan pada wilayah Kabupaten Sleman.'}
+                </span>
+            </div>
+        </div>
+    );
 }
 
 function MapInvalidation() {
@@ -2709,6 +2754,20 @@ function KdeLegendControl({
         showContacts ? { key: 'contacts', label: 'Lokasi Bantuan', type: 'contact' } : null,
     ].filter(Boolean) as Array<{ key: string; label: string; type: string }>;
 
+    const incidentLegendItems = [
+        'PENGEROYOKAN',
+        'PENGRUSAKAN',
+        'PENGANIAYAAN',
+        'PENYALAHGUNAAN SENJATA TAJAM',
+        'PENCURIAN DENGAN KEKERASAN (CURAS)',
+        'PEMERASAN DAN PENGANCAMAN',
+    ].map((type) => ({
+        type,
+        label: getIncidentTypeLabel(type),
+        short: getIncidentLabel(type),
+        color: getIncidentColor(type),
+    }));
+
     return (
         <div ref={controlRef} className={`jagasleman-kde-legend jagasleman-map-edge-panel ${open ? 'is-open' : ''}`}>
             <button
@@ -2742,6 +2801,17 @@ function KdeLegendControl({
                                 ))}
                             </div>
                         </>
+                    )}
+
+                    {showIncidents && (
+                        <div className="jagasleman-incident-legend-list" aria-label="Legenda jenis kejadian">
+                            {incidentLegendItems.map((item) => (
+                                <div key={item.type} className="jagasleman-incident-legend-item">
+                                    <span style={{ backgroundColor: item.color }}>{item.short}</span>
+                                    <b>{item.label}</b>
+                                </div>
+                            ))}
+                        </div>
                     )}
 
                     {symbols.length > 0 && (
@@ -3339,13 +3409,13 @@ function EmergencyContactMarkers({ contacts }: { contacts: EmergencyContact[] })
                     return Number.isFinite(lat) && Number.isFinite(lng);
                 })
                 .map((contact: any) => {
-                    const contactType =
-                        String(contact.type || '').toLowerCase().includes('rumah') ||
-                        String(contact.type || '').toLowerCase().includes('rs') ||
-                        String(contact.type || '').toLowerCase().includes('sakit')
+                    const rawContactType = String(contact.type || '').toLowerCase();
+                    const contactType = rawContactType.includes('damkar') || rawContactType.includes('pemadam')
+                        ? 'Damkar'
+                        : rawContactType.includes('rumah') || rawContactType.includes('rs') || rawContactType.includes('sakit')
                             ? 'Rumah Sakit'
                             : 'Polsek';
-                    const accent = contactType === 'Rumah Sakit' ? '#16A34A' : '#0B6E78';
+                    const accent = contactType === 'Rumah Sakit' ? '#16A34A' : contactType === 'Damkar' ? '#F97316' : '#0B6E78';
 
                     return (
                         <Marker
@@ -3417,8 +3487,9 @@ function EmergencyContactMarkers({ contacts }: { contacts: EmergencyContact[] })
 function EmergencyContactLegend({ contacts }: { contacts: EmergencyContact[] }) {
     if (!contacts?.length) return null;
 
-    const policeCount = contacts.filter((contact: any) => !String(contact?.type || '').toLowerCase().includes('rumah') && !String(contact?.type || '').toLowerCase().includes('sakit')).length;
-    const hospitalCount = contacts.length - policeCount;
+    const policeCount = contacts.filter((contact: any) => String(contact?.type || '').toLowerCase().includes('polsek')).length;
+    const hospitalCount = contacts.filter((contact: any) => String(contact?.type || '').toLowerCase().includes('rumah') || String(contact?.type || '').toLowerCase().includes('sakit') || String(contact?.type || '').toLowerCase().includes('rs')).length;
+    const fireCount = contacts.filter((contact: any) => String(contact?.type || '').toLowerCase().includes('damkar') || String(contact?.type || '').toLowerCase().includes('pemadam')).length;
 
     return (
         <div className="jagasleman-contact-legend">
@@ -3432,6 +3503,11 @@ function EmergencyContactLegend({ contacts }: { contacts: EmergencyContact[] }) 
                 <span className="jagasleman-contact-legend-icon hospital">✚</span>
                 <span>Rumah Sakit</span>
                 <b>{hospitalCount}</b>
+            </div>
+            <div className="jagasleman-contact-legend-row">
+                <span className="jagasleman-contact-legend-icon fire">🔥</span>
+                <span>Damkar</span>
+                <b>{fireCount}</b>
             </div>
         </div>
     );
@@ -3670,7 +3746,9 @@ function MapViewContent({
                 <BasemapControl />
             )}
             <MapInvalidation />
+            <PopupPanelAutoCollapse onPopupOpen={() => setActiveEdgePanel(null)} />
             <ClickHandler onClick={onClick} />
+            <LocationRiskAlert userLocation={userLocation || null} showRiskInfo={showRiskInfo} />
 
             {districtLayerVisible && <DistrictBoundaryLayer fitDistrictBoundary={fitDistrictBoundary} incidents={cleanIncidents} />}
 

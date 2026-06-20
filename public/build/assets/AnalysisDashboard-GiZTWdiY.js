@@ -1,1 +1,0 @@
-import{t as e}from"./app-BbPIcaGO.js";import{t}from"./SafekeyLayout-E57Zw2L5.js";import n from"./AnalysisDashboard-C_sx3vlC.js";var r=e();function i(){return(0,r.jsx)(t,{children:(0,r.jsx)(n,{})})}export{i as default};

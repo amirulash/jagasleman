@@ -2,7 +2,6 @@ import { Link } from '@inertiajs/react';
 import { useEffect, useMemo, useState } from 'react';
 import AdminLayout from '@/Layouts/AdminLayout';
 import {
-    AlertTriangle,
     ArrowRight,
     BarChart3,
     CheckCircle2,
@@ -11,7 +10,6 @@ import {
     Map,
     MapPin,
     Printer,
-    RefreshCw,
     ShieldCheck,
     Sparkles,
     Trash2,
@@ -366,50 +364,7 @@ export default function AdminDashboard() {
                     </div>
                 )}
 
-                <section className="grid gap-6 xl:grid-cols-[.9fr_1.1fr]">
-                    <div className="admin-print-card rounded-[2rem] border border-[#BDE7E1] bg-white dark:bg-[#102538] p-6 shadow-xl shadow-slate-200/60 dark:border-white/10 dark:bg-white dark:bg-[#102538]/5">
-                        <div className="mb-5 flex items-center justify-between gap-3">
-                            <div>
-                                <p className="text-xs font-black uppercase tracking-[0.22em] text-[#F47B52]">Prioritas Admin</p>
-                                <h2 className="mt-2 text-2xl font-black text-[#07324A] dark:text-[#F2FAF6]">Aksi cepat</h2>
-                            </div>
-                            <button type="button" onClick={loadReports} className="admin-no-print rounded-2xl border border-[#BDE7E1] bg-white dark:bg-[#102538] px-4 py-2 text-sm font-black text-[#07324A] transition hover:bg-[#F2FAF6] dark:border-white/10 dark:bg-white dark:bg-[#102538]/5 dark:text-white">
-                                <RefreshCw className="mr-2 inline h-4 w-4" />Refresh
-                            </button>
-                        </div>
-
-                        <div className="grid gap-3">
-                            {[
-                                { href: '/admin/laporan', title: 'Review laporan masuk', desc: `${summary.pending} laporan menunggu keputusan admin.`, icon: AlertTriangle, tone: 'bg-[#F2FAF6] text-[#F47B52] border-[#BDE7E1]' },
-                                { href: '/admin/points', title: 'Edit titik terverifikasi', desc: 'Perbaiki jenis, lokasi, koordinat, dan deskripsi titik approved.', icon: ShieldCheck, tone: 'bg-[#F2FAF6] text-[#F47B52] border-[#BDE7E1]' },
-                                { href: '/admin/peta', title: 'Kelola titik dari peta', desc: 'Lihat status laporan berdasarkan warna legenda dan hapus titik langsung dari peta admin.', icon: Map, tone: 'bg-[#F2FAF6] text-[#F47B52] border-[#BDE7E1]' },
-                                { href: '#', title: 'Export laporan PDF', desc: 'Buat laporan dashboard siap cetak untuk lampiran.', icon: Printer, tone: 'bg-violet-50 text-violet-700 border-violet-200', onClick: () => openDashboardPdf(reports) },
-                            ].map((item) => {
-                                const Icon = item.icon;
-                                const content = (
-                                    <div className={`group rounded-3xl border p-4 transition hover:-translate-y-0.5 hover:shadow-md ${item.tone}`}>
-                                        <div className="flex items-center gap-4">
-                                            <div className="flex h-12 w-12 shrink-0 items-center justify-center rounded-2xl bg-white dark:bg-[#102538]">
-                                                <Icon className="h-6 w-6" />
-                                            </div>
-                                            <div className="min-w-0 flex-1">
-                                                <h3 className="font-black">{item.title}</h3>
-                                                <p className="mt-1 text-sm font-semibold opacity-75">{item.desc}</p>
-                                            </div>
-                                            <ArrowRight className="h-5 w-5 transition group-hover:translate-x-1" />
-                                        </div>
-                                    </div>
-                                );
-
-                                if (item.onClick) {
-                                    return <button key={item.title} type="button" onClick={item.onClick} className="admin-no-print text-left">{content}</button>;
-                                }
-
-                                return <Link key={item.title} href={item.href}>{content}</Link>;
-                            })}
-                        </div>
-                    </div>
-
+                <section className="grid gap-6">
                     <div className="admin-print-card rounded-[2rem] border border-[#BDE7E1] bg-white dark:bg-[#102538] p-6 shadow-xl shadow-slate-200/60 dark:border-white/10 dark:bg-white dark:bg-[#102538]/5">
                         <div className="mb-5 flex items-center justify-between gap-3">
                             <div>

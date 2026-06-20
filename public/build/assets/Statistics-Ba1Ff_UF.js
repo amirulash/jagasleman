@@ -1,1 +1,0 @@
-import{t as e}from"./app-B7x5c3o4.js";import{t}from"./SafekeyLayout-DsovyKIh.js";import n from"./Statistics-DuaJyrvb.js";var r=e();function i(){return(0,r.jsx)(t,{children:(0,r.jsx)(n,{})})}export{i as default};

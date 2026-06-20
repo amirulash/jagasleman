@@ -1,1 +1,0 @@
-import{d as e}from"./app-BbPIcaGO.js";import{c as t,d as n,l as r,u as i}from"./leaflet-BVUQPgHM.js";function a(e,t,n){t.center!==n.center&&e.setLatLng(t.center),t.radius!=null&&t.radius!==n.radius&&e.setRadius(t.radius)}var o=e(i(),1),s=t(function({center:e,children:t,...i},a){let s=new o.CircleMarker(e,i);return r(s,n(a,{overlayContainer:s}))},a);export{a as n,s as t};

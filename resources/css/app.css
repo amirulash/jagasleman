@@ -7504,3 +7504,332 @@ html body .jaga-mobile-navigation a.jaga-mobile-drawer-brand span.jaga-brand-mar
     font-size: .64rem !important;
   }
 }
+
+/* === Revisi Usability 2026: keterbacaan, popup peta mobile, legenda, dan mode tampilan === */
+html {
+  font-size: 16px;
+}
+
+body {
+  -webkit-font-smoothing: antialiased;
+  text-rendering: geometricPrecision;
+}
+
+.resource-theme.dark body,
+.resource-theme.dark .theme-shell {
+  background: #071B2A;
+  color: #F8FAFC;
+}
+
+.resource-theme.dark .jaga-top-navbar,
+.resource-theme.dark .jaga-navbar-shell,
+.resource-theme.dark .jaga-mobile-navigation-panel {
+  background: #0B2033 !important;
+  border-color: rgba(255,255,255,.12) !important;
+}
+
+.resource-theme.dark .jaga-navbar-menu {
+  background: #102A40 !important;
+  border-color: rgba(255,255,255,.12) !important;
+}
+
+.resource-theme.dark .jaga-brand-name,
+.resource-theme.dark .jaga-brand-tagline,
+.resource-theme.dark .jaga-nav-text,
+.resource-theme.dark .jaga-mobile-nav-label {
+  color: #F8FAFC !important;
+}
+
+.resource-theme .jaga-nav-link,
+.resource-theme .jaga-mobile-nav-link,
+.resource-theme .jaga-mobile-menu-button,
+.resource-theme a[class*="bg-[#07324A]"],
+.resource-theme button[class*="bg-[#07324A]"],
+.resource-theme a[class*="bg-[#0B6E78]"],
+.resource-theme button[class*="bg-[#0B6E78]"] {
+  text-shadow: none !important;
+}
+
+.resource-theme a[class*="bg-[#07324A]"],
+.resource-theme button[class*="bg-[#07324A]"],
+.resource-theme a[class*="bg-[#0B6E78]"],
+.resource-theme button[class*="bg-[#0B6E78]"],
+.resource-theme a[class*="bg-slate-950"],
+.resource-theme button[class*="bg-slate-950"] {
+  color: #FFFFFF !important;
+}
+
+.resource-theme .jaga-home-feature-grid a,
+.resource-theme #jaga-home-feature-grid a {
+  color: #07324A;
+}
+
+.resource-theme #jaga-home-feature-grid a p,
+.resource-theme #jaga-home-feature-grid a span,
+.resource-theme #jaga-home-feature-grid a h3 {
+  text-shadow: none !important;
+}
+
+.resource-theme #jaga-home-feature-grid a .inline-flex[class*="bg-[#07324A]"] {
+  background: #07324A !important;
+  color: #FFFFFF !important;
+  font-size: .88rem !important;
+  min-height: 2.5rem;
+}
+
+.resource-theme #jaga-home-feature-grid a:hover .inline-flex[class*="bg-[#07324A]"] {
+  background: #D9633D !important;
+}
+
+.jagasleman-leaflet-map .leaflet-popup-pane {
+  z-index: 1250 !important;
+}
+
+.jagasleman-leaflet-map .leaflet-popup {
+  max-width: min(90vw, 390px) !important;
+}
+
+.jagasleman-leaflet-map .leaflet-popup-content-wrapper {
+  max-width: min(90vw, 390px) !important;
+}
+
+.jagasleman-leaflet-map .leaflet-popup-content {
+  font-size: .9rem !important;
+  line-height: 1.5 !important;
+}
+
+.jagasleman-leaflet-map .jaga-map-popup-card {
+  max-height: min(58dvh, 480px) !important;
+  overflow-y: auto !important;
+}
+
+.jagasleman-bantara-control-stack,
+.jagasleman-map-right-stack,
+.jagasleman-kde-legend,
+.jagasleman-kde-layer-control,
+.jagasleman-basemap-panel,
+.jagasleman-contact-legend {
+  z-index: 850 !important;
+}
+
+.jaga-map-icon,
+.jaga-map-icon * {
+  box-sizing: border-box;
+}
+
+.jagasleman-incident-legend-list {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: .45rem;
+  margin-top: .75rem;
+  padding-top: .75rem;
+  border-top: 1px solid rgba(185,216,216,.72);
+}
+
+.jagasleman-incident-legend-item {
+  display: grid;
+  grid-template-columns: 2.2rem 1fr;
+  align-items: center;
+  gap: .5rem;
+  min-width: 0;
+  color: #07324A;
+  font-size: .72rem;
+  font-weight: 900;
+  line-height: 1.2;
+}
+
+.jagasleman-incident-legend-item span {
+  display: inline-flex;
+  width: 2.2rem;
+  height: 1.55rem;
+  align-items: center;
+  justify-content: center;
+  border-radius: 999px;
+  color: #fff;
+  font-size: .64rem;
+  font-weight: 950;
+  box-shadow: 0 4px 12px rgba(15,31,46,.18);
+}
+
+.jagasleman-incident-legend-item b {
+  min-width: 0;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.jagasleman-location-risk-alert {
+  position: absolute;
+  left: 50%;
+  top: 14px;
+  z-index: 900;
+  display: grid;
+  grid-template-columns: 2.15rem 1fr;
+  gap: .65rem;
+  width: min(430px, calc(100% - 112px));
+  transform: translateX(-50%);
+  border: 1px solid rgba(185,216,216,.95);
+  border-radius: 1.15rem;
+  background: rgba(255,255,255,.96);
+  box-shadow: 0 18px 42px rgba(15,31,46,.18);
+  padding: .72rem .82rem;
+  color: #07324A;
+  pointer-events: none;
+  backdrop-filter: blur(16px);
+}
+
+.jagasleman-location-risk-alert__badge {
+  display: flex;
+  width: 2.15rem;
+  height: 2.15rem;
+  align-items: center;
+  justify-content: center;
+  border-radius: .85rem;
+  background: #0B6E78;
+  color: #fff;
+  font-weight: 950;
+}
+
+.jagasleman-location-risk-alert b {
+  display: block;
+  color: #07324A;
+  font-size: .86rem;
+  font-weight: 950;
+  line-height: 1.2;
+}
+
+.jagasleman-location-risk-alert span {
+  display: block;
+  margin-top: .18rem;
+  color: #334155;
+  font-size: .77rem;
+  font-weight: 750;
+  line-height: 1.35;
+}
+
+.jagasleman-location-risk-alert.is-high .jagasleman-location-risk-alert__badge,
+.jagasleman-location-risk-alert.is-outside .jagasleman-location-risk-alert__badge {
+  background: #E11D48;
+}
+
+.jagasleman-contact-legend-icon.fire {
+  background: #F97316;
+}
+
+@media (max-width: 640px) {
+  body {
+    font-size: 16px;
+  }
+
+  .resource-theme p,
+  .resource-theme li,
+  .resource-theme input,
+  .resource-theme textarea,
+  .resource-theme select,
+  .resource-theme button,
+  .resource-theme a {
+    font-size: .94rem;
+  }
+
+  .jagasleman-leaflet-map .leaflet-popup,
+  .jagasleman-leaflet-map .leaflet-popup-content-wrapper {
+    max-width: calc(100vw - 32px) !important;
+  }
+
+  .jagasleman-leaflet-map .leaflet-popup-content {
+    max-width: calc(100vw - 44px) !important;
+  }
+
+  .jagasleman-leaflet-map .jaga-map-popup-card,
+  .jagasleman-kde-popup {
+    width: min(100%, calc(100vw - 44px)) !important;
+    max-width: calc(100vw - 44px) !important;
+    max-height: 52dvh !important;
+    overflow-y: auto !important;
+  }
+
+  .jagasleman-bantara-control-stack,
+  .jagasleman-map-right-stack {
+    z-index: 760 !important;
+  }
+
+  .jagasleman-bantara-control-stack.has-open-panel,
+  .jagasleman-map-right-stack.has-open-panel {
+    z-index: 780 !important;
+  }
+
+  .jagasleman-map-edge-content {
+    max-height: 42dvh !important;
+    overflow-y: auto !important;
+  }
+
+  .jagasleman-location-risk-alert {
+    top: auto;
+    bottom: 76px;
+    left: 10px;
+    right: 10px;
+    width: auto;
+    transform: none;
+    grid-template-columns: 1.9rem 1fr;
+    padding: .65rem .7rem;
+  }
+
+  .jagasleman-location-risk-alert__badge {
+    width: 1.9rem;
+    height: 1.9rem;
+  }
+
+  .jagasleman-location-risk-alert b {
+    font-size: .82rem;
+  }
+
+  .jagasleman-location-risk-alert span {
+    font-size: .73rem;
+  }
+
+  .jagasleman-incident-legend-list {
+    max-height: 9.5rem;
+    overflow-y: auto;
+  }
+}
+
+/* Revisi akhir usability: hero halaman peta/berita dibuat melebar penuh meski berada di dalam wrapper. */
+.jaga-page-hero {
+  width: 100vw !important;
+  margin-left: calc(50% - 50vw) !important;
+  margin-right: calc(50% - 50vw) !important;
+  border-radius: 0 !important;
+}
+
+/* Revisi akhir usability: pilihan layer peta dibuat lebih terlihat dan tidak terlalu polos. */
+.jagasleman-map-right-stack .jagasleman-kde-layer-option,
+.jagasleman-data-layer-option,
+#root .jagasleman-bantara-control-stack .jagasleman-kde-layer-option,
+#root .jagasleman-bantara-control-stack .jagasleman-data-layer-option {
+  border-width: 2px !important;
+  border-color: #BDE7E1 !important;
+  border-radius: 14px !important;
+  background: linear-gradient(135deg, #FFFFFF 0%, #F2FAF6 100%) !important;
+  box-shadow: 0 8px 18px rgba(7, 50, 74, .06) !important;
+}
+
+.jagasleman-map-right-stack .jagasleman-kde-layer-option:hover,
+.jagasleman-map-right-stack .jagasleman-kde-layer-option.is-active,
+.jagasleman-data-layer-option:hover,
+.jagasleman-data-layer-option.is-active,
+#root .jagasleman-bantara-control-stack .jagasleman-kde-layer-option:hover,
+#root .jagasleman-bantara-control-stack .jagasleman-data-layer-option:hover,
+#root .jagasleman-bantara-control-stack .jagasleman-kde-layer-option.is-active,
+#root .jagasleman-bantara-control-stack .jagasleman-data-layer-option.is-active {
+  border-color: #0FA3A0 !important;
+  background: linear-gradient(135deg, #E9F8F3 0%, #FFFFFF 100%) !important;
+  box-shadow: 0 13px 28px rgba(15, 163, 160, .16) !important;
+}
+
+.jagasleman-kde-layer-radio {
+  width: 18px !important;
+  height: 18px !important;
+  margin-top: 3px !important;
+  accent-color: #0B6E78 !important;
+  filter: drop-shadow(0 2px 4px rgba(7, 50, 74, .18));
+}

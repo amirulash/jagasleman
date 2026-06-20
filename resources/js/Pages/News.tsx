@@ -14,8 +14,6 @@ import {
     Search,
     ShieldAlert,
     ShieldCheck,
-    Sparkles,
-    Tag,
     X,
 } from 'lucide-react';
 
@@ -485,7 +483,7 @@ export default function News() {
                     </div>
                 </section>
 
-                <section className="grid gap-6 lg:grid-cols-[1fr_330px]">
+                <section className="grid gap-6">
                     <main className="space-y-6">
                         {quickHighlights.length > 0 && (
                             <div className="grid gap-4 md:grid-cols-3">
@@ -680,85 +678,6 @@ export default function News() {
                         )}
                     </main>
 
-                    <aside className="space-y-4 lg:sticky lg:top-6 lg:self-start">
-                        <div className="rounded-[1.7rem] border border-slate-100 dark:border-white/10 bg-white dark:bg-[#102538] dark:bg-[#07324A] p-5 shadow-sm">
-                            <div className="mb-4 flex items-center gap-2">
-                                <Tag className="h-5 w-5 text-[#F47B52]" />
-                                <h3 className="font-black text-foreground">Kategori Cepat</h3>
-                            </div>
-
-                            <div className="space-y-2">
-                                {Object.entries(categoryCounts).map(([name, total]) => {
-                                    const categoryName = name as GeneralCategory;
-
-                                    return (
-                                        <button
-                                            key={name}
-                                            type="button"
-                                            onClick={() => setCategory(categoryName)}
-                                            className={`flex w-full items-center justify-between rounded-2xl px-4 py-3 text-left transition ${
-                                                category === categoryName
-                                                    ? 'bg-[#07324A] text-white'
-                                                    : 'bg-slate-50 dark:bg-[#17324A] dark:bg-[#07324A]/70 text-slate-600 dark:text-slate-200 hover:bg-[#F2FAF6] hover:text-[#F47B52]'
-                                            }`}
-                                        >
-                                            <span>
-                                                <span className="flex items-center gap-2 text-sm font-black">
-                                                    {getCategoryIcon(categoryName)}
-                                                    {categoryName}
-                                                </span>
-                                                <span className={`mt-0.5 block text-xs ${category === categoryName ? 'text-white/70' : 'text-slate-500 dark:text-slate-300 dark:text-slate-300'}`}>
-                                                    {getCategorySubtitle(categoryName)}
-                                                </span>
-                                            </span>
-
-                                            <span className="text-sm font-black">{total}</span>
-                                        </button>
-                                    );
-                                })}
-                            </div>
-                        </div>
-
-                        <div className="rounded-[1.7rem] border border-slate-100 dark:border-white/10 bg-white dark:bg-[#102538] dark:bg-[#07324A] p-5 shadow-sm">
-                            <div className="mb-4 flex items-center gap-2">
-                                <CalendarDays className="h-5 w-5 text-[#F47B52]" />
-                                <h3 className="font-black text-foreground">Arsip Tahun</h3>
-                            </div>
-
-                            <div className="grid grid-cols-2 gap-2">
-                                {Object.entries(yearCounts)
-                                    .sort(([a], [b]) => Number(b) - Number(a))
-                                    .map(([name, total]) => (
-                                        <button
-                                            key={name}
-                                            type="button"
-                                            onClick={() => setYear(name)}
-                                            className={`rounded-2xl px-4 py-3 text-left transition ${
-                                                year === name
-                                                    ? 'bg-slate-900 text-white'
-                                                    : 'bg-slate-50 dark:bg-[#17324A] dark:bg-[#07324A]/70 text-slate-600 dark:text-slate-200 hover:bg-slate-100 dark:bg-[#17324A]'
-                                            }`}
-                                        >
-                                            <span className="block text-sm font-black">{name}</span>
-                                            <span className={`mt-0.5 block text-xs font-bold ${year === name ? 'text-white/70' : 'text-slate-500 dark:text-slate-300 dark:text-slate-300'}`}>
-                                                {total} berita
-                                            </span>
-                                        </button>
-                                    ))}
-                            </div>
-                        </div>
-
-                        <div className="rounded-[1.7rem] border border-[#BDE7E1] bg-white p-5 shadow-sm dark:bg-[#102538]">
-                            <div className="mb-3 flex h-11 w-11 items-center justify-center rounded-2xl bg-[#07324A] text-white">
-                                <Sparkles className="h-5 w-5" />
-                            </div>
-
-                            <h3 className="font-black text-[#07324A] dark:text-white">Mode Baca Cepat</h3>
-                            <p className="mt-2 text-sm leading-6 text-[#07324A] dark:text-slate-200">
-                                Klik kartu berita untuk melihat detail tanpa membuka tab baru.
-                            </p>
-                        </div>
-                    </aside>
                 </section>
             </div>
 

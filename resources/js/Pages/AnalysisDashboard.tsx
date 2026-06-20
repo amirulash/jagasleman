@@ -958,7 +958,7 @@ export default function AnalysisDashboard() {
 
     useEffect(() => {
         setTablePage(1);
-    }, [activeTableSource, searchQuery, selectedKecamatan, selectedPeriod, selectedSource, selectedTableYear, selectedType, tablePageSize]);
+    }, [searchQuery, selectedKecamatan, selectedPeriod, selectedSource, selectedTableYear, selectedType, tablePageSize]);
 
     useEffect(() => {
         if (selectedSource === 'dummy' || selectedSource === 'report') {
@@ -1381,8 +1381,19 @@ export default function AnalysisDashboard() {
     ], [policeTableCount, reportTableCount]);
 
     const activeTableIncidents = useMemo(() => {
-        return getTableFilteredIncidents(activeTableSource);
-    }, [activeTableSource, getTableFilteredIncidents]);
+        if (selectedTableYear === 'all') return filteredIncidents;
+
+        return filteredIncidents.filter((incident) => {
+            const year = getIncidentDate(incident)?.getFullYear();
+            return String(year) === selectedTableYear;
+        });
+    }, [filteredIncidents, selectedTableYear]);
+
+    const activeTableSourceLabel = selectedSource === 'report'
+        ? 'Laporan Masyarakat'
+        : selectedSource === 'dummy'
+            ? 'Data Kepolisian'
+            : 'Semua Sumber Data';
 
     const totalDataPages = Math.max(1, Math.ceil(activeTableIncidents.length / tablePageSize));
     const currentDataPage = Math.min(tablePage, totalDataPages);
@@ -1402,30 +1413,15 @@ export default function AnalysisDashboard() {
         <div className="overflow-hidden rounded-[1.7rem] border border-[#BDE7E1] bg-white shadow-sm">
             <div className="flex flex-col gap-4 border-b border-[#BDE7E1] bg-white p-4 xl:flex-row xl:items-end xl:justify-between">
                 <PanelTitle
-                    title={activeTableSource === 'report' ? 'Data Laporan Masyarakat' : 'Data Data Kepolisian'}
-                    subtitle={activeTableSource === 'report' ? 'Laporan warga terverifikasi sesuai filter aktif.' : 'Hanya data Data Kepolisian. Laporan masyarakat dikunci agar tidak ikut tampil.'}
-                    icon={activeTableSource === 'report' ? <Shield className="h-5 w-5" /> : <Database className="h-5 w-5" />}
+                    title={`Tabel Kejadian · ${activeTableSourceLabel}`}
+                    subtitle="Daftar ini mengikuti filter utama di bagian atas, termasuk sumber data, jenis kejadian, kecamatan, periode, dan pencarian."
+                    icon={selectedSource === 'report' ? <Shield className="h-5 w-5" /> : <Database className="h-5 w-5" />}
                 />
 
-                <div className="grid gap-3 sm:grid-cols-3 xl:min-w-[700px]">
-                    <div className="relative sm:col-span-1">
-                        <Search className="absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-slate-400" />
-                        <input
-                            value={searchQuery}
-                            onChange={(event) => setSearchQuery(event.target.value)}
-                            placeholder="Cari alamat, jenis, deskripsi..."
-                            className="h-11 w-full rounded-2xl border border-[#BDE7E1] bg-white pl-10 pr-3 text-sm font-semibold text-[#07324A] outline-none focus:border-[#F47B52] focus:ring-4 focus:ring-[#F47B52]/10"
-                        />
-                    </div>
-
-                    <SelectField label="Periode waktu" value={selectedPeriod} onChange={setSelectedPeriod} options={periodOptions} />
-
-                    <SelectField
-                        label="Tampilkan"
-                        value={String(tablePageSize)}
-                        onChange={(value) => setTablePageSize(Number(value) as TablePageSize)}
-                        options={tablePageSizeOptions}
-                    />
+                <div className="flex flex-wrap items-center gap-2 xl:justify-end">
+                    <span className="rounded-full border border-[#BDE7E1] bg-[#F2FAF6] px-3 py-2 text-xs font-black text-[#0B6E78]">
+                        {activeTableIncidents.length} data sesuai filter utama
+                    </span>
                 </div>
             </div>
 
@@ -1434,11 +1430,12 @@ export default function AnalysisDashboard() {
                     <thead className="bg-[#07324A] text-[11px] uppercase tracking-[0.12em] text-white">
                         <tr>
                             <th className="px-4 py-3 font-black">No</th>
-                            {activeTableSource === 'report' && <th className="px-4 py-3 font-black">Foto</th>}
+                            <th className="px-4 py-3 font-black">Sumber</th>
+                            <th className="px-4 py-3 font-black">Bukti</th>
                             <th className="px-4 py-3 font-black">Jenis Kejadian</th>
                             <th className="px-4 py-3 font-black">Waktu Kejadian</th>
                             <th className="px-4 py-3 font-black">Alamat</th>
-                            <th className="px-4 py-3 font-black">{activeTableSource === 'report' ? 'Deskripsi Kejadian' : 'Deskripsi Singkat'}</th>
+                            <th className="px-4 py-3 font-black">Deskripsi Singkat</th>
                             <th className="px-4 py-3 font-black">Aksi</th>
                         </tr>
                     </thead>
@@ -1448,29 +1445,34 @@ export default function AnalysisDashboard() {
                             const type = getIncidentType(incident);
                             const color = getIncidentColor(type);
                             const photo = getIncidentPrimaryPhoto(incident);
+                            const rowSource = getIncidentSourceKey(incident);
 
                             return (
-                                <tr key={`${activeTableSource}-${incident.id}`} className="transition hover:bg-[#FFF8ED]">
+                                <tr key={`${rowSource}-${incident.id}`} className="transition hover:bg-[#FFF8ED]">
                                     <td className="whitespace-nowrap px-4 py-4 font-semibold text-[#07324A]">
                                         {tableStartIndex + index + 1}
                                     </td>
 
-                                    {activeTableSource === 'report' && (
-                                        <td className="px-4 py-4">
-                                            {photo ? (
-                                                <img
-                                                    src={photo}
-                                                    alt={`Foto ${getIncidentTypeLabel(type)}`}
-                                                    className="h-14 w-16 rounded-xl object-cover ring-1 ring-[#BDE7E1]"
-                                                    onError={(event) => { event.currentTarget.style.display = 'none'; }}
-                                                />
-                                            ) : (
-                                                <div className="flex h-14 w-16 items-center justify-center rounded-xl bg-[#F8FAFC] text-[10px] font-black text-slate-400 ring-1 ring-[#BDE7E1]">
-                                                    Tidak ada
-                                                </div>
-                                            )}
-                                        </td>
-                                    )}
+                                    <td className="whitespace-nowrap px-4 py-4">
+                                        <span className={`rounded-full px-3 py-1 text-[10px] font-black ${rowSource === 'report' ? 'bg-emerald-50 text-emerald-700 ring-1 ring-emerald-100' : 'bg-cyan-50 text-cyan-700 ring-1 ring-cyan-100'}`}>
+                                            {rowSource === 'report' ? 'Laporan Warga' : 'Data Polisi'}
+                                        </span>
+                                    </td>
+
+                                    <td className="px-4 py-4">
+                                        {photo ? (
+                                            <img
+                                                src={photo}
+                                                alt={`Foto ${getIncidentTypeLabel(type)}`}
+                                                className="h-14 w-16 rounded-xl object-cover ring-1 ring-[#BDE7E1]"
+                                                onError={(event) => { event.currentTarget.style.display = 'none'; }}
+                                            />
+                                        ) : (
+                                            <div className="flex h-14 w-16 items-center justify-center rounded-xl bg-[#F8FAFC] text-[10px] font-black text-slate-400 ring-1 ring-[#BDE7E1]">
+                                                {rowSource === 'report' ? 'Tidak ada' : 'Data'}
+                                            </div>
+                                        )}
+                                    </td>
 
                                     <td className="px-4 py-4">
                                         <div className="flex min-w-[150px] items-center gap-2">
@@ -1504,7 +1506,7 @@ export default function AnalysisDashboard() {
                             );
                         }) : (
                             <tr>
-                                <td colSpan={activeTableSource === 'report' ? 7 : 6} className="px-4 py-10 text-center text-sm font-semibold text-[#07324A]/70">
+                                <td colSpan={8} className="px-4 py-10 text-center text-sm font-semibold text-[#07324A]/70">
                                     Tidak ada data sesuai filter aktif.
                                 </td>
                             </tr>
@@ -1699,11 +1701,23 @@ export default function AnalysisDashboard() {
                                 </div>
                             </div>
 
-                            <div className="grid gap-3 sm:grid-cols-2 xl:grid-cols-4">
+                            <div className="grid gap-3 sm:grid-cols-2 xl:grid-cols-5">
                                 <SelectField label="Sumber Data" value={selectedSource} onChange={setSelectedSource} options={sourceOptions} />
                                 <SelectField label="Jenis Kejadian" value={selectedType} onChange={setSelectedType} options={typeOptions} />
                                 <SelectField label="Kecamatan" value={selectedKecamatan} onChange={setSelectedKecamatan} options={kecamatanOptions} />
                                 <SelectField label="Periode" value={selectedPeriod} onChange={setSelectedPeriod} options={periodOptions} />
+                                <label className="block">
+                                    <span className="mb-1.5 block text-[11px] font-black uppercase tracking-[0.14em] text-slate-500">Cari Data</span>
+                                    <span className="relative block">
+                                        <Search className="pointer-events-none absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-slate-400" />
+                                        <input
+                                            value={searchQuery}
+                                            onChange={(event) => setSearchQuery(event.target.value)}
+                                            placeholder="Alamat, jenis, deskripsi..."
+                                            className="h-11 w-full rounded-2xl border border-[#BDE7E1] bg-white pl-10 pr-3 text-sm font-black text-[#07324A] outline-none transition focus:border-[#F47B52] focus:ring-4 focus:ring-[#F47B52]/10"
+                                        />
+                                    </span>
+                                </label>
                             </div>
                         </section>
                     </>
@@ -1778,21 +1792,12 @@ export default function AnalysisDashboard() {
                             <div className="mb-4 flex flex-col gap-3 border-b border-[#BDE7E1] pb-3 sm:flex-row sm:items-center sm:justify-between">
                                 <div>
                                     <h2 className="text-base font-black text-[#07324A]">Data Kejadian</h2>
-                                    <p className="mt-1 text-xs font-semibold text-slate-500">Tabel dipisah berdasarkan dua sumber utama: Data Kepolisian dan Laporan Masyarakat.</p>
+                                    <p className="mt-1 text-xs font-semibold text-slate-500">Tabel otomatis mengikuti filter data peta di atas, sehingga tidak ada filter sumber data ganda pada tabel.</p>
                                 </div>
 
-                                <label className="w-full sm:w-[280px]">
-                                    <span className="mb-1.5 block text-[11px] font-black uppercase tracking-[0.14em] text-slate-400">Sumber Data Tabel</span>
-                                    <select
-                                        value={activeTableSource}
-                                        onChange={(event) => setActiveTableSource(event.target.value as 'dummy' | 'report')}
-                                        className="h-11 w-full rounded-2xl border border-[#BDE7E1] bg-white px-3 text-sm font-black text-[#07324A] outline-none focus:border-[#F47B52] focus:ring-4 focus:ring-[#F47B52]/10"
-                                    >
-                                        {tableSourceOptions.map((option) => (
-                                            <option key={option.value} value={option.value}>{option.label}</option>
-                                        ))}
-                                    </select>
-                                </label>
+                                <span className="inline-flex h-10 items-center rounded-2xl border border-[#BDE7E1] bg-[#F2FAF6] px-4 text-xs font-black text-[#0B6E78]">
+                                    {activeTableSourceLabel}
+                                </span>
                             </div>
 
                             {renderTable()}

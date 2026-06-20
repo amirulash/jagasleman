@@ -32,7 +32,7 @@ export interface Incident {
 export interface EmergencyContact {
   id: string;
   name: string;
-  type: 'Polsek' | 'Rumah Sakit';
+  type: 'Polsek' | 'Rumah Sakit' | 'Damkar';
   address: string;
   phone: string;
   lat: number;
@@ -72,9 +72,24 @@ const hospitals: EmergencyContact[] = convertHospitalsToContactsFormat(
   getHospitalsFromGeojson()
 );
 
+const fireStations: EmergencyContact[] = [
+  {
+    id: 'damkar-sleman',
+    name: 'Damkar Sleman',
+    type: 'Damkar',
+    address: 'Jl. Melati, Beran, Tridadi, Sleman, DIY',
+    phone: '(0274) 868468',
+    lat: -7.71572,
+    lng: 110.35286,
+    website: null,
+    jenis: 'Pemadam Kebakaran',
+  },
+];
+
 export const emergencyContacts: EmergencyContact[] = [
   ...policeStations,
   ...hospitals,
+  ...fireStations,
 ];
 
 export const newsItems: NewsItem[] = [

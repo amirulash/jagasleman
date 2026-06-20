@@ -496,6 +496,37 @@ export default function IncidentReport() {
         );
     };
 
+    const scrollToFirstError = (errors: ServerErrors) => {
+        const priority = [
+            'incident_type',
+            'latitude',
+            'longitude',
+            'location',
+            'reporter_name',
+            'reporter_phone',
+            'reporter_email',
+            'incident_date',
+            'incident_time',
+            'description',
+            'photos',
+        ];
+        const firstKey = priority.find((key) => errors[key] || errors[`${key}.0`] || errors[`${key}.*`]) || Object.keys(errors)[0];
+        if (!firstKey) return;
+
+        window.setTimeout(() => {
+            const target = document.querySelector(`[data-report-field="${firstKey}"]`) as HTMLElement | null;
+            const fallback = document.querySelector(`[data-report-field="latitude"]`) as HTMLElement | null;
+            const element = target || (firstKey === 'longitude' ? fallback : null);
+            element?.scrollIntoView({ behavior: 'smooth', block: 'center' });
+            const focusable = element?.querySelector('input, textarea, button, [tabindex]:not([tabindex="-1"])') as HTMLElement | null;
+            focusable?.focus?.();
+        }, 80);
+    };
+
+    const errorInputClass = (key: string) => getError(key)
+        ? 'border-red-400 bg-red-50 ring-2 ring-red-100 focus-visible:ring-red-200'
+        : 'border-stone-200 bg-stone-50';
+
     const setField = <K extends keyof FormState>(key: K, value: FormState[K]) => {
         setForm((prev) => ({
             ...prev,
@@ -552,6 +583,7 @@ export default function IncidentReport() {
                 longitude: message,
             }));
 
+            scrollToFirstError({ latitude: message });
             toast.error(message);
             window.alert(message);
             return;
@@ -751,6 +783,7 @@ export default function IncidentReport() {
 
         if (Object.keys(clientErrors).length > 0) {
             setFormErrors(clientErrors);
+            scrollToFirstError(clientErrors);
             toast.error('Periksa kembali data laporan yang wajib diisi.');
             return;
         }
@@ -811,7 +844,9 @@ export default function IncidentReport() {
 
             if (!response.ok) {
                 if (typeof payload === 'object' && payload?.errors) {
-                    setFormErrors(normalizeErrors(payload.errors));
+                    const normalizedServerErrors = normalizeErrors(payload.errors);
+                    setFormErrors(normalizedServerErrors);
+                    scrollToFirstError(normalizedServerErrors);
                 }
 
                 throw new Error(
@@ -1016,9 +1051,9 @@ export default function IncidentReport() {
 
                     <div className="mt-4 grid gap-3 sm:grid-cols-2 lg:grid-cols-6">
                         {[
-                            ['03', 'Tentukan lokasi', 'Klik titik kejadian pada peta.'],
-                            ['02', 'Isi data kejadian', 'Lengkapi pelapor dan kronologi.'],
                             ['01', 'Pilih jenis laporan', 'Tentukan kategori kejadian.'],
+                            ['02', 'Tentukan lokasi', 'Klik titik kejadian pada peta.'],
+                            ['03', 'Isi data kejadian', 'Lengkapi pelapor dan kronologi.'],
                             ['04', 'Unggah bukti', 'Tambahkan foto jika tersedia.'],
                             ['05', 'Kirim laporan', 'Data masuk ke sistem admin.'],
                             ['06', 'Pantau status', 'Cek kode laporan kapan saja.'],
@@ -1170,7 +1205,7 @@ export default function IncidentReport() {
                     <div className="p-5 sm:p-7">
                         <div
                             ref={reportMapShellRef}
-                            className="jaga-report-map-shell overflow-hidden rounded-[1.6rem] border border-[#BDE7E1] bg-white p-3 shadow-lg shadow-[#07324A]/10"
+                            data-report-field="latitude" className={`jaga-report-map-shell overflow-hidden rounded-[1.6rem] border bg-white p-3 shadow-lg shadow-[#07324A]/10 ${getError('latitude') ? 'border-red-300 ring-4 ring-red-100' : 'border-[#BDE7E1]'}`}
                         >
                             <div className="mb-3 flex flex-col gap-3 rounded-[1.25rem] border border-[#BDE7E1] bg-[#F8FAFC] px-4 py-3 sm:flex-row sm:items-center sm:justify-between">
                                 <div>
@@ -1280,13 +1315,13 @@ export default function IncidentReport() {
                                 />
                             </div>
 
-                            <div className="lg:col-span-2">
+                            <div data-report-field="location" className="lg:col-span-2">
                                 <Label>Alamat/Lokasi Kejadian</Label>
                                 <Textarea
                                     value={form.location}
                                     onChange={(event) => setField('location', event.target.value)}
                                     placeholder="Alamat akan terisi otomatis setelah titik dipilih. Bisa diedit jika belum tepat."
-                                    className="mt-2 min-h-24 rounded-xl border-stone-200 bg-stone-50"
+                                    className={`mt-2 min-h-24 rounded-xl ${errorInputClass('location')}`}
                                 />
                                 {getError('location') && (
                                     <p className="mt-2 text-xs font-semibold text-red-600">
@@ -1349,13 +1384,13 @@ export default function IncidentReport() {
                                 </div>
 
                                 <div className="grid gap-5 lg:grid-cols-2">
-                                    <div>
+                                    <div data-report-field="reporter_name">
                                         <Label>Nama Pelapor</Label>
                                         <Input
                                             value={form.reporter_name}
                                             onChange={(event) => setField('reporter_name', event.target.value)}
                                             placeholder="Masukkan nama lengkap"
-                                            className="mt-2 h-11 rounded-xl border-stone-200 bg-stone-50"
+                                            className={`mt-2 h-11 rounded-xl ${errorInputClass('reporter_name')}`}
                                         />
                                         {getError('reporter_name') && (
                                             <p className="mt-2 text-xs font-semibold text-red-600">
@@ -1364,13 +1399,13 @@ export default function IncidentReport() {
                                         )}
                                     </div>
 
-                                    <div>
+                                    <div data-report-field="reporter_phone">
                                         <Label>Nomor HP</Label>
                                         <Input
                                             value={form.reporter_phone}
                                             onChange={(event) => setField('reporter_phone', event.target.value)}
                                             placeholder="08xxxxxxxxxx"
-                                            className="mt-2 h-11 rounded-xl border-stone-200 bg-stone-50"
+                                            className={`mt-2 h-11 rounded-xl ${errorInputClass('reporter_phone')}`}
                                         />
                                         {getError('reporter_phone') && (
                                             <p className="mt-2 text-xs font-semibold text-red-600">
@@ -1379,14 +1414,14 @@ export default function IncidentReport() {
                                         )}
                                     </div>
 
-                                    <div className="lg:col-span-2">
+                                    <div data-report-field="reporter_email" className="lg:col-span-2">
                                         <Label>Email Pelapor</Label>
                                         <Input
                                             type="email"
                                             value={form.reporter_email}
                                             onChange={(event) => setField('reporter_email', event.target.value)}
                                             placeholder="contoh@email.com"
-                                            className="mt-2 h-11 rounded-xl border-stone-200 bg-stone-50"
+                                            className={`mt-2 h-11 rounded-xl ${errorInputClass('reporter_email')}`}
                                         />
                                         {getError('reporter_email') && (
                                             <p className="mt-2 text-xs font-semibold text-red-600">
@@ -1425,13 +1460,13 @@ export default function IncidentReport() {
                                         />
                                     </div>
 
-                                    <div className="lg:col-span-2">
+                                    <div data-report-field="incident_type" className="lg:col-span-2">
                                         <Label>Jenis Kejadian</Label>
                                         <Select
                                             value={form.incident_type}
                                             onValueChange={(value) => setField('incident_type', value)}
                                         >
-                                            <SelectTrigger className="mt-2 h-11 rounded-xl border-stone-200 bg-stone-50">
+                                            <SelectTrigger className={`mt-2 h-11 rounded-xl ${errorInputClass('incident_type')}`}>
                                                 <SelectValue placeholder="Pilih jenis kejadian" />
                                             </SelectTrigger>
                                             <SelectContent>
@@ -1449,13 +1484,13 @@ export default function IncidentReport() {
                                         )}
                                     </div>
 
-                                    <div>
+                                    <div data-report-field="incident_date">
                                         <Label>Tanggal Kejadian</Label>
                                         <Input
                                             type="date"
                                             value={form.incident_date}
                                             onChange={(event) => setField('incident_date', event.target.value)}
-                                            className="mt-2 h-11 rounded-xl border-stone-200 bg-stone-50"
+                                            className={`mt-2 h-11 rounded-xl ${errorInputClass('incident_date')}`}
                                         />
                                         {getError('incident_date') && (
                                             <p className="mt-2 text-xs font-semibold text-red-600">
@@ -1464,13 +1499,13 @@ export default function IncidentReport() {
                                         )}
                                     </div>
 
-                                    <div>
+                                    <div data-report-field="incident_time">
                                         <Label>Jam Kejadian</Label>
                                         <Input
                                             type="time"
                                             value={form.incident_time}
                                             onChange={(event) => setField('incident_time', event.target.value)}
-                                            className="mt-2 h-11 rounded-xl border-stone-200 bg-stone-50"
+                                            className={`mt-2 h-11 rounded-xl ${errorInputClass('incident_time')}`}
                                         />
                                         {getError('incident_time') && (
                                             <p className="mt-2 text-xs font-semibold text-red-600">
@@ -1479,13 +1514,13 @@ export default function IncidentReport() {
                                         )}
                                     </div>
 
-                                    <div className="lg:col-span-2">
+                                    <div data-report-field="description" className="lg:col-span-2">
                                         <Label>Deskripsi Kejadian</Label>
                                         <Textarea
                                             value={form.description}
                                             onChange={(event) => setField('description', event.target.value)}
                                             placeholder="Jelaskan kronologi singkat, ciri pelaku, atau kondisi penting lainnya."
-                                            className="mt-2 min-h-28 rounded-xl border-stone-200 bg-stone-50"
+                                            className={`mt-2 min-h-28 rounded-xl ${errorInputClass('description')}`}
                                         />
                                         {getError('description') && (
                                             <p className="mt-2 text-xs font-semibold text-red-600">
@@ -1498,7 +1533,7 @@ export default function IncidentReport() {
 
                             <div className="border-t border-stone-100" />
 
-                            <section className="jaga-report-photo-container rounded-[1.6rem] border border-[#BDE7E1] p-4 shadow-sm">
+                            <section data-report-field="photos" className="jaga-report-photo-container rounded-[1.6rem] border border-[#BDE7E1] p-4 shadow-sm">
                                 <div className="mb-4 flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
                                     <div className="flex items-center gap-3">
                                         <div className="rounded-xl bg-white p-2 text-[#07324A] shadow-sm">

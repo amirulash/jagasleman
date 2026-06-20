@@ -16,7 +16,11 @@ import {
     X,
 } from 'lucide-react';
 import { Button } from '@/Components/Safekey/ui/button';
+import ThemeToggle from '@/Components/ThemeToggle';
 import { cn } from '@/lib/utils';
+
+const appName = 'JagaSleman';
+const logoSrc = '/images/logo-jagasleman.png';
 
 const menuItems = [
     { title: 'Beranda', url: '/', icon: Home },
@@ -31,13 +35,28 @@ function isCurrentPath(pathname, url) {
     return url === '/' ? pathname === '/' : pathname.startsWith(url);
 }
 
+function BrandLogo() {
+    return (
+        <span
+            className="jaga-brand-mark flex h-11 w-11 shrink-0 items-center justify-center overflow-hidden rounded-2xl bg-white shadow-sm ring-1 ring-[#BDE7E1]"
+            aria-hidden="true"
+        >
+            <img
+                src={logoSrc}
+                alt=""
+                className="h-8 w-8 object-contain"
+                draggable="false"
+            />
+        </span>
+    );
+}
+
 export default function TopNavbar() {
     const [mobileOpen, setMobileOpen] = useState(false);
     const { auth } = usePage().props;
     const authUser = auth?.user;
     const pathname = typeof window !== 'undefined' ? window.location.pathname : '/';
     const isLoginPage = ['/login', '/safekey/login'].includes(pathname);
-    const appName = import.meta.env.VITE_APP_NAME || 'JagaSleman';
 
     const avatarUrl = authUser?.name
         ? `https://ui-avatars.com/api/?name=${encodeURIComponent(authUser.name)}&background=27527A&color=ffffff&bold=true`
@@ -83,20 +102,25 @@ export default function TopNavbar() {
                     aria-label="Tutup menu navigasi"
                 />
 
-                <section className="jaga-mobile-navigation-panel absolute bottom-0 right-0 top-0 flex w-[min(420px,calc(100vw-18px))] flex-col overflow-hidden border-l border-[#BDE7E1] bg-white shadow-[-24px_0_70px_rgba(4,20,33,.30)]">
-                    <div className="jaga-mobile-navigation-header flex shrink-0 items-center justify-between gap-3 border-b border-[#DDECE8] px-4 py-4">
-                        <Link href="/" onClick={() => setMobileOpen(false)} className="jaga-mobile-drawer-brand flex min-w-0 items-center gap-3" aria-label={`Buka Beranda ${appName}`}>
-                            <span className="jaga-brand-mark" aria-hidden="true"><Map /></span>
+                <section className="jaga-mobile-navigation-panel absolute bottom-0 right-0 top-0 flex w-[min(420px,calc(100vw-18px))] flex-col overflow-hidden border-l border-[#BDE7E1] bg-white shadow-[-24px_0_70px_rgba(4,20,33,.30)] dark:border-white/10 dark:bg-[#102538]">
+                    <div className="jaga-mobile-navigation-header flex shrink-0 items-center justify-between gap-3 border-b border-[#DDECE8] px-4 py-4 dark:border-white/10">
+                        <Link
+                            href="/"
+                            onClick={() => setMobileOpen(false)}
+                            className="jaga-mobile-drawer-brand flex min-w-0 items-center gap-3"
+                            aria-label={`Buka Beranda ${appName}`}
+                        >
+                            <BrandLogo />
                             <span className="jaga-brand-copy min-w-0">
                                 <span className="jaga-brand-name block truncate">{appName}</span>
-                                <span className="jaga-brand-tagline block">WebGIS Kabupaten Sleman</span>
+                                <span className="jaga-brand-tagline block">WebGIS Kejahatan Jalanan</span>
                             </span>
                         </Link>
 
                         <button
                             type="button"
                             onClick={() => setMobileOpen(false)}
-                            className="jaga-mobile-drawer-close flex h-11 w-11 shrink-0 items-center justify-center rounded-2xl border border-[#BDE7E1] bg-[#F6FBF8] text-[#07324A]"
+                            className="jaga-mobile-drawer-close flex h-11 w-11 shrink-0 items-center justify-center rounded-2xl border border-[#BDE7E1] bg-[#F6FBF8] text-[#07324A] dark:border-white/10 dark:bg-[#17324A] dark:text-white"
                             aria-label="Tutup menu"
                         >
                             <X className="h-5 w-5" />
@@ -105,8 +129,12 @@ export default function TopNavbar() {
 
                     <div className="jaga-mobile-navigation-body min-h-0 flex-1 overflow-y-auto px-4 py-4">
                         <div className="mb-3 px-1">
-                            <p className="text-[11px] font-black uppercase tracking-[0.18em] text-[#0B6E78]">Navigasi Utama</p>
-                            <p className="mt-1 text-xs font-semibold leading-relaxed text-[#5C7186]">Semua menu ditampilkan lengkap agar mudah dipilih pada perangkat mobile.</p>
+                            <p className="text-[11px] font-black uppercase tracking-[0.18em] text-[#0B6E78] dark:text-[#5EEAD4]">
+                                Navigasi Utama
+                            </p>
+                            <p className="mt-1 text-xs font-semibold leading-relaxed text-[#5C7186] dark:text-slate-300">
+                                Semua menu ditampilkan lengkap agar mudah dipilih pada perangkat mobile.
+                            </p>
                         </div>
 
                         <nav className="grid gap-2.5" aria-label="Navigasi mobile">
@@ -136,7 +164,12 @@ export default function TopNavbar() {
                         </nav>
                     </div>
 
-                    <div className="jaga-mobile-navigation-footer shrink-0 border-t border-[#DDECE8] bg-white px-4 py-4">
+                    <div className="jaga-mobile-navigation-footer shrink-0 border-t border-[#DDECE8] bg-white px-4 py-4 dark:border-white/10 dark:bg-[#102538]">
+                        <div className="mb-3 flex items-center justify-between rounded-2xl border border-[#BDE7E1] bg-[#F6FBF8] px-3 py-2 dark:border-white/10 dark:bg-[#17324A]">
+                            <span className="text-sm font-black text-[#07324A] dark:text-white">Mode tampilan</span>
+                            <ThemeToggle />
+                        </div>
+
                         <div className="grid gap-2 sm:grid-cols-2">
                             {authUser ? (
                                 <>
@@ -146,6 +179,7 @@ export default function TopNavbar() {
                                             Dashboard
                                         </Link>
                                     </Button>
+
                                     <Button asChild size="sm" variant="outline" className="h-12 w-full rounded-xl border-[#BDE7E1] bg-white font-black text-[#07324A] hover:bg-[#FFF4F4] hover:text-[#F47B52]">
                                         <Link href={route('logout')} method="post" as="button" className="jaga-auth-logout-link">
                                             <LogOut className="mr-2 h-4 w-4" />
@@ -171,22 +205,25 @@ export default function TopNavbar() {
 
     return (
         <>
-            <header className="jaga-top-navbar relative z-[1000] shrink-0 border-b border-[#BDE7E1] bg-white">
+            <header className="jaga-top-navbar relative z-[1000] shrink-0 border-b border-[#BDE7E1] bg-white dark:border-white/10 dark:bg-[#102538]">
                 <div className="jaga-navbar-container mx-auto w-full max-w-[118rem] px-3 py-2 sm:px-4">
-                    <div className="jaga-navbar-shell flex min-h-[64px] items-center justify-between gap-3 rounded-[1.35rem] border border-[#BDE7E1] bg-white px-3 shadow-[0_10px_30px_rgba(15,31,46,.10)] sm:min-h-[68px] sm:px-4">
+                    <div className="jaga-navbar-shell flex min-h-[64px] items-center justify-between gap-3 rounded-[1.35rem] border border-[#BDE7E1] bg-white px-3 shadow-[0_10px_30px_rgba(15,31,46,.10)] sm:min-h-[68px] sm:px-4 dark:border-white/10 dark:bg-[#17324A]">
                         <Link
                             href="/"
                             className="jaga-brand-link flex min-w-0 shrink items-center gap-3 rounded-xl py-1 outline-none transition focus-visible:ring-4 focus-visible:ring-[#BDE7E1]/70"
                             aria-label={`Buka halaman Beranda ${appName}`}
                         >
-                            <span className="jaga-brand-mark" aria-hidden="true"><Map /></span>
+                            <BrandLogo />
                             <span className="jaga-brand-copy min-w-0">
                                 <span className="jaga-brand-name block truncate">{appName}</span>
-                                <span className="jaga-brand-tagline block">WebGIS Kabupaten Sleman</span>
+                                <span className="jaga-brand-tagline block">WebGIS Kejahatan Jalanan</span>
                             </span>
                         </Link>
 
-                        <nav className="jaga-navbar-menu hidden min-w-0 flex-1 items-center justify-center gap-1 overflow-x-auto rounded-full border border-[#BDE7E1] bg-[#E9F8F3] p-1.5 xl:flex" aria-label="Navigasi utama">
+                        <nav
+                            className="jaga-navbar-menu hidden min-w-0 flex-1 items-center justify-center gap-1 overflow-x-auto rounded-full border border-[#BDE7E1] bg-[#E9F8F3] p-1.5 xl:flex dark:border-white/10 dark:bg-[#102538]"
+                            aria-label="Navigasi utama"
+                        >
                             {menuItems.map((item) => {
                                 const active = isCurrentPath(pathname, item.url);
                                 const Icon = item.icon;
@@ -211,9 +248,11 @@ export default function TopNavbar() {
                         </nav>
 
                         <div className="hidden shrink-0 items-center gap-1.5 xl:flex">
+                            <ThemeToggle />
+
                             {authUser ? (
                                 <>
-                                    <Link href="/dashboard" className="jaga-auth-chip hidden min-w-0 max-w-[168px] items-center gap-2 rounded-2xl border border-[#BDE7E1] bg-white px-2.5 py-1.5 transition hover:border-[#0FA3A0] hover:bg-[#F6FBF8] 2xl:flex">
+                                    <Link href="/dashboard" className="jaga-auth-chip hidden min-w-0 max-w-[168px] items-center gap-2 rounded-2xl border border-[#BDE7E1] bg-white px-2.5 py-1.5 transition hover:border-[#0FA3A0] hover:bg-[#F6FBF8] 2xl:flex dark:border-white/10 dark:bg-[#102538]">
                                         {avatarUrl ? (
                                             <img src={avatarUrl} alt={authUser.name} className="h-9 w-9 rounded-xl border border-white shadow-sm" />
                                         ) : (
@@ -221,9 +260,14 @@ export default function TopNavbar() {
                                                 <User className="h-4 w-4" />
                                             </span>
                                         )}
+
                                         <span className="jaga-auth-chip-text min-w-0 max-w-[104px] flex-1 text-left">
-                                            <span className="jaga-auth-chip-name block truncate text-sm font-black leading-none" title={authUser.name}>{authUser.name}</span>
-                                            <span className="jaga-auth-chip-role mt-1 block truncate text-[11px] font-bold" title={authUser.role === 'admin' ? 'Admin' : 'Pengguna'}>{authUser.role === 'admin' ? 'Admin' : 'Pengguna'}</span>
+                                            <span className="jaga-auth-chip-name block truncate text-sm font-black leading-none" title={authUser.name}>
+                                                {authUser.name}
+                                            </span>
+                                            <span className="jaga-auth-chip-role mt-1 block truncate text-[11px] font-bold" title={authUser.role === 'admin' ? 'Admin' : 'Pengguna'}>
+                                                {authUser.role === 'admin' ? 'Admin' : 'Pengguna'}
+                                            </span>
                                         </span>
                                     </Link>
 
@@ -251,8 +295,10 @@ export default function TopNavbar() {
                             )}
                         </div>
 
+                        <ThemeToggle className="xl:hidden" />
+
                         <button
-                            className="jaga-mobile-menu-button inline-flex h-11 shrink-0 items-center justify-center gap-2 rounded-xl border border-[#BDE7E1] bg-[#F6FBF8] px-3 text-sm font-black text-[#07324A] shadow-sm transition hover:border-[#0FA3A0] hover:bg-[#E9F8F3] xl:hidden"
+                            className="jaga-mobile-menu-button inline-flex h-11 shrink-0 items-center justify-center gap-2 rounded-xl border border-[#BDE7E1] bg-[#F6FBF8] px-3 text-sm font-black text-[#07324A] shadow-sm transition hover:border-[#0FA3A0] hover:bg-[#E9F8F3] xl:hidden dark:border-white/10 dark:bg-[#102538] dark:text-white"
                             onClick={() => setMobileOpen((value) => !value)}
                             type="button"
                             aria-label={mobileOpen ? 'Tutup menu navigasi' : 'Buka menu navigasi'}
@@ -265,6 +311,7 @@ export default function TopNavbar() {
                     </div>
                 </div>
             </header>
+
             {mobileNavigation}
         </>
     );

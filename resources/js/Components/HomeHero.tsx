@@ -43,6 +43,30 @@ export function HomeHero({ title, subtitle }: HomeHeroProps) {
                 .jaga-home-mascot-glow {
                     animation: jagaMascotGlow 4.8s ease-in-out infinite;
                 }
+
+                .jaga-home-hero .jaga-home-hero-title {
+                    color: #FFFFFF !important;
+                    text-shadow: 0 5px 22px rgba(0,0,0,.46), 0 1px 0 rgba(255,255,255,.10);
+                    filter: none !important;
+                }
+
+                .jaga-home-hero .jaga-home-hero-subtitle-strong {
+                    display: inline-block;
+                    color: #F4FFFB !important;
+                    text-shadow: 0 4px 16px rgba(0,0,0,.40);
+                    background: rgba(6, 31, 50, .38);
+                    border: 1px solid rgba(255,255,255,.14);
+                    border-radius: 1.25rem;
+                    padding: .65rem .95rem;
+                    backdrop-filter: blur(8px);
+                }
+
+                .jaga-home-hero .jaga-home-hero-eyebrow-strong {
+                    color: #FFFFFF !important;
+                    background: rgba(255,255,255,.18) !important;
+                    border-color: rgba(255,255,255,.24) !important;
+                    text-shadow: 0 2px 8px rgba(0,0,0,.34);
+                }
             `}</style>
 
             <div className="pointer-events-none absolute inset-0 -z-10">
@@ -54,7 +78,7 @@ export function HomeHero({ title, subtitle }: HomeHeroProps) {
 
             <div className="jaga-home-hero-inner mx-auto grid max-w-7xl items-center gap-8 px-4 md:px-8 lg:grid-cols-[1.08fr_.92fr] lg:gap-10">
                 <div className="relative z-10 max-w-3xl">
-                    <div className="inline-flex items-center gap-2 rounded-full border border-white/15 bg-white/10 px-4 py-2 text-xs font-black uppercase tracking-[0.22em] text-[#BDE7E1] shadow-lg shadow-black/10 backdrop-blur">
+                    <div className="jaga-home-hero-eyebrow-strong inline-flex items-center gap-2 rounded-full border border-white/15 bg-white/10 px-4 py-2 text-xs font-black uppercase tracking-[0.22em] text-[#BDE7E1] shadow-lg shadow-black/10 backdrop-blur">
                         <ShieldCheck className="h-4 w-4" />
                         WebGIS Interaktif · JagaSleman
                     </div>
@@ -63,7 +87,7 @@ export function HomeHero({ title, subtitle }: HomeHeroProps) {
                         {title}
                     </h1>
 
-                    <p className="mt-4 max-w-2xl text-base font-semibold leading-8 text-[#E9F8F3]/88 md:text-lg">
+                    <p className="jaga-home-hero-subtitle-strong mt-4 max-w-2xl text-base font-semibold leading-8 md:text-lg">
                         {subtitle}
                     </p>
 

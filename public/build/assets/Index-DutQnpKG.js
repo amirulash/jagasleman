@@ -1,1 +1,0 @@
-import{t as e}from"./app-BImpzkeg.js";import{t}from"./SafekeyLayout-CRVPmdy9.js";import n from"./Index-Bv7bOHDE.js";var r=e();function i(){return(0,r.jsx)(t,{children:(0,r.jsx)(n,{})})}export{i as default};

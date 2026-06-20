@@ -1,6 +1,7 @@
 import { useEffect, useMemo, useState } from 'react';
 import {
   AlertTriangle,
+  FireExtinguisher,
   BadgeInfo,
   CheckCircle2,
   ChevronRight,
@@ -24,7 +25,7 @@ import { emergencyContacts } from '@/data/dummy';
 import MapView from '@/Components/MapView';
 import { JagaPageHero } from '@/Components/JagaPageHero';
 
-type FacilityType = 'Semua' | 'Polsek' | 'Rumah Sakit';
+type FacilityType = 'Semua' | 'Polsek' | 'Rumah Sakit' | 'Damkar';
 
 type UserLocation = {
   lat: number;
@@ -34,7 +35,7 @@ type UserLocation = {
 type EmergencyContactItem = {
   id: string;
   name: string;
-  type: 'Polsek' | 'Rumah Sakit';
+  type: 'Polsek' | 'Rumah Sakit' | 'Damkar';
   address: string;
   phone: string | null;
   lat: number;
@@ -47,7 +48,7 @@ type ContactWithDistance = EmergencyContactItem & {
   distanceKm: number | null;
 };
 
-const facilityTypes: FacilityType[] = ['Semua', 'Polsek', 'Rumah Sakit'];
+const facilityTypes: FacilityType[] = ['Semua', 'Polsek', 'Rumah Sakit', 'Damkar'];
 
 function toRad(value: number) {
   return (value * Math.PI) / 180;
@@ -104,7 +105,9 @@ function getContactKey(contact: Pick<EmergencyContactItem, 'id' | 'type'>) {
 }
 
 function getTypeIcon(type: EmergencyContactItem['type']) {
-  return type === 'Rumah Sakit' ? Hospital : Shield;
+  if (type === 'Rumah Sakit') return Hospital;
+  if (type === 'Damkar') return FireExtinguisher;
+  return Shield;
 }
 
 function getShortAddress(address?: string) {
@@ -127,6 +130,20 @@ function getTypeTone(type: EmergencyContactItem['type']) {
       solid: 'bg-emerald-700 hover:bg-emerald-800',
       soft: 'bg-emerald-50 text-emerald-700',
       panel: 'border-emerald-200 bg-emerald-50',
+      label: 'Faskes',
+    };
+  }
+
+  if (type === 'Damkar') {
+    return {
+      iconBox: 'bg-orange-100 text-orange-700 ring-1 ring-orange-200',
+      badge: 'border-orange-200 bg-orange-50 text-orange-700',
+      card: 'hover:border-orange-300 hover:ring-4 hover:ring-orange-100',
+      active: 'border-orange-400 ring-4 ring-orange-100',
+      solid: 'bg-orange-700 hover:bg-orange-800',
+      soft: 'bg-orange-50 text-orange-700',
+      panel: 'border-orange-200 bg-orange-50',
+      label: 'Damkar',
     };
   }
 
@@ -138,6 +155,7 @@ function getTypeTone(type: EmergencyContactItem['type']) {
     solid: 'bg-[#0B6E78] hover:bg-[#07324A]',
     soft: 'bg-sky-50 text-[#0B6E78]',
     panel: 'border-sky-200 bg-sky-50',
+    label: 'Polsek',
   };
 }
 
@@ -186,7 +204,7 @@ export default function Emergency() {
 
         return (
           validCoordinate &&
-          (contact.type === 'Polsek' || contact.type === 'Rumah Sakit') &&
+          (contact.type === 'Polsek' || contact.type === 'Rumah Sakit' || contact.type === 'Damkar') &&
           contact.name.trim().length > 0
         );
       });
@@ -235,7 +253,7 @@ export default function Emergency() {
           return (a.distanceKm ?? Infinity) - (b.distanceKm ?? Infinity);
         }
 
-        if (a.type !== b.type) return a.type === 'Polsek' ? -1 : 1;
+        if (a.type !== b.type) return facilityTypes.indexOf(a.type as FacilityType) - facilityTypes.indexOf(b.type as FacilityType);
 
         return a.name.localeCompare(b.name);
       });
@@ -246,6 +264,7 @@ export default function Emergency() {
 
   const totalPolice = contacts.filter((contact) => contact.type === 'Polsek').length;
   const totalHospitals = contacts.filter((contact) => contact.type === 'Rumah Sakit').length;
+  const totalFireStations = contacts.filter((contact) => contact.type === 'Damkar').length;
 
   const nearestFacility = useMemo(() => {
     return contactsWithDistance
@@ -405,7 +424,7 @@ export default function Emergency() {
         page="emergency"
         eyebrow="Kontak Bantuan Resmi"
         title="Kontak Bantuan Terdekat"
-        subtitle="Cari Polsek atau fasilitas kesehatan, aktifkan lokasi, lalu buka rute bantuan dari perangkat Anda."
+        subtitle="Cari Polsek, fasilitas kesehatan, atau Damkar; aktifkan lokasi, lalu buka rute bantuan dari perangkat Anda."
         actionSlot={(
           <>
             <button
@@ -452,7 +471,7 @@ export default function Emergency() {
             <div className="flex flex-col gap-3 border-b border-[#BDE7E1] p-4 sm:flex-row sm:items-center sm:justify-between">
               <div>
                 <p className="font-black text-[#07324A]">Peta Bantuan</p>
-                <p className="mt-1 text-sm font-semibold text-slate-600">Sebaran Polsek dan Rumah Sakit. Klik marker untuk membuka detail bantuan.</p>
+                <p className="mt-1 text-sm font-semibold text-slate-600">Sebaran Polsek, Rumah Sakit, dan Damkar. Klik marker untuk membuka detail bantuan.</p>
               </div>
               <div className="jaga-help-map-legend flex flex-wrap gap-2 text-xs font-black">
                 <span className="inline-flex items-center gap-2 rounded-full border border-sky-200 bg-sky-50 px-3 py-1.5 text-[#0B6E78]">
@@ -460,6 +479,9 @@ export default function Emergency() {
                 </span>
                 <span className="inline-flex items-center gap-2 rounded-full border border-emerald-200 bg-emerald-50 px-3 py-1.5 text-emerald-700">
                   <Hospital className="h-3.5 w-3.5" /> Rumah Sakit
+                </span>
+                <span className="inline-flex items-center gap-2 rounded-full border border-orange-200 bg-orange-50 px-3 py-1.5 text-orange-700">
+                  <FireExtinguisher className="h-3.5 w-3.5" /> Damkar
                 </span>
               </div>
             </div>
@@ -593,7 +615,7 @@ export default function Emergency() {
                             <span
                               className={`inline-flex rounded-full border px-2.5 py-1 text-[11px] font-black ${tone.badge}`}
                             >
-                              {contact.type === 'Rumah Sakit' ? 'Faskes' : 'Polsek'}
+                              {tone.label}
                             </span>
 
                             <span className="rounded-full bg-slate-100 dark:bg-[#17324A] px-2.5 py-1 text-[11px] font-black text-slate-600 dark:text-slate-200">

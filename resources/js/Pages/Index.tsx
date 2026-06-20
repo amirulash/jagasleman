@@ -127,8 +127,8 @@ const features = [
     },
     {
         title: 'Kontak Bantuan',
-        desc: 'Cari Polsek dan fasilitas kesehatan terdekat.',
-        detail: 'Halaman bantuan memuat telepon, alamat, rute, dan jarak.',
+        desc: 'Cari Polsek, fasilitas kesehatan, dan Damkar terdekat.',
+        detail: 'Halaman bantuan memuat telepon, alamat, rute, jarak, serta kontak Damkar.',
         icon: Phone,
         href: '/emergency',
         label: 'Cari bantuan',
@@ -929,7 +929,7 @@ export default function Index() {
                 metrics={[
                     { label: 'Total Laporan', value: homeStats.totalIncidents, note: 'Titik kejadian tercatat' },
                     { label: 'Hotspot Aktif', value: homeStats.totalHotspots, note: 'Area perlu perhatian' },
-                    { label: 'Kontak Bantuan', value: homeStats.totalContacts, note: 'Polsek dan fasilitas kesehatan' },
+                    { label: 'Kontak Bantuan', value: homeStats.totalContacts, note: 'Polsek, faskes, dan Damkar' },
                     { label: 'Monitoring', value: '24/7', note: 'Akses informasi kapan saja' },
                 ]}
             />
@@ -1117,57 +1117,6 @@ export default function Index() {
                 </div>
             </section>
 
-            {/* FINAL CTA */}
-            <section className="mx-auto max-w-7xl px-4 pb-14 md:px-8">
-                <div className="rounded-[2rem] border border-slate-200 bg-white p-6 shadow-sm md:p-8">
-                    <div className="grid gap-6 md:grid-cols-[1fr_auto] md:items-center">
-                        <div>
-                            <div className="mb-3 flex items-center gap-2">
-                                <div className="flex h-10 w-10 items-center justify-center rounded-2xl bg-[#F2FAF6] text-[#F47B52]">
-                                    <Users className="h-5 w-5" />
-                                </div>
-
-                                <Badge className="rounded-full border border-slate-200 bg-slate-50 text-slate-700 hover:bg-slate-50">
-                                    Partisipasi Masyarakat
-                                </Badge>
-                            </div>
-
-                            <h2 className="text-2xl font-black text-foreground">
-                                Laporan warga membuat peta semakin akurat.
-                            </h2>
-
-                            <p className="mt-2 max-w-2xl text-sm leading-relaxed text-slate-600">
-                                Gunakan fitur laporan saat melihat atau mengalami kejadian.
-                                Data yang rapi membantu pemantauan wilayah rawan.
-                            </p>
-                        </div>
-
-                        <div className="flex flex-col gap-3 sm:flex-row">
-                            <Button
-                                asChild
-                                className="h-11 rounded-full bg-[#F47B52] px-5 text-white hover:bg-[#07324A]"
-                            >
-                                <Link to="/report">
-                                    Buat Laporan
-                                    <FileWarning className="ml-2 h-4 w-4" />
-                                </Link>
-                            </Button>
-
-                            <Button
-                                asChild
-                                variant="outline"
-                                className="h-11 rounded-full border-slate-300 bg-white px-5"
-                            >
-                                <Link to="/emergency">
-                                    Kontak Bantuan
-                                    <Phone className="ml-2 h-4 w-4" />
-                                </Link>
-                            </Button>
-                        </div>
-                    </div>
-                </div>
-            </section>
-
             {/* FOOTER */}
             <footer className="jaga-home-footer border-t border-white/10 text-white backdrop-blur-sm">
                 <div className="mx-auto max-w-7xl px-4 py-12 md:px-8">
@@ -1176,7 +1125,7 @@ export default function Index() {
                             <div className="flex items-center gap-3">
                                 <div className="flex h-10 w-10 flex-shrink-0 items-center justify-center overflow-hidden rounded-xl border border-white/20 bg-white/10">
                                     <img
-                                        src="/images/logo_jagasleman.png"
+                                        src="/images/logo-jagasleman.png"
                                         alt="Logo JagaSleman"
                                         className="h-full w-full object-contain"
                                     />
