@@ -1,1 +1,0 @@
-import{n as e}from"./app-DB594QeM.js";var t=e();function n({value:e,className:n=``,children:r,...i}){return(0,t.jsx)(`label`,{...i,className:`block text-sm font-bold text-slate-700 `+n,children:e||r})}export{n as t};

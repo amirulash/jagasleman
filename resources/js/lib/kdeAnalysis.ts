@@ -1,214 +1,272 @@
 import { Incident } from "@/data/dummy";
 
+// ─────────────────────────────────────────────
+// Interface — tetap kompatibel dengan kode lama
+// ─────────────────────────────────────────────
 export interface KDEZone {
   id: string;
-  centerLat: number; // geographic latitude
-  centerLng: number; // geographic longitude
-  radius: number; // radius in kilometers
-  density: number; // 0-1 normalized density value
+  centerLat: number;
+  centerLng: number;
+  radius: number;       // radius dalam kilometer
+  density: number;      // 0–1 nilai densitas ternormalisasi
   color: string;
   intensity: "sangat-tinggi" | "tinggi" | "sedang" | "rendah" | "aman";
   pointCount: number;
   label: string;
+  // field tambahan untuk popup yang lebih informatif
+  densityPct?: number;  // persentase densitas (0–100)
+  description?: string; // keterangan ramah orang awam
 }
 
+// ─────────────────────────────────────────────
+// Batas wilayah Kabupaten Sleman
+// ─────────────────────────────────────────────
 const SLEMAN_BOUNDS = {
   south: -7.824968,
   north: -7.598439714,
-  west: 110.243691,
-  east: 110.4831528,
+  west:  110.243691,
+  east:  110.4831528,
 };
 
-/**
- * Convert geographic coordinates to percentage position on map
- */
-function coordToPercent(lat: number, lng: number): { x: number; y: number } {
-  const x = ((lng - SLEMAN_BOUNDS.west) / (SLEMAN_BOUNDS.east - SLEMAN_BOUNDS.west)) * 100;
-  const y = ((SLEMAN_BOUNDS.north - lat) / (SLEMAN_BOUNDS.north - SLEMAN_BOUNDS.south)) * 100;
-  return { x: Math.max(0, Math.min(100, x)), y: Math.max(0, Math.min(100, y)) };
+// ─────────────────────────────────────────────
+// Haversine — jarak geografis nyata dalam km
+// Ini yang menggantikan perhitungan persen lama
+// ─────────────────────────────────────────────
+function haversineKm(lat1: number, lng1: number, lat2: number, lng2: number): number {
+  const R = 6371;
+  const dLat = ((lat2 - lat1) * Math.PI) / 180;
+  const dLng = ((lng2 - lng1) * Math.PI) / 180;
+  const a =
+    Math.sin(dLat / 2) * Math.sin(dLat / 2) +
+    Math.cos((lat1 * Math.PI) / 180) *
+      Math.cos((lat2 * Math.PI) / 180) *
+      Math.sin(dLng / 2) *
+      Math.sin(dLng / 2);
+  return R * 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a));
 }
 
-/**
- * Convert percentage position back to geographic coordinates
- */
-function percentToCoord(x: number, y: number): { lat: number; lng: number } {
-  const lng = SLEMAN_BOUNDS.west + (x / 100) * (SLEMAN_BOUNDS.east - SLEMAN_BOUNDS.west);
-  const lat = SLEMAN_BOUNDS.north - (y / 100) * (SLEMAN_BOUNDS.north - SLEMAN_BOUNDS.south);
-  return { lat, lng };
-}
-
-/**
- * Gaussian/Normal kernel function for KDE
- */
-function gaussianKernel(distance: number, bandwidth: number): number {
-  const u = distance / bandwidth;
+// ─────────────────────────────────────────────
+// Gaussian kernel — sama seperti sebelumnya
+// tapi sekarang distance dalam satuan km nyata
+// ─────────────────────────────────────────────
+function gaussianKernel(distanceKm: number, bandwidthKm: number): number {
+  const u = distanceKm / bandwidthKm;
   return Math.exp(-(u * u) / 2);
 }
 
-/**
- * Calculate density at a point using Kernel Density Estimation
- */
-function calculateDensity(
-  point: { x: number; y: number },
-  incidents: { x: number; y: number }[],
-  bandwidth: number
+// ─────────────────────────────────────────────
+// Hitung densitas KDE di satu titik grid
+// menggunakan semua titik kejadian
+// ─────────────────────────────────────────────
+function calculateDensityAtPoint(
+  gridLat: number,
+  gridLng: number,
+  incidents: Incident[],
+  bandwidthKm: number
 ): number {
+  if (incidents.length === 0) return 0;
   let density = 0;
-
-  for (const incident of incidents) {
-    // Calculate distance in percentage coordinates
-    const dx = point.x - incident.x;
-    const dy = point.y - incident.y;
-    const distance = Math.sqrt(dx * dx + dy * dy);
-
-    // Weight by gaussian kernel
-    density += gaussianKernel(distance, bandwidth);
+  for (const inc of incidents) {
+    const distKm = haversineKm(gridLat, gridLng, inc.lat, inc.lng);
+    density += gaussianKernel(distKm, bandwidthKm);
   }
-
-  // Normalize by number of points
+  // Normalisasi per jumlah kejadian
   return density / incidents.length;
 }
 
-/**
- * Perform KDE analysis and generate density zones
- */
-export function analyzeKDE(incidents: Incident[], bandwidth: number = 2.5): KDEZone[] {
+// ─────────────────────────────────────────────
+// Tentukan warna, label intensitas, deskripsi
+// ramah orang awam berdasarkan level densitas
+// ─────────────────────────────────────────────
+function getZoneStyle(level: number): {
+  intensity: KDEZone["intensity"];
+  color: string;
+  label: string;
+  description: string;
+} {
+  if (level > 0.75) {
+    return {
+      intensity: "sangat-tinggi",
+      color: "rgba(185, 28, 28, 0.55)",
+      label: "⚠️ Sangat Rawan",
+      description: "Wilayah ini memiliki konsentrasi kejahatan tertinggi. Harap tingkatkan kewaspadaan.",
+    };
+  }
+  if (level > 0.55) {
+    return {
+      intensity: "tinggi",
+      color: "rgba(234, 88, 12, 0.50)",
+      label: "🔶 Rawan",
+      description: "Wilayah ini tergolong rawan. Disarankan berhati-hati saat beraktivitas.",
+    };
+  }
+  if (level > 0.35) {
+    return {
+      intensity: "sedang",
+      color: "rgba(234, 179, 8, 0.45)",
+      label: "🟡 Perlu Diwaspadai",
+      description: "Wilayah ini memiliki tingkat kerawanan sedang. Tetap waspada.",
+    };
+  }
+  if (level > 0.18) {
+    return {
+      intensity: "rendah",
+      color: "rgba(34, 197, 94, 0.40)",
+      label: "🟢 Relatif Aman",
+      description: "Wilayah ini memiliki konsentrasi kejahatan yang relatif rendah.",
+    };
+  }
+  return {
+    intensity: "aman",
+    color: "rgba(16, 185, 129, 0.30)",
+    label: "✅ Aman",
+    description: "Wilayah ini tergolong aman berdasarkan data kejadian yang tersedia.",
+  };
+}
+
+// ─────────────────────────────────────────────
+// FUNGSI UTAMA — analyzeKDE yang di-upgrade
+//
+// Perubahan dari versi lama:
+// 1. Grid 50×50 (2500 titik) vs lama 8×8 (64 titik)
+//    → resolusi 39× lebih detail
+// 2. Jarak pakai Haversine (km nyata) vs lama persen koordinat
+//    → posisi zona akurat di peta
+// 3. Radius zona proporsional terhadap sebaran data
+//    → zona tidak seragam ukurannya
+// 4. Label + deskripsi ramah orang awam
+// 5. Tetap kompatibel dengan interface KDEZone lama
+// ─────────────────────────────────────────────
+export function analyzeKDE(
+  incidents: Incident[],
+  bandwidthKm: number = 1.65
+): KDEZone[] {
   if (incidents.length === 0) return [];
 
-  // Convert incident coordinates to percentage positions
-  const incidentPoints = incidents.map(inc => coordToPercent(inc.lat, inc.lng));
+  // ── 1. Bangun grid 50×50 di seluruh wilayah Sleman ──
+  const GRID_SIZE = 50;
+  const latStep = (SLEMAN_BOUNDS.north - SLEMAN_BOUNDS.south) / GRID_SIZE;
+  const lngStep = (SLEMAN_BOUNDS.east  - SLEMAN_BOUNDS.west)  / GRID_SIZE;
 
-  // Sample grid points to calculate density
-  const gridSize = 8; // 8x8 grid for zone detection
-  const gridPoints: { x: number; y: number; density: number }[] = [];
+  type GridPoint = { lat: number; lng: number; density: number; index: number };
+  const gridPoints: GridPoint[] = [];
 
-  for (let i = 0; i < gridSize; i++) {
-    for (let j = 0; j < gridSize; j++) {
-      const x = (i / gridSize) * 100 + 5;
-      const y = (j / gridSize) * 100 + 5;
-      const density = calculateDensity({ x, y }, incidentPoints, bandwidth);
-      gridPoints.push({ x, y, density });
+  for (let i = 0; i < GRID_SIZE; i++) {
+    for (let j = 0; j < GRID_SIZE; j++) {
+      const lat = SLEMAN_BOUNDS.north - (i + 0.5) * latStep;
+      const lng = SLEMAN_BOUNDS.west  + (j + 0.5) * lngStep;
+      const density = calculateDensityAtPoint(lat, lng, incidents, bandwidthKm);
+      gridPoints.push({ lat, lng, density, index: i * GRID_SIZE + j });
     }
   }
 
-  // Find clusters of high-density regions
-  const maxDensity = Math.max(...gridPoints.map(p => p.density));
-  const zones: KDEZone[] = [];
+  // ── 2. Normalisasi densitas terhadap nilai maksimum ──
+  const maxDensity = Math.max(...gridPoints.map(p => p.density), 1e-10);
+  const normalizedPoints = gridPoints.map(p => ({
+    ...p,
+    normalizedDensity: p.density / maxDensity,
+  }));
+
+  // ── 3. Ambil titik-titik puncak (local maxima) ──
+  //    Titik yang lebih tinggi dari semua tetangganya
+  //    → ini menjadi pusat zona
   const processed = new Set<number>();
-
-  // Sort by density descending
-  const sortedPoints = gridPoints
-    .map((p, i) => ({ ...p, index: i }))
-    .sort((a, b) => b.density - a.density);
-
+  const zones: KDEZone[] = [];
   let zoneId = 1;
 
-  for (const point of sortedPoints) {
-    if (processed.has(point.index)) continue;
+  // Urutkan dari densitas tertinggi ke terendah
+  const sorted = [...normalizedPoints]
+    .filter(p => p.normalizedDensity >= 0.15)
+    .sort((a, b) => b.normalizedDensity - a.normalizedDensity);
 
-    const normalizedDensity = point.density / maxDensity;
-    if (normalizedDensity < 0.15) continue; // Skip very low density
+  // Jarak minimum antar zona (dalam km) agar tidak tumpang tindih
+  const MIN_ZONE_SPACING_KM = bandwidthKm * 1.2;
 
-    // Find neighboring points to merge zones
-    const cluster = [point];
-    const minDistForCluster = 15; // percentage
+  for (const peak of sorted) {
+    if (processed.has(peak.index)) continue;
 
-    for (const other of sortedPoints) {
-      if (processed.has(other.index)) continue;
-      if (other.index === point.index) continue;
-
-      const dx = point.x - other.x;
-      const dy = point.y - other.y;
-      const dist = Math.sqrt(dx * dx + dy * dy);
-
-      if (dist < minDistForCluster && other.density / maxDensity > 0.1) {
-        cluster.push(other);
-      }
-    }
-
-    // Mark as processed
-    cluster.forEach(p => processed.add(p.index));
-
-    // Calculate zone center and stats
-    const centerX = cluster.reduce((sum, p) => sum + p.x, 0) / cluster.length;
-    const centerY = cluster.reduce((sum, p) => sum + p.y, 0) / cluster.length;
-    const avgDensity = cluster.reduce((sum, p) => sum + p.density, 0) / cluster.length;
-
-    // Count near incidents
-    const nearIncidents = incidents.filter(inc => {
-      const { x, y } = coordToPercent(inc.lat, inc.lng);
-      const dx = x - centerX;
-      const dy = y - centerY;
-      const dist = Math.sqrt(dx * dx + dy * dy);
-      return dist < 5; // within 5% area
+    // ── 4. Kumpulkan titik-titik di sekitar puncak ini ──
+    const clusterPoints = normalizedPoints.filter(p => {
+      if (p.normalizedDensity < 0.12) return false;
+      const distKm = haversineKm(peak.lat, peak.lng, p.lat, p.lng);
+      return distKm <= bandwidthKm;
     });
 
-    // Determine intensity and color
-    const zoneDensity = avgDensity / maxDensity;
-    let intensity: KDEZone["intensity"];
-    let color: string;
+    // Tandai semua titik klaster sebagai sudah diproses
+    clusterPoints.forEach(p => processed.add(p.index));
 
-    if (zoneDensity > 0.7) {
-      intensity = "sangat-tinggi";
-      color = "rgba(26,10,0,0.35)"; // Dark brown
-    } else if (zoneDensity > 0.5) {
-      intensity = "tinggi";
-      color = "rgba(193,18,31,0.35)"; // Red
-    } else if (zoneDensity > 0.3) {
-      intensity = "sedang";
-      color = "rgba(224,123,39,0.35)"; // Orange
-    } else if (zoneDensity > 0.15) {
-      intensity = "rendah";
-      color = "rgba(244,230,110,0.35)"; // Yellow
-    } else {
-      intensity = "aman";
-      color = "rgba(82,183,136,0.2)"; // Green
+    // ── 5. Hitung pusat zona berbobot densitas ──
+    const totalWeight = clusterPoints.reduce((s, p) => s + p.normalizedDensity, 0);
+    const centerLat   = clusterPoints.reduce((s, p) => s + p.lat * p.normalizedDensity, 0) / totalWeight;
+    const centerLng   = clusterPoints.reduce((s, p) => s + p.lng * p.normalizedDensity, 0) / totalWeight;
+
+    // ── 6. Cek jarak dengan zona yang sudah ada ──
+    const tooClose = zones.some(z => {
+      const d = haversineKm(centerLat, centerLng, z.centerLat, z.centerLng);
+      return d < MIN_ZONE_SPACING_KM;
+    });
+    if (tooClose) continue;
+
+    // ── 7. Hitung radius proporsional dari sebaran data ──
+    //    Radius = jarak rata-rata kejadian terdekat dari pusat zona
+    const nearIncidents = incidents.filter(inc =>
+      haversineKm(centerLat, centerLng, inc.lat, inc.lng) <= bandwidthKm * 1.5
+    );
+
+    let radiusKm = bandwidthKm * 0.6; // default fallback
+    if (nearIncidents.length > 0) {
+      const avgDist = nearIncidents.reduce(
+        (sum, inc) => sum + haversineKm(centerLat, centerLng, inc.lat, inc.lng),
+        0
+      ) / nearIncidents.length;
+      // Radius = rata-rata jarak, diklem antara 0.3–2.5 km
+      radiusKm = Math.max(0.3, Math.min(2.5, avgDist * 1.2));
     }
 
-    // Convert center coordinates back to geographic
-    const { lat: centerLat, lng: centerLng } = percentToCoord(centerX, centerY);
+    // ── 8. Level intensitas dari densitas puncak ──
+    const style = getZoneStyle(peak.normalizedDensity);
+    const densityPct = Math.round(peak.normalizedDensity * 100);
 
-    // Zona kerawanan mengikuti bandwidth KDE:
-    // diameter zona = bandwidth (km) -> radius = bandwidth / 2
-    const radiusKm = Math.max(0.25, bandwidth / 2);
-
-    const zone: KDEZone = {
+    zones.push({
       id: `kde_${zoneId}`,
       centerLat,
       centerLng,
       radius: radiusKm,
-      density: zoneDensity,
-      color,
-      intensity,
+      density: peak.normalizedDensity,
+      color: style.color,
+      intensity: style.intensity,
       pointCount: nearIncidents.length,
-      label: `Zona ${intensity.replace("-", " ")}`,
-    };
+      label: style.label,
+      densityPct,
+      description: style.description,
+    });
 
-    zones.push(zone);
     zoneId++;
+
+    // Batasi maksimum 12 zona agar peta tidak penuh
+    if (zones.length >= 12) break;
   }
 
-  // Sort by density
   return zones.sort((a, b) => b.density - a.density);
 }
 
-/**
- * Get KDE legend/scale information
- */
+// ─────────────────────────────────────────────
+// Legend — dipakai di panel legenda peta
+// ─────────────────────────────────────────────
 export const KDE_LEGEND = [
-  { intensity: "sangat-tinggi", label: "Sangat Tinggi", color: "#1a0a00", range: "> 70%" },
-  { intensity: "tinggi", label: "Tinggi", color: "#c1121f", range: "50-70%" },
-  { intensity: "sedang", label: "Sedang", color: "#e07b27", range: "30-50%" },
-  { intensity: "rendah", label: "Rendah", color: "#f4e76e", range: "15-30%" },
-  { intensity: "aman", label: "Aman", color: "#52b788", range: "< 15%" },
+  { intensity: "sangat-tinggi", label: "⚠️ Sangat Rawan",      color: "#b91c1c", range: "> 75%" },
+  { intensity: "tinggi",        label: "🔶 Rawan",              color: "#ea580c", range: "55–75%" },
+  { intensity: "sedang",        label: "🟡 Perlu Diwaspadai",   color: "#eab308", range: "35–55%" },
+  { intensity: "rendah",        label: "🟢 Relatif Aman",       color: "#22c55e", range: "18–35%" },
+  { intensity: "aman",          label: "✅ Aman",               color: "#10b981", range: "< 18%" },
 ];
 
-/**
- * KDE Parameters and formulas for reference
- */
+// ─────────────────────────────────────────────
+// Info parameter KDE — untuk popup & dokumentasi
+// ─────────────────────────────────────────────
 export const KDE_INFO = {
-  method: "Kernel Density Estimation (KDE)",
-  kernel: "Gaussian/Normal Distribution",
-  formula: "f(x,y) = Σ K((d_i)/h) / (n·h²)",
+  method:      "Kernel Density Estimation (KDE)",
+  kernel:      "Gaussian/Normal Distribution",
+  formula:     "f(x,y) = Σ K((d_i)/h) / (n·h²)",
   description: "Mengestimasi densitas kejadian melalui kernel weighting dengan bandwidth adaptif",
 };

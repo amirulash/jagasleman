@@ -7833,3 +7833,1447 @@ body {
   accent-color: #0B6E78 !important;
   filter: drop-shadow(0 2px 4px rgba(7, 50, 74, .18));
 }
+
+/* ================================================================
+   PETA KEJADIAN: KARTU KONTROL TERPADU & ANALISIS RUTE BANTUAN
+   ================================================================ */
+#root .jagasleman-bantara-control-stack.jagasleman-unified-map-card {
+  position: absolute !important;
+  top: 16px !important;
+  right: 16px !important;
+  left: auto !important;
+  bottom: auto !important;
+  z-index: 820 !important;
+  display: block !important;
+  width: min(328px, calc(100% - 32px)) !important;
+  max-height: calc(100% - 32px) !important;
+  margin: 0 !important;
+  padding: 0 !important;
+  overflow: hidden !important;
+  border: 1px solid rgba(148, 163, 184, 0.36) !important;
+  border-radius: 18px !important;
+  background: rgba(255, 255, 255, 0.97) !important;
+  box-shadow: 0 18px 45px rgba(7, 50, 74, 0.2) !important;
+  backdrop-filter: blur(12px);
+}
+
+#root .jagasleman-unified-map-card__toggle {
+  display: flex;
+  width: 100%;
+  min-height: 58px;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  padding: 11px 13px;
+  border: 0;
+  background: linear-gradient(135deg, #07324a 0%, #0b6e78 100%);
+  color: #fff;
+  text-align: left;
+  cursor: pointer;
+}
+
+#root .jagasleman-unified-map-card__toggle > span:last-child {
+  display: inline-flex;
+  height: 30px;
+  width: 30px;
+  flex: 0 0 auto;
+  align-items: center;
+  justify-content: center;
+  border-radius: 10px;
+  background: rgba(255, 255, 255, 0.13);
+}
+
+#root .jagasleman-unified-map-card__toggle svg {
+  height: 17px;
+  width: 17px;
+}
+
+#root .jagasleman-unified-map-card__title {
+  display: flex;
+  min-width: 0;
+  align-items: center;
+  gap: 10px;
+}
+
+#root .jagasleman-unified-map-card__title > svg {
+  height: 20px;
+  width: 20px;
+  flex: 0 0 auto;
+}
+
+#root .jagasleman-unified-map-card__title > span {
+  display: grid;
+  min-width: 0;
+  gap: 1px;
+}
+
+#root .jagasleman-unified-map-card__title b {
+  font-size: 13px;
+  font-weight: 900;
+  letter-spacing: 0.01em;
+}
+
+#root .jagasleman-unified-map-card__title small {
+  overflow: hidden;
+  color: rgba(255, 255, 255, 0.76);
+  font-size: 10px;
+  font-weight: 700;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+#root .jagasleman-unified-map-card__body {
+  display: none;
+  max-height: calc(100vh - 190px);
+  overflow-x: hidden;
+  overflow-y: auto;
+  overscroll-behavior: contain;
+  scrollbar-width: thin;
+  scrollbar-color: #bde7e1 transparent;
+}
+
+#root .jagasleman-unified-map-card.is-card-open .jagasleman-unified-map-card__body {
+  display: block;
+}
+
+#root .jagasleman-unified-map-card__body > *,
+#root .jagasleman-unified-map-card__body .jagasleman-map-edge-panel,
+#root .jagasleman-unified-map-card__body .jagasleman-kde-layer-control,
+#root .jagasleman-unified-map-card__body .jagasleman-kde-legend,
+#root .jagasleman-unified-map-card__body .jagasleman-basemap-panel,
+#root .jagasleman-unified-map-card__body .jagasleman-route-control {
+  position: static !important;
+  inset: auto !important;
+  display: block !important;
+  width: 100% !important;
+  max-width: none !important;
+  min-width: 0 !important;
+  margin: 0 !important;
+  padding: 0 !important;
+  overflow: visible !important;
+  border: 0 !important;
+  border-radius: 0 !important;
+  background: transparent !important;
+  box-shadow: none !important;
+  transform: none !important;
+}
+
+#root .jagasleman-unified-map-card__body .jagasleman-map-edge-panel + .jagasleman-map-edge-panel {
+  border-top: 1px solid #e2e8f0 !important;
+}
+
+#root .jagasleman-unified-map-card__body .jagasleman-map-edge-heading,
+#root .jagasleman-unified-map-card__body .jagasleman-basemap-toggle {
+  min-height: 48px !important;
+  padding: 10px 13px !important;
+  border: 0 !important;
+  border-radius: 0 !important;
+  background: #ffffff !important;
+  color: #07324a !important;
+  box-shadow: none !important;
+}
+
+#root .jagasleman-unified-map-card__body .jagasleman-map-edge-heading:hover,
+#root .jagasleman-unified-map-card__body .jagasleman-map-edge-heading.is-active,
+#root .jagasleman-unified-map-card__body .jagasleman-basemap-toggle:hover,
+#root .jagasleman-unified-map-card__body .jagasleman-basemap-toggle.is-active {
+  background: #f2faf6 !important;
+}
+
+#root .jagasleman-unified-map-card__body .jagasleman-map-edge-heading-icon {
+  height: 29px !important;
+  width: 29px !important;
+  border-radius: 9px !important;
+  background: #e9f7f5 !important;
+  color: #0b6e78 !important;
+  font-size: 15px;
+  font-style: normal;
+}
+
+#root .jagasleman-unified-map-card__body .jagasleman-map-edge-content,
+#root .jagasleman-unified-map-card__body .jagasleman-basemap-menu.jagasleman-map-edge-content {
+  width: 100% !important;
+  margin: 0 !important;
+  padding: 12px !important;
+  border: 0 !important;
+  border-top: 1px solid #e2e8f0 !important;
+  border-radius: 0 !important;
+  background: #f8fafc !important;
+  box-shadow: none !important;
+}
+
+#root .jagasleman-route-content {
+  display: grid;
+  gap: 10px;
+}
+
+#root .jagasleman-route-intro {
+  color: #64748b;
+  font-size: 11px;
+  font-weight: 700;
+  line-height: 1.5;
+}
+
+#root .jagasleman-route-empty {
+  display: grid;
+  gap: 7px;
+  padding: 12px;
+  border: 1px dashed #a7c8cd;
+  border-radius: 13px;
+  background: #fff;
+  color: #07324a;
+}
+
+#root .jagasleman-route-empty b {
+  font-size: 12px;
+  font-weight: 900;
+}
+
+#root .jagasleman-route-empty span {
+  color: #64748b;
+  font-size: 11px;
+  font-weight: 650;
+  line-height: 1.45;
+}
+
+#root .jagasleman-route-empty button,
+#root .jagasleman-route-result a {
+  display: inline-flex;
+  min-height: 35px;
+  align-items: center;
+  justify-content: center;
+  border: 0;
+  border-radius: 10px;
+  background: #0b6e78;
+  color: #fff;
+  font-size: 11px;
+  font-weight: 900;
+  text-decoration: none;
+  cursor: pointer;
+}
+
+#root .jagasleman-route-empty button:disabled {
+  cursor: wait;
+  opacity: 0.62;
+}
+
+#root .jagasleman-route-origin {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 10px;
+  padding: 11px;
+  border: 1px solid #bde7e1;
+  border-radius: 13px;
+  background: #fff;
+}
+
+#root .jagasleman-route-origin > div {
+  display: grid;
+  min-width: 0;
+  gap: 2px;
+}
+
+#root .jagasleman-route-origin span {
+  color: #64748b;
+  font-size: 9px;
+  font-weight: 900;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+}
+
+#root .jagasleman-route-origin b {
+  overflow: hidden;
+  color: #07324a;
+  font-size: 12px;
+  font-weight: 900;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+#root .jagasleman-route-origin small {
+  color: #64748b;
+  font-size: 10px;
+  font-weight: 700;
+  line-height: 1.4;
+}
+
+#root .jagasleman-route-origin button {
+  flex: 0 0 auto;
+  padding: 5px 8px;
+  border: 1px solid #fecaca;
+  border-radius: 8px;
+  background: #fff1f2;
+  color: #be123c;
+  font-size: 10px;
+  font-weight: 900;
+  cursor: pointer;
+}
+
+#root .jagasleman-route-loading {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 10px;
+  border-radius: 11px;
+  background: #ecfeff;
+  color: #155e75;
+  font-size: 11px;
+  font-weight: 800;
+}
+
+#root .jagasleman-route-loading > span {
+  height: 14px;
+  width: 14px;
+  border: 2px solid #99f6e4;
+  border-top-color: #0f766e;
+  border-radius: 999px;
+  animation: jagasleman-route-spin 0.8s linear infinite;
+}
+
+@keyframes jagasleman-route-spin {
+  to { transform: rotate(360deg); }
+}
+
+#root .jagasleman-route-results {
+  display: grid;
+  gap: 9px;
+}
+
+#root .jagasleman-route-results article {
+  display: grid;
+  gap: 6px;
+  padding: 11px;
+  border: 1px solid #dbe5e8;
+  border-left-width: 4px;
+  border-radius: 13px;
+  background: #fff;
+}
+
+#root .jagasleman-route-results article.is-police { border-left-color: #0b6e78; }
+#root .jagasleman-route-results article.is-hospital { border-left-color: #16a34a; }
+
+#root .jagasleman-route-result-heading {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 8px;
+  color: #64748b;
+  font-size: 9px;
+  font-weight: 950;
+  letter-spacing: 0.08em;
+}
+
+#root .jagasleman-route-result-heading i {
+  height: 8px;
+  width: 8px;
+  border-radius: 999px;
+}
+
+#root .jagasleman-route-results article > b {
+  color: #07324a;
+  font-size: 12px;
+  font-weight: 900;
+  line-height: 1.3;
+}
+
+#root .jagasleman-route-results article > p {
+  margin: 0;
+  color: #64748b;
+  font-size: 10px;
+  font-weight: 650;
+  line-height: 1.4;
+}
+
+#root .jagasleman-route-metrics {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 7px;
+}
+
+#root .jagasleman-route-metrics > span {
+  display: grid;
+  gap: 1px;
+  padding: 7px;
+  border-radius: 9px;
+  background: #f1f5f9;
+}
+
+#root .jagasleman-route-metrics small {
+  color: #64748b;
+  font-size: 8px;
+  font-weight: 900;
+  text-transform: uppercase;
+}
+
+#root .jagasleman-route-metrics b {
+  color: #07324a;
+  font-size: 11px;
+  font-weight: 900;
+}
+
+#root .jagasleman-route-mode {
+  color: #64748b;
+  font-size: 9px;
+  font-weight: 800;
+}
+
+#root .jagasleman-route-warning {
+  padding: 9px 10px;
+  border: 1px solid #fed7aa;
+  border-radius: 10px;
+  background: #fff7ed;
+  color: #9a3412;
+  font-size: 10px;
+  font-weight: 750;
+  line-height: 1.45;
+}
+
+@media (max-width: 768px) {
+  #root .jagasleman-bantara-control-stack.jagasleman-unified-map-card {
+    top: 12px !important;
+    right: 12px !important;
+    width: min(306px, calc(100% - 24px)) !important;
+    max-height: calc(100% - 24px) !important;
+  }
+
+  #root .jagasleman-unified-map-card__body {
+    max-height: min(64vh, 470px);
+  }
+
+  #root .jagasleman-unified-map-card__title small {
+    display: none;
+  }
+}
+
+/* ======================================================================
+   REVISI AKHIR KONTROL PETA: SATU KARTU, TAB RINGKAS, SATU PANEL AKTIF
+   ====================================================================== */
+#root .jagasleman-bantara-control-stack.jagasleman-unified-map-card {
+  width: 186px !important;
+  max-width: calc(100% - 24px) !important;
+  border: 1px solid rgba(15, 118, 110, .24) !important;
+  border-radius: 14px !important;
+  background: #ffffff !important;
+  box-shadow: 0 12px 30px rgba(15, 23, 42, .18) !important;
+  backdrop-filter: none !important;
+  transition: width .18s ease, box-shadow .18s ease !important;
+}
+
+#root .jagasleman-bantara-control-stack.jagasleman-unified-map-card.is-card-open {
+  width: min(318px, calc(100% - 24px)) !important;
+}
+
+#root .jagasleman-unified-map-card__toggle {
+  min-height: 46px !important;
+  padding: 8px 10px !important;
+  border: 0 !important;
+  border-radius: 13px !important;
+  background: #ffffff !important;
+  color: #07324a !important;
+  box-shadow: none !important;
+}
+
+#root .jagasleman-unified-map-card.is-card-open .jagasleman-unified-map-card__toggle {
+  border-bottom: 1px solid #e2e8f0 !important;
+  border-radius: 13px 13px 0 0 !important;
+}
+
+#root .jagasleman-unified-map-card__toggle:hover {
+  background: #f8fafc !important;
+}
+
+#root .jagasleman-unified-map-card__toggle > span:last-child {
+  width: 26px !important;
+  height: 26px !important;
+  border-radius: 8px !important;
+  background: #eaf8f6 !important;
+  color: #0b6e78 !important;
+}
+
+#root .jagasleman-unified-map-card__title {
+  gap: 8px !important;
+}
+
+#root .jagasleman-unified-map-card__title > svg {
+  width: 18px !important;
+  height: 18px !important;
+  color: #0b6e78 !important;
+}
+
+#root .jagasleman-unified-map-card__title b {
+  font-size: 12px !important;
+  color: #07324a !important;
+}
+
+#root .jagasleman-unified-map-card__title small {
+  color: #64748b !important;
+  font-size: 9px !important;
+}
+
+#root .jagasleman-unified-map-card__tabs {
+  display: grid !important;
+  grid-template-columns: repeat(4, minmax(0, 1fr)) !important;
+  gap: 4px !important;
+  padding: 7px !important;
+  border-bottom: 1px solid #e2e8f0 !important;
+  background: #f8fafc !important;
+}
+
+#root .jagasleman-unified-map-card__tabs > button {
+  display: grid !important;
+  min-width: 0 !important;
+  min-height: 46px !important;
+  place-items: center !important;
+  gap: 2px !important;
+  padding: 5px 2px !important;
+  border: 1px solid transparent !important;
+  border-radius: 9px !important;
+  background: transparent !important;
+  color: #64748b !important;
+  font-size: 9px !important;
+  font-weight: 800 !important;
+  line-height: 1 !important;
+  cursor: pointer !important;
+}
+
+#root .jagasleman-unified-map-card__tabs > button svg {
+  width: 16px !important;
+  height: 16px !important;
+}
+
+#root .jagasleman-unified-map-card__tabs > button:hover {
+  background: #eef8f7 !important;
+  color: #0b6e78 !important;
+}
+
+#root .jagasleman-unified-map-card__tabs > button.is-active {
+  border-color: #99ded7 !important;
+  background: #e7f7f4 !important;
+  color: #075661 !important;
+  box-shadow: inset 0 0 0 1px rgba(11, 110, 120, .06) !important;
+}
+
+#root .jagasleman-unified-map-card__body {
+  max-height: min(52vh, 390px) !important;
+  padding: 0 !important;
+  background: #ffffff !important;
+}
+
+/* Sembunyikan judul accordion bawaan. Navigasi digantikan oleh tab di atas. */
+#root .jagasleman-unified-map-card__body .jagasleman-map-edge-heading,
+#root .jagasleman-unified-map-card__body .jagasleman-basemap-toggle {
+  display: none !important;
+}
+
+/* Hanya satu panel aktif yang tampil sehingga peta tidak tertutup banyak kontrol. */
+#root .jagasleman-unified-map-card__body .jagasleman-map-edge-panel,
+#root .jagasleman-unified-map-card__body .jagasleman-kde-layer-control,
+#root .jagasleman-unified-map-card__body .jagasleman-kde-legend,
+#root .jagasleman-unified-map-card__body .jagasleman-basemap-panel,
+#root .jagasleman-unified-map-card__body .jagasleman-route-control {
+  display: none !important;
+  position: static !important;
+  width: 100% !important;
+  margin: 0 !important;
+  padding: 0 !important;
+  border: 0 !important;
+  background: transparent !important;
+  box-shadow: none !important;
+}
+
+#root .jagasleman-unified-map-card__body .jagasleman-map-edge-panel.is-open,
+#root .jagasleman-unified-map-card__body .jagasleman-kde-layer-control.is-open,
+#root .jagasleman-unified-map-card__body .jagasleman-kde-legend.is-open,
+#root .jagasleman-unified-map-card__body .jagasleman-basemap-panel.is-open,
+#root .jagasleman-unified-map-card__body .jagasleman-route-control.is-open {
+  display: block !important;
+}
+
+#root .jagasleman-unified-map-card__body .jagasleman-map-edge-content,
+#root .jagasleman-unified-map-card__body .jagasleman-basemap-menu.jagasleman-map-edge-content {
+  display: block !important;
+  width: 100% !important;
+  margin: 0 !important;
+  padding: 10px !important;
+  border: 0 !important;
+  background: #ffffff !important;
+  box-shadow: none !important;
+}
+
+#root .jagasleman-unified-map-card__body .jagasleman-map-edge-content > :first-child {
+  margin-top: 0 !important;
+}
+
+/* Marker fasilitas berbentuk pin. */
+.jaga-map-icon .jagasleman-facility-marker {
+  width: 44px !important;
+  height: 58px !important;
+  background: transparent !important;
+  transform-origin: 50% 100% !important;
+  transition: transform .15s ease !important;
+}
+
+.jaga-map-icon:hover .jagasleman-facility-marker {
+  transform: translateY(-2px) scale(1.06) !important;
+}
+
+#root .jagasleman-contact-legend-icon.police {
+  background: #173a66 !important;
+}
+
+#root .jagasleman-contact-legend-icon.hospital {
+  background: #e11d2e !important;
+}
+
+#root .jagasleman-contact-legend-icon.fire {
+  background: #ea580c !important;
+}
+
+#root .jagasleman-contact-legend-icon svg {
+  width: 14px !important;
+  height: 14px !important;
+  stroke-width: 2.5 !important;
+}
+
+@media (max-width: 768px) {
+  #root .jagasleman-bantara-control-stack.jagasleman-unified-map-card {
+    width: 168px !important;
+    top: 10px !important;
+    right: 10px !important;
+  }
+
+  #root .jagasleman-bantara-control-stack.jagasleman-unified-map-card.is-card-open {
+    width: min(292px, calc(100% - 20px)) !important;
+  }
+
+  #root .jagasleman-unified-map-card__body {
+    max-height: min(48vh, 340px) !important;
+  }
+
+  #root .jagasleman-unified-map-card__tabs > button {
+    min-height: 42px !important;
+    font-size: 8px !important;
+  }
+}
+
+/* ======================================================================
+   KONTROL PETA FINAL — SATU CARD, MENU VERTIKAL, SATU PANEL AKTIF
+   ====================================================================== */
+#root .jagasleman-bantara-control-stack.jagasleman-unified-map-card {
+  width: 196px !important;
+  max-width: calc(100% - 20px) !important;
+  overflow: hidden !important;
+  border: 1px solid rgba(14, 116, 126, .24) !important;
+  border-radius: 14px !important;
+  background: #ffffff !important;
+  box-shadow: 0 12px 30px rgba(15, 23, 42, .16) !important;
+  backdrop-filter: none !important;
+  transition: width .18s ease, box-shadow .18s ease !important;
+}
+
+#root .jagasleman-bantara-control-stack.jagasleman-unified-map-card.is-card-open {
+  width: min(306px, calc(100% - 20px)) !important;
+}
+
+/* Header selalu berada di dalam card. */
+#root .jagasleman-unified-map-card__toggle {
+  width: 100% !important;
+  min-height: 50px !important;
+  display: flex !important;
+  align-items: center !important;
+  justify-content: space-between !important;
+  gap: 10px !important;
+  padding: 9px 11px !important;
+  border: 0 !important;
+  border-radius: 0 !important;
+  background: linear-gradient(135deg, #0b6e78 0%, #075661 100%) !important;
+  color: #ffffff !important;
+  cursor: pointer !important;
+}
+
+#root .jagasleman-unified-map-card__toggle:hover {
+  background: linear-gradient(135deg, #0a6470 0%, #064e58 100%) !important;
+}
+
+#root .jagasleman-unified-map-card__title {
+  min-width: 0 !important;
+  display: flex !important;
+  align-items: center !important;
+  gap: 9px !important;
+}
+
+#root .jagasleman-unified-map-card__title > svg {
+  width: 20px !important;
+  height: 20px !important;
+  flex: 0 0 auto !important;
+  color: #ffffff !important;
+}
+
+#root .jagasleman-unified-map-card__title > span {
+  min-width: 0 !important;
+  display: block !important;
+}
+
+#root .jagasleman-unified-map-card__title b {
+  display: block !important;
+  color: #ffffff !important;
+  font-size: 12.5px !important;
+  font-weight: 850 !important;
+  line-height: 1.15 !important;
+  letter-spacing: .01em !important;
+  white-space: nowrap !important;
+}
+
+#root .jagasleman-unified-map-card__toggle > span:last-child {
+  width: 26px !important;
+  height: 26px !important;
+  display: grid !important;
+  place-items: center !important;
+  flex: 0 0 auto !important;
+  border-radius: 8px !important;
+  background: rgba(255, 255, 255, .15) !important;
+  color: #ffffff !important;
+}
+
+#root .jagasleman-unified-map-card__toggle > span:last-child svg {
+  width: 16px !important;
+  height: 16px !important;
+}
+
+#root .jagasleman-unified-map-card__content {
+  width: 100% !important;
+  overflow: hidden !important;
+  border-top: 1px solid rgba(255,255,255,.18) !important;
+  background: #ffffff !important;
+}
+
+/* Menu berada di dalam card, tersusun vertikal seperti panel layer profesional. */
+#root .jagasleman-unified-map-card__menu {
+  display: block !important;
+  width: 100% !important;
+  padding: 0 !important;
+  background: #ffffff !important;
+}
+
+#root .jagasleman-unified-map-card__menu > button {
+  position: relative !important;
+  width: 100% !important;
+  min-height: 54px !important;
+  display: grid !important;
+  grid-template-columns: 34px minmax(0, 1fr) 22px !important;
+  align-items: center !important;
+  gap: 9px !important;
+  padding: 8px 10px !important;
+  border: 0 !important;
+  border-bottom: 1px solid #e6eef0 !important;
+  border-radius: 0 !important;
+  background: #ffffff !important;
+  color: #163747 !important;
+  text-align: left !important;
+  cursor: pointer !important;
+}
+
+#root .jagasleman-unified-map-card__menu > button:last-child {
+  border-bottom: 0 !important;
+}
+
+#root .jagasleman-unified-map-card__menu > button:hover {
+  background: #f3faf9 !important;
+}
+
+#root .jagasleman-unified-map-card__menu > button.is-active {
+  background: #eaf7f5 !important;
+  box-shadow: inset 4px 0 0 #0b6e78 !important;
+}
+
+#root .jagasleman-unified-map-card__menu-icon {
+  width: 32px !important;
+  height: 32px !important;
+  display: grid !important;
+  place-items: center !important;
+  border-radius: 9px !important;
+  background: #e9f7f5 !important;
+  color: #0b6e78 !important;
+}
+
+#root .jagasleman-unified-map-card__menu > button.is-active .jagasleman-unified-map-card__menu-icon {
+  background: #0b6e78 !important;
+  color: #ffffff !important;
+}
+
+#root .jagasleman-unified-map-card__menu-icon svg {
+  width: 17px !important;
+  height: 17px !important;
+}
+
+#root .jagasleman-unified-map-card__menu-copy {
+  min-width: 0 !important;
+  display: block !important;
+}
+
+#root .jagasleman-unified-map-card__menu-copy b {
+  display: block !important;
+  margin: 0 0 2px !important;
+  color: #113245 !important;
+  font-size: 11.5px !important;
+  font-weight: 850 !important;
+  line-height: 1.18 !important;
+}
+
+#root .jagasleman-unified-map-card__menu-copy small {
+  display: block !important;
+  overflow: hidden !important;
+  color: #6b7f8b !important;
+  font-size: 8.7px !important;
+  font-weight: 600 !important;
+  line-height: 1.25 !important;
+  text-overflow: ellipsis !important;
+  white-space: nowrap !important;
+}
+
+#root .jagasleman-unified-map-card__menu-chevron {
+  width: 15px !important;
+  height: 15px !important;
+  color: #6f8791 !important;
+  transition: transform .18s ease !important;
+}
+
+#root .jagasleman-unified-map-card__menu > button.is-active .jagasleman-unified-map-card__menu-chevron {
+  transform: rotate(180deg) !important;
+  color: #0b6e78 !important;
+}
+
+/* Isi panel tetap berada di dalam card yang sama. */
+#root .jagasleman-unified-map-card__body {
+  display: block !important;
+  width: 100% !important;
+  max-height: min(46vh, 330px) !important;
+  overflow-x: hidden !important;
+  overflow-y: auto !important;
+  padding: 0 !important;
+  border-top: 1px solid #dce9eb !important;
+  background: #fbfdfd !important;
+  scrollbar-width: thin !important;
+  scrollbar-color: #8dc8c2 #edf5f4 !important;
+}
+
+#root .jagasleman-unified-map-card__body[data-active-panel="none"] {
+  display: none !important;
+}
+
+#root .jagasleman-unified-map-card__body::-webkit-scrollbar {
+  width: 7px !important;
+}
+
+#root .jagasleman-unified-map-card__body::-webkit-scrollbar-track {
+  background: #edf5f4 !important;
+}
+
+#root .jagasleman-unified-map-card__body::-webkit-scrollbar-thumb {
+  border-radius: 999px !important;
+  background: #8dc8c2 !important;
+}
+
+/* Header accordion bawaan disembunyikan karena menu utama sudah tersedia. */
+#root .jagasleman-unified-map-card__body .jagasleman-map-edge-heading,
+#root .jagasleman-unified-map-card__body .jagasleman-basemap-toggle {
+  display: none !important;
+}
+
+#root .jagasleman-unified-map-card__body .jagasleman-map-edge-panel,
+#root .jagasleman-unified-map-card__body .jagasleman-kde-layer-control,
+#root .jagasleman-unified-map-card__body .jagasleman-kde-legend,
+#root .jagasleman-unified-map-card__body .jagasleman-basemap-panel,
+#root .jagasleman-unified-map-card__body .jagasleman-route-control {
+  display: none !important;
+  position: static !important;
+  width: 100% !important;
+  margin: 0 !important;
+  padding: 0 !important;
+  border: 0 !important;
+  border-radius: 0 !important;
+  background: transparent !important;
+  box-shadow: none !important;
+}
+
+#root .jagasleman-unified-map-card__body .jagasleman-map-edge-panel.is-open,
+#root .jagasleman-unified-map-card__body .jagasleman-kde-layer-control.is-open,
+#root .jagasleman-unified-map-card__body .jagasleman-kde-legend.is-open,
+#root .jagasleman-unified-map-card__body .jagasleman-basemap-panel.is-open,
+#root .jagasleman-unified-map-card__body .jagasleman-route-control.is-open {
+  display: block !important;
+}
+
+#root .jagasleman-unified-map-card__body .jagasleman-map-edge-content,
+#root .jagasleman-unified-map-card__body .jagasleman-basemap-menu.jagasleman-map-edge-content {
+  display: block !important;
+  width: 100% !important;
+  margin: 0 !important;
+  padding: 12px !important;
+  border: 0 !important;
+  background: #fbfdfd !important;
+  box-shadow: none !important;
+}
+
+/* Hilangkan bayangan dan radius ganda dari elemen anak. */
+#root .jagasleman-unified-map-card__body .jagasleman-map-edge-content > *,
+#root .jagasleman-unified-map-card__body .jagasleman-basemap-menu > * {
+  max-width: 100% !important;
+}
+
+@media (max-width: 768px) {
+  #root .jagasleman-bantara-control-stack.jagasleman-unified-map-card {
+    width: 178px !important;
+    top: 10px !important;
+    right: 10px !important;
+  }
+
+  #root .jagasleman-bantara-control-stack.jagasleman-unified-map-card.is-card-open {
+    width: min(286px, calc(100% - 20px)) !important;
+  }
+
+  #root .jagasleman-unified-map-card__menu-copy small {
+    font-size: 8.4px !important;
+  }
+
+  #root .jagasleman-unified-map-card__body {
+    max-height: min(42vh, 300px) !important;
+  }
+}
+
+/* ========================================================================== */
+/* JagaSleman - kontrol layer sederhana: analisis + kontak darurat            */
+/* Basemap tidak bergantung pada panel ini dan selalu dirender oleh MapView.  */
+/* ========================================================================== */
+
+#root .jagasleman-simple-layer-control {
+  position: absolute;
+  top: 14px;
+  right: 14px;
+  z-index: 1000;
+  width: 286px;
+  max-width: calc(100% - 28px);
+  overflow: hidden;
+  border: 1px solid rgba(7, 50, 74, 0.14);
+  border-radius: 14px;
+  background: rgba(255, 255, 255, 0.98);
+  box-shadow: 0 14px 34px rgba(7, 50, 74, 0.16);
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+  color: #07324a;
+}
+
+#root .jagasleman-simple-layer-control__header {
+  display: flex;
+  width: 100%;
+  min-height: 50px;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  border: 0;
+  background: #0f8f91;
+  padding: 10px 13px;
+  color: #ffffff;
+  text-align: left;
+  cursor: pointer;
+}
+
+#root .jagasleman-simple-layer-control__header:hover,
+#root .jagasleman-simple-layer-control__header:focus-visible {
+  background: #087b7e;
+  outline: none;
+}
+
+#root .jagasleman-simple-layer-control__header > span:first-child {
+  display: flex;
+  min-width: 0;
+  align-items: center;
+  gap: 10px;
+}
+
+#root .jagasleman-simple-layer-control__header svg {
+  width: 18px;
+  height: 18px;
+  flex: 0 0 auto;
+}
+
+#root .jagasleman-simple-layer-control__header > span:first-child > span {
+  display: grid;
+  min-width: 0;
+  gap: 1px;
+}
+
+#root .jagasleman-simple-layer-control__header b {
+  font-size: 13px;
+  font-weight: 900;
+  line-height: 1.2;
+}
+
+#root .jagasleman-simple-layer-control__header small {
+  overflow: hidden;
+  color: rgba(255, 255, 255, 0.82);
+  font-size: 10px;
+  font-weight: 700;
+  line-height: 1.2;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+#root .jagasleman-simple-layer-control__body {
+  max-height: min(68vh, 610px);
+  overflow-x: hidden;
+  overflow-y: auto;
+  overscroll-behavior: contain;
+  background: #ffffff;
+  scrollbar-width: thin;
+  scrollbar-color: #9fdad5 transparent;
+}
+
+#root .jagasleman-simple-layer-control__body::-webkit-scrollbar {
+  width: 6px;
+}
+
+#root .jagasleman-simple-layer-control__body::-webkit-scrollbar-thumb {
+  border-radius: 999px;
+  background: #9fdad5;
+}
+
+#root .jagasleman-simple-layer-section + .jagasleman-simple-layer-section {
+  border-top: 1px solid #dbe9ea;
+}
+
+#root .jagasleman-simple-layer-section__heading {
+  display: flex;
+  width: 100%;
+  min-height: 52px;
+  align-items: center;
+  justify-content: space-between;
+  gap: 10px;
+  border: 0;
+  background: #ffffff;
+  padding: 9px 12px;
+  color: #07324a;
+  text-align: left;
+  cursor: pointer;
+}
+
+#root .jagasleman-simple-layer-section__heading:hover,
+#root .jagasleman-simple-layer-section__heading:focus-visible,
+#root .jagasleman-simple-layer-section.is-open > .jagasleman-simple-layer-section__heading {
+  background: #f0faf9;
+  outline: none;
+}
+
+#root .jagasleman-simple-layer-section__heading > span:first-child {
+  display: flex;
+  min-width: 0;
+  align-items: center;
+  gap: 10px;
+}
+
+#root .jagasleman-simple-layer-section__heading > span:first-child > span:last-child {
+  display: grid;
+  min-width: 0;
+  gap: 2px;
+}
+
+#root .jagasleman-simple-layer-section__heading b {
+  font-size: 12px;
+  font-weight: 900;
+  line-height: 1.25;
+}
+
+#root .jagasleman-simple-layer-section__heading small {
+  overflow: hidden;
+  color: #71828c;
+  font-size: 9.5px;
+  font-weight: 700;
+  line-height: 1.25;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+#root .jagasleman-simple-layer-section__heading > svg {
+  width: 15px;
+  height: 15px;
+  flex: 0 0 auto;
+  color: #0f8f91;
+}
+
+#root .jagasleman-simple-layer-section__icon {
+  display: inline-flex;
+  width: 30px;
+  height: 30px;
+  flex: 0 0 30px;
+  align-items: center;
+  justify-content: center;
+  border-radius: 9px;
+  background: #dff4f1;
+  color: #0b6e78;
+  font-size: 14px;
+  font-weight: 900;
+}
+
+#root .jagasleman-simple-layer-section__icon.is-emergency {
+  background: #fff0f1;
+  color: #d91f32;
+  font-size: 19px;
+}
+
+#root .jagasleman-simple-layer-section__content {
+  border-top: 1px solid #e2eeee;
+  background: #f8fbfb;
+  padding: 10px;
+}
+
+#root .jagasleman-simple-analysis-options {
+  display: grid;
+  gap: 7px;
+}
+
+#root .jagasleman-simple-analysis-options > button {
+  display: flex;
+  width: 100%;
+  align-items: flex-start;
+  gap: 9px;
+  border: 1px solid #dbe7e8;
+  border-radius: 10px;
+  background: #ffffff;
+  padding: 9px;
+  color: #07324a;
+  text-align: left;
+  cursor: pointer;
+  transition: border-color 150ms ease, background-color 150ms ease, box-shadow 150ms ease;
+}
+
+#root .jagasleman-simple-analysis-options > button:hover,
+#root .jagasleman-simple-analysis-options > button.is-active {
+  border-color: #69c9c1;
+  background: #eefaf8;
+  box-shadow: 0 5px 14px rgba(15, 143, 145, 0.08);
+}
+
+#root .jagasleman-simple-analysis-options > button > span:last-child {
+  display: grid;
+  min-width: 0;
+  gap: 2px;
+}
+
+#root .jagasleman-simple-analysis-options b {
+  font-size: 11px;
+  font-weight: 900;
+}
+
+#root .jagasleman-simple-analysis-options small {
+  color: #6f8089;
+  font-size: 9px;
+  font-weight: 650;
+  line-height: 1.35;
+}
+
+#root .jagasleman-simple-analysis-radio {
+  display: inline-flex;
+  width: 17px;
+  height: 17px;
+  flex: 0 0 17px;
+  align-items: center;
+  justify-content: center;
+  margin-top: 1px;
+  border: 2px solid #a8c3c5;
+  border-radius: 999px;
+  color: #0f8f91;
+  font-size: 10px;
+  line-height: 1;
+}
+
+#root .jagasleman-simple-analysis-options > button.is-active .jagasleman-simple-analysis-radio {
+  border-color: #0f8f91;
+}
+
+#root .jagasleman-simple-contact-toggle {
+  display: flex;
+  width: 100%;
+  align-items: flex-start;
+  gap: 9px;
+  border: 1px solid #dbe7e8;
+  border-radius: 10px;
+  background: #ffffff;
+  padding: 9px;
+  color: #07324a;
+  text-align: left;
+  cursor: pointer;
+}
+
+#root .jagasleman-simple-contact-toggle.is-active {
+  border-color: #69c9c1;
+  background: #eefaf8;
+}
+
+#root .jagasleman-simple-contact-check {
+  display: inline-flex;
+  width: 19px;
+  height: 19px;
+  flex: 0 0 19px;
+  align-items: center;
+  justify-content: center;
+  border: 2px solid #9eb9bb;
+  border-radius: 5px;
+  color: #ffffff;
+  font-size: 11px;
+  font-weight: 900;
+}
+
+#root .jagasleman-simple-contact-toggle.is-active .jagasleman-simple-contact-check {
+  border-color: #0f8f91;
+  background: #0f8f91;
+}
+
+#root .jagasleman-simple-contact-toggle > span:last-child {
+  display: grid;
+  min-width: 0;
+  gap: 2px;
+}
+
+#root .jagasleman-simple-contact-toggle b {
+  font-size: 11px;
+  font-weight: 900;
+}
+
+#root .jagasleman-simple-contact-toggle small {
+  color: #6f8089;
+  font-size: 9px;
+  font-weight: 650;
+}
+
+#root .jagasleman-simple-location-button {
+  display: flex;
+  width: 100%;
+  min-height: 38px;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  margin-top: 8px;
+  border: 0;
+  border-radius: 10px;
+  background: #0b6e78;
+  padding: 8px 10px;
+  color: #ffffff;
+  font-size: 10px;
+  font-weight: 900;
+  cursor: pointer;
+}
+
+#root .jagasleman-simple-location-button:hover,
+#root .jagasleman-simple-location-button:focus-visible {
+  background: #075865;
+  outline: none;
+}
+
+#root .jagasleman-simple-location-button:disabled {
+  cursor: wait;
+  opacity: 0.66;
+}
+
+#root .jagasleman-simple-location-button svg {
+  width: 15px;
+  height: 15px;
+}
+
+#root .jagasleman-simple-emergency-hint {
+  margin: 8px 1px 0;
+  color: #6d7f89;
+  font-size: 9px;
+  font-weight: 650;
+  line-height: 1.45;
+}
+
+#root .jagasleman-simple-route-summary {
+  display: grid;
+  gap: 8px;
+  margin-top: 9px;
+}
+
+#root .jagasleman-simple-route-origin {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 8px;
+  border: 1px solid #bde7e1;
+  border-radius: 10px;
+  background: #eefaf8;
+  padding: 8px;
+}
+
+#root .jagasleman-simple-route-origin > span {
+  display: grid;
+  min-width: 0;
+  gap: 1px;
+}
+
+#root .jagasleman-simple-route-origin small {
+  color: #638087;
+  font-size: 8px;
+  font-weight: 800;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+}
+
+#root .jagasleman-simple-route-origin b {
+  font-size: 10.5px;
+  font-weight: 900;
+}
+
+#root .jagasleman-simple-route-origin em {
+  color: #70818a;
+  font-size: 8.5px;
+  font-style: normal;
+  font-weight: 650;
+}
+
+#root .jagasleman-simple-route-origin button {
+  border: 0;
+  background: transparent;
+  color: #c52b3c;
+  font-size: 9px;
+  font-weight: 900;
+  cursor: pointer;
+}
+
+#root .jagasleman-simple-route-loading {
+  display: flex;
+  align-items: center;
+  gap: 7px;
+  border-radius: 9px;
+  background: #edf5f6;
+  padding: 8px;
+  color: #4c6670;
+  font-size: 9px;
+  font-weight: 800;
+}
+
+#root .jagasleman-simple-route-loading > span {
+  width: 12px;
+  height: 12px;
+  border: 2px solid #abd7d4;
+  border-top-color: #0f8f91;
+  border-radius: 999px;
+  animation: jagasleman-simple-spin 0.8s linear infinite;
+}
+
+@keyframes jagasleman-simple-spin {
+  to { transform: rotate(360deg); }
+}
+
+#root .jagasleman-simple-route-results {
+  display: grid;
+  gap: 8px;
+}
+
+#root .jagasleman-simple-route-results article {
+  overflow: hidden;
+  border: 1px solid #dbe6e8;
+  border-left: 4px solid #173a66;
+  border-radius: 10px;
+  background: #ffffff;
+  padding: 9px;
+}
+
+#root .jagasleman-simple-route-results article.is-hospital {
+  border-left-color: #e11d2e;
+}
+
+#root .jagasleman-simple-route-results article > div:first-child {
+  display: grid;
+  gap: 2px;
+}
+
+#root .jagasleman-simple-route-results article > div:first-child > span {
+  color: #71818a;
+  font-size: 8px;
+  font-weight: 900;
+  letter-spacing: 0.07em;
+}
+
+#root .jagasleman-simple-route-results article > div:first-child > b {
+  font-size: 10.5px;
+  font-weight: 900;
+  line-height: 1.3;
+}
+
+#root .jagasleman-simple-route-results article > div:first-child > small {
+  color: #71818a;
+  font-size: 8.5px;
+  font-weight: 650;
+  line-height: 1.35;
+}
+
+#root .jagasleman-simple-route-metrics {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 6px;
+  margin-top: 7px;
+}
+
+#root .jagasleman-simple-route-metrics > span {
+  display: grid;
+  gap: 1px;
+  border-radius: 7px;
+  background: #f2f7f8;
+  padding: 6px;
+}
+
+#root .jagasleman-simple-route-metrics small {
+  color: #74858d;
+  font-size: 7.5px;
+  font-weight: 800;
+  text-transform: uppercase;
+}
+
+#root .jagasleman-simple-route-metrics b {
+  font-size: 9.5px;
+  font-weight: 900;
+}
+
+#root .jagasleman-simple-route-results article > a {
+  display: inline-flex;
+  margin-top: 7px;
+  color: #0b6e78;
+  font-size: 9px;
+  font-weight: 900;
+  text-decoration: none;
+}
+
+#root .jagasleman-simple-route-results article > a:hover {
+  text-decoration: underline;
+}
+
+#root .jagasleman-simple-route-warning {
+  margin-top: 8px;
+  border: 1px solid #fed7aa;
+  border-radius: 9px;
+  background: #fff7ed;
+  padding: 7px 8px;
+  color: #9a3412;
+  font-size: 8.5px;
+  font-weight: 750;
+  line-height: 1.4;
+}
+
+@media (max-width: 640px) {
+  #root .jagasleman-simple-layer-control {
+    top: 10px;
+    right: 10px;
+    width: min(276px, calc(100% - 72px));
+    border-radius: 12px;
+  }
+
+  #root .jagasleman-simple-layer-control__body {
+    max-height: min(58vh, 470px);
+  }
+
+  #root .jagasleman-simple-layer-control__header small,
+  #root .jagasleman-simple-layer-section__heading small {
+    display: none;
+  }
+}

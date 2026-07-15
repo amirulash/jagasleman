@@ -1,1 +1,0 @@
-import{n as e}from"./app-DB594QeM.js";import{t}from"./SafekeyLayout-CVDvcfWc.js";import n from"./AnalysisDashboard-BioCAe3L.js";var r=e();function i(){return(0,r.jsx)(t,{children:(0,r.jsx)(n,{})})}export{i as default};

@@ -28,7 +28,7 @@ import {
 } from 'lucide-react';
 
 import MapView from '@/Components/MapView';
-import { incidents as dummyIncidents } from '@/data/dummy';
+import { emergencyContacts, incidents as dummyIncidents } from '@/data/dummy';
 import { analyzeKDE } from '@/lib/kdeAnalysis';
 import { fetchApprovedReportIncidents, type MapIncident } from '@/lib/databaseIncidents';
 import type { UserLocation } from '@/lib/geolocation';
@@ -92,6 +92,11 @@ type KDEZoneLike = {
 const SLEMAN_CENTER: [number, number] = [-7.716, 110.355];
 const DEFAULT_ZOOM = 12;
 const KDE_BANDWIDTH_KM = 1.65;
+
+const MAP_ASSISTANCE_CONTACTS = emergencyContacts.filter((contact) => {
+    const type = String(contact.type || '').toLowerCase();
+    return type.includes('polsek') || type.includes('polres') || type.includes('polisi') || type.includes('rumah') || type.includes('sakit') || type.includes('rs');
+});
 
 const SLEMAN_BOUNDS = {
     south: -7.86,
@@ -1735,7 +1740,7 @@ export default function AnalysisDashboard() {
                             center={SLEMAN_CENTER}
                             zoom={DEFAULT_ZOOM}
                             incidents={mapIncidents as any}
-                            contacts={[]}
+                            contacts={MAP_ASSISTANCE_CONTACTS}
                             showHeatmap={kdeLayerMode === 'automatic'}
                             heatmapBandwidthKm={KDE_BANDWIDTH_KM}
                             hotspotClusters={[]}

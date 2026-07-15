@@ -1,7 +1,7 @@
 import { useCallback, useEffect, useMemo, useState } from 'react';
 import MapView from '@/Components/MapView';
 import { analyzeKDE } from '@/lib/kdeAnalysis';
-import { incidents as dummyIncidents } from '@/data/dummy';
+import { emergencyContacts, incidents as dummyIncidents } from '@/data/dummy';
 import {
     fetchReportIncidentsForMap,
     type MapIncident,
@@ -33,6 +33,11 @@ type NormalizedIncident = MapIncident & {
 };
 
 const PERIOD_OPTIONS: PeriodFilter[] = ['Semua', '7 Hari', '30 Hari', '90 Hari'];
+
+const MAP_ASSISTANCE_CONTACTS = emergencyContacts.filter((contact) => {
+    const type = String(contact.type || '').toLowerCase();
+    return type.includes('polsek') || type.includes('polres') || type.includes('polisi') || type.includes('rumah') || type.includes('sakit') || type.includes('rs');
+});
 
 const SLEMAN_DISTRICTS = [
     'Berbah',
@@ -579,7 +584,7 @@ export default function MapDashboard() {
                             </h1>
 
                             <p className="jaga-map-page-subtitle mt-1 max-w-3xl font-semibold text-[#07324A] dark:text-slate-200">
-                                Lihat titik kejadian, layer KDE 2020–2025, KDE otomatis, batas wilayah, dan sumber data pada peta.
+                                Lihat titik kejadian, layer KDE 2020–2025, Polsek dan rumah sakit terdekat, serta analisis rute bantuan pada peta.
                             </p>
 
                             <div className="jaga-map-guide mt-3 rounded-2xl border border-[#BDE7E1] bg-[#F2FAF6] p-3 text-[#07324A] shadow-sm dark:border-white/10 dark:bg-white/5 dark:text-white">
@@ -590,7 +595,7 @@ export default function MapDashboard() {
                                 <ol className="mt-2 grid gap-1.5 text-xs font-semibold leading-relaxed md:grid-cols-2">
                                     <li>1. Gunakan filter kecamatan, kategori, status, dan waktu kejadian.</li>
                                     <li>2. Klik marker untuk melihat detail lokasi, status, deskripsi, dan foto.</li>
-                                    <li>3. Pilih layer KDE 2020–2025 atau KDE otomatis melalui kontrol layer pada peta.</li>
+                                    <li>3. Aktifkan layer Polsek dan rumah sakit melalui kartu Kontrol Peta, lalu pilih titik kejadian untuk menghitung rute bantuan terdekat.</li>
                                     <li>4. Gunakan tombol + dan - untuk mengatur skala peta.</li>
                                     <li className="md:col-span-2 inline-flex items-center gap-1">
                                         5. Fullscreen: klik ikon <Maximize2 className="h-3.5 w-3.5" /> di kiri atas peta.
@@ -838,6 +843,7 @@ export default function MapDashboard() {
 
                         <MapView
                             incidents={mapReports as any}
+                            contacts={MAP_ASSISTANCE_CONTACTS}
                             showHeatmap={kdeLayerMode === 'automatic'}
                             kdeLayerMode={kdeLayerMode}
                             onKdeLayerModeChange={setKdeLayerMode}

@@ -12,8 +12,10 @@ import {
 } from 'react-leaflet';
 import L from 'leaflet';
 import {
+    Building2,
     ChevronDown,
     ChevronUp,
+    Cross,
     Crosshair,
     Info,
     Layers3,
@@ -22,6 +24,7 @@ import {
     Maximize2,
     Minimize2,
     Minus,
+    Navigation,
     Plus,
 } from 'lucide-react';
 import 'leaflet.heat';
@@ -32,6 +35,13 @@ import { Incident, EmergencyContact } from '@/data/dummy';
 import { KDEZone } from '@/lib/kdeAnalysis';
 import { UserLocation } from '@/lib/geolocation';
 import { batasKecamatanGeojson } from '@/data/districtBoundaryGeojson';
+import {
+    AssistanceRouteControl,
+    AssistanceRouteLayer,
+    type AssistanceRoute,
+    type RouteOrigin,
+    useNearestAssistanceRoutes,
+} from '@/Components/IncidentRouteAnalysis';
 
 delete (L.Icon.Default.prototype as any)._getIconUrl;
 
@@ -216,7 +226,6 @@ const districtColorPalette = [
 const districtColorMap = new Map<string, string>();
 
 type BasemapKey = 'jalan' | 'satelit' | 'topo';
-type MapPanelKey = 'legend' | 'layers' | 'basemap' | null;
 
 const BASEMAP_OPTIONS: Array<{
     key: BasemapKey;
@@ -258,7 +267,7 @@ const BASEMAP_OPTIONS: Array<{
     },
 ];
 
-
+const DEFAULT_BASEMAP = BASEMAP_OPTIONS[0]!;
 
 function MapStyle() {
     return (
@@ -1226,7 +1235,7 @@ function MapStyle() {
                 .jagasleman-contact-legend-icon.fire { background: #F97316; }
 
                 @media (max-width: 640px) {
-    
+
 
                 .jagasleman-kde-layer-control {
                     position: absolute;
@@ -1988,25 +1997,47 @@ function createIncidentIcon(_type: string, source: string) {
 }
 
 function createContactIcon(type: 'Polsek' | 'Rumah Sakit' | 'Damkar') {
-    const isPolice = type === 'Polsek';
-    const isHospital = type === 'Rumah Sakit';
-    const color = isPolice ? '#0B6E78' : isHospital ? '#16A34A' : '#F97316';
-    const ring = isPolice ? 'rgba(14,165,160,.18)' : isHospital ? 'rgba(22,163,74,.18)' : 'rgba(249,115,22,.18)';
-    const halo = isPolice ? 'rgba(11,74,99,.16)' : isHospital ? 'rgba(22,163,74,.16)' : 'rgba(249,115,22,.18)';
+    if (type === 'Rumah Sakit') {
+        return svgIcon(
+            `<div title="Rumah Sakit" class="jagasleman-facility-marker is-hospital">
+                <svg viewBox="0 0 44 58" width="44" height="58" aria-hidden="true">
+                    <ellipse cx="22" cy="55" rx="10" ry="2.8" fill="rgba(15,23,42,.18)" />
+                    <path d="M22 2C11.5 2 3 10.4 3 21c0 14.8 19 33 19 33s19-18.2 19-33C41 10.4 32.5 2 22 2Z" fill="#E11D2E" stroke="#FFFFFF" stroke-width="2" />
+                    <circle cx="22" cy="21" r="12.5" fill="#FFFFFF" />
+                    <path d="M22 13v16M14 21h16" stroke="#E11D2E" stroke-width="4" stroke-linecap="round" />
+                </svg>
+            </div>`,
+            [44, 58],
+            [22, 54],
+        );
+    }
 
-    const symbol = isPolice
-        ? `<svg width="19" height="19" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2.35" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3l7 4v5c0 5-3 8-7 9-4-1-7-4-7-9V7l7-4Z"/><path d="M9 12h6"/><path d="M12 9v6"/></svg>`
-        : isHospital
-            ? `<svg width="19" height="19" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2.35" stroke-linecap="round" stroke-linejoin="round"><rect x="4" y="4" width="16" height="16" rx="4"/><path d="M12 7v10"/><path d="M7 12h10"/></svg>`
-            : `<svg width="19" height="19" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2.35" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3l2.5 5 5.5.8-4 3.9.9 5.5L12 16.6 7.1 19.2l.9-5.5-4-3.9 5.5-.8L12 3Z"/></svg>`;
+    if (type === 'Polsek') {
+        return svgIcon(
+            `<div title="Polsek" class="jagasleman-facility-marker is-police">
+                <svg viewBox="0 0 44 58" width="44" height="58" aria-hidden="true">
+                    <ellipse cx="22" cy="55" rx="10" ry="2.8" fill="rgba(15,23,42,.18)" />
+                    <path d="M22 2C11.5 2 3 10.4 3 21c0 14.8 19 33 19 33s19-18.2 19-33C41 10.4 32.5 2 22 2Z" fill="#173A66" stroke="#FFFFFF" stroke-width="2" />
+                    <circle cx="22" cy="21" r="12.5" fill="#FFFFFF" />
+                    <path d="M13 19.5h18M15.5 19.5V29M20 19.5V29M24 19.5V29M28.5 19.5V29M13.5 29h17M12.5 19.5 22 13l9.5 6.5" fill="none" stroke="#173A66" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" />
+                </svg>
+            </div>`,
+            [44, 58],
+            [22, 54],
+        );
+    }
 
     return svgIcon(
-        `<div style="position:relative;width:44px;height:44px;border-radius:18px;background:${ring};display:flex;align-items:center;justify-content:center;box-shadow:0 16px 30px rgba(15,31,46,.18);">
-            <div style="position:absolute;inset:6px;border-radius:15px;background:${halo};filter:blur(1px);"></div>
-            <div style="position:relative;width:34px;height:34px;border-radius:14px;background:${color};border:3px solid #fff;box-shadow:0 12px 24px rgba(15,23,42,.24);display:flex;align-items:center;justify-content:center;">${symbol}</div>
+        `<div title="Damkar" class="jagasleman-facility-marker is-fire">
+            <svg viewBox="0 0 44 58" width="44" height="58" aria-hidden="true">
+                <ellipse cx="22" cy="55" rx="10" ry="2.8" fill="rgba(15,23,42,.18)" />
+                <path d="M22 2C11.5 2 3 10.4 3 21c0 14.8 19 33 19 33s19-18.2 19-33C41 10.4 32.5 2 22 2Z" fill="#EA580C" stroke="#FFFFFF" stroke-width="2" />
+                <circle cx="22" cy="21" r="12.5" fill="#FFFFFF" />
+                <path d="M23 11.5c1.3 4.4-2.2 5.3-.8 8.1 1.4 2.8 4.7 1.7 4.8 5.1.1 3.1-2.3 5.3-5.4 5.3-3.7 0-6.4-2.6-6.4-6.1 0-3.7 2.6-5.8 4.7-8.2.8 2 .5 3.3.5 3.3 2.1-1.9 3-4.1 2.6-7.5Z" fill="#EA580C" />
+            </svg>
         </div>`,
-        [44, 44],
-        [22, 22],
+        [44, 58],
+        [22, 54],
     );
 }
 
@@ -2263,12 +2294,12 @@ function DistrictBoundaryLayer({
                         });
 
                         if (target.bringToFront) target.bringToFront();
-                        
+
                     },
                     mouseout: (e: L.LeafletMouseEvent) => {
                         const target = e.target as any;
                         if (geojsonRef.current) geojsonRef.current.resetStyle(target);
-                        
+
                     },
                 });
             }}
@@ -2694,6 +2725,7 @@ function KdeLayerControl({
     );
 }
 
+
 function KdeLegendControl({
     mode,
     showIncidents,
@@ -3092,7 +3124,15 @@ function ContinuousHeatmapLayer({
     return null;
 }
 
-function ClusteredIncidentMarkers({ incidents, showRiskInfo = true }: { incidents: Incident[]; showRiskInfo?: boolean }) {
+function ClusteredIncidentMarkers({
+    incidents,
+    showRiskInfo = true,
+    onRouteRequest,
+}: {
+    incidents: Incident[];
+    showRiskInfo?: boolean;
+    onRouteRequest?: (origin: RouteOrigin) => void;
+}) {
     const map = useMap();
     const [zoom, setZoom] = useState(() => map.getZoom());
     const [viewTick, setViewTick] = useState(0);
@@ -3166,7 +3206,7 @@ function ClusteredIncidentMarkers({ incidents, showRiskInfo = true }: { incident
             <>
                 {clusters.map((cluster) => {
                     if (cluster.count === 1) {
-                        return <IncidentMarker key={cluster.key} incident={cluster.items[0]} showRiskInfo={showRiskInfo} />;
+                        return <IncidentMarker key={cluster.key} incident={cluster.items[0]} showRiskInfo={showRiskInfo} onRouteRequest={onRouteRequest} />;
                     }
 
                     const topTypes = cluster.items.reduce((acc: Record<string, number>, item: any) => {
@@ -3232,13 +3272,22 @@ function ClusteredIncidentMarkers({ incidents, showRiskInfo = true }: { incident
                     key={`${getIncidentSource(incident)}-${incident.id || incident.lat + '-' + incident.lng}`}
                     incident={incident}
                     showRiskInfo={showRiskInfo}
+                    onRouteRequest={onRouteRequest}
                 />
             ))}
         </>
     );
 }
 
-function IncidentMarker({ incident, showRiskInfo = true }: { incident: any; showRiskInfo?: boolean }) {
+function IncidentMarker({
+    incident,
+    showRiskInfo = true,
+    onRouteRequest,
+}: {
+    incident: any;
+    showRiskInfo?: boolean;
+    onRouteRequest?: (origin: RouteOrigin) => void;
+}) {
     const displayType = getIncidentType(incident);
     const typeLabel = getIncidentTypeLabel(displayType);
     const source = getIncidentSource(incident);
@@ -3383,6 +3432,22 @@ function IncidentMarker({ incident, showRiskInfo = true }: { incident: any; show
                             </p>
                         </div>
 
+                        {onRouteRequest && (
+                            <button
+                                type="button"
+                                onClick={() => onRouteRequest({
+                                    lat,
+                                    lng,
+                                    label: typeLabel,
+                                    detail: location,
+                                    source: 'incident',
+                                })}
+                                className="flex h-10 w-full items-center justify-center rounded-2xl bg-[#0B6E78] px-4 text-xs font-black text-white shadow-sm transition hover:bg-[#075661]"
+                            >
+                                Analisis Rute Bantuan Terdekat
+                            </button>
+                        )}
+
                         <a
                             href={`https://www.google.com/maps/search/?api=1&query=${lat},${lng}`}
                             target="_blank"
@@ -3415,7 +3480,7 @@ function EmergencyContactMarkers({ contacts }: { contacts: EmergencyContact[] })
                         : rawContactType.includes('rumah') || rawContactType.includes('rs') || rawContactType.includes('sakit')
                             ? 'Rumah Sakit'
                             : 'Polsek';
-                    const accent = contactType === 'Rumah Sakit' ? '#16A34A' : contactType === 'Damkar' ? '#F97316' : '#0B6E78';
+                    const accent = contactType === 'Rumah Sakit' ? '#E11D2E' : contactType === 'Damkar' ? '#EA580C' : '#173A66';
 
                     return (
                         <Marker
@@ -3495,12 +3560,12 @@ function EmergencyContactLegend({ contacts }: { contacts: EmergencyContact[] }) 
         <div className="jagasleman-contact-legend">
             <div className="jagasleman-contact-legend-title">Legenda Bantuan</div>
             <div className="jagasleman-contact-legend-row">
-                <span className="jagasleman-contact-legend-icon police">⚑</span>
+                <span className="jagasleman-contact-legend-icon police"><Building2 aria-hidden="true" /></span>
                 <span>Polsek</span>
                 <b>{policeCount}</b>
             </div>
             <div className="jagasleman-contact-legend-row">
-                <span className="jagasleman-contact-legend-icon hospital">✚</span>
+                <span className="jagasleman-contact-legend-icon hospital"><Cross aria-hidden="true" /></span>
                 <span>Rumah Sakit</span>
                 <b>{hospitalCount}</b>
             </div>
@@ -3659,13 +3724,96 @@ function MapViewContent({
     const [incidentLayerVisible, setIncidentLayerVisible] = useState(showIncidentMarkers);
     const [districtLayerVisible, setDistrictLayerVisible] = useState(showDistrictBoundary);
     const [villageLayerVisible, setVillageLayerVisible] = useState(showVillageBoundary);
-    const [contactLayerVisible, setContactLayerVisible] = useState(contacts.length > 0);
-    const [activeEdgePanel, setActiveEdgePanel] = useState<MapPanelKey>(null);
+    const [contactLayerVisible, setContactLayerVisible] = useState(false);
+    const [activeEdgePanel, setActiveEdgePanel] = useState<'legend' | 'layers' | 'basemap' | 'routing' | null>(null);
+    const [routeOrigin, setRouteOrigin] = useState<RouteOrigin | null>(null);
+    const [locatingForRoute, setLocatingForRoute] = useState(false);
+    const [routeLocationError, setRouteLocationError] = useState<string | null>(null);
+    const lastUserRouteKeyRef = useRef<string | null>(null);
+    const {
+        routes: assistanceRoutes,
+        loading: routeLoading,
+        error: routeAnalysisError,
+    } = useNearestAssistanceRoutes(routeOrigin, contacts);
+
+    const openRouteAnalysis = (origin: RouteOrigin) => {
+        setRouteOrigin(origin);
+        setContactLayerVisible(true);
+        setActiveEdgePanel('routing');
+        setRouteLocationError(null);
+    };
+
+    const useCurrentLocationForRoute = () => {
+        if (!navigator.geolocation) {
+            setRouteLocationError('Peramban tidak mendukung akses lokasi.');
+            setActiveEdgePanel('routing');
+            return;
+        }
+
+        setLocatingForRoute(true);
+        setRouteLocationError(null);
+        setActiveEdgePanel('routing');
+
+        navigator.geolocation.getCurrentPosition(
+            (position) => {
+                openRouteAnalysis({
+                    lat: position.coords.latitude,
+                    lng: position.coords.longitude,
+                    label: 'Lokasi Saya',
+                    detail: `Akurasi ±${Math.round(position.coords.accuracy)} meter`,
+                    source: 'user',
+                });
+                setLocatingForRoute(false);
+            },
+            (locationError) => {
+                setLocatingForRoute(false);
+                setRouteLocationError(
+                    locationError.code === locationError.PERMISSION_DENIED
+                        ? 'Izin lokasi ditolak. Aktifkan izin lokasi atau pilih titik kejadian.'
+                        : 'Lokasi tidak dapat diperoleh. Periksa GPS dan koneksi perangkat.',
+                );
+            },
+            { enableHighAccuracy: true, timeout: 12000, maximumAge: 30000 },
+        );
+    };
+
+    const handleLocateRequest = () => {
+        setActiveEdgePanel('routing');
+
+        if (onLocateRequest) {
+            onLocateRequest();
+            return;
+        }
+
+        useCurrentLocationForRoute();
+    };
 
     useEffect(() => setIncidentLayerVisible(showIncidentMarkers), [showIncidentMarkers]);
     useEffect(() => setDistrictLayerVisible(showDistrictBoundary), [showDistrictBoundary]);
     useEffect(() => setVillageLayerVisible(showVillageBoundary), [showVillageBoundary]);
-    useEffect(() => setContactLayerVisible(contacts.length > 0), [contacts.length]);
+    useEffect(() => {
+        if (contacts.length === 0) setContactLayerVisible(false);
+    }, [contacts.length]);
+
+    useEffect(() => {
+        if (!userLocation) return;
+
+        const lat = Number(userLocation.lat);
+        const lng = Number(userLocation.lng);
+        if (!Number.isFinite(lat) || !Number.isFinite(lng)) return;
+
+        const routeKey = `${lat.toFixed(6)}:${lng.toFixed(6)}`;
+        if (lastUserRouteKeyRef.current === routeKey) return;
+        lastUserRouteKeyRef.current = routeKey;
+
+        openRouteAnalysis({
+            lat,
+            lng,
+            label: 'Lokasi Saya',
+            detail: `Akurasi ±${Math.round(Number(userLocation.accuracy ?? 0))} meter`,
+            source: 'user',
+        });
+    }, [userLocation]);
 
     const dataLayers: DataLayerOption[] = [
         {
@@ -3688,8 +3836,8 @@ function MapViewContent({
         }] : []),
         ...(contacts.length > 0 ? [{
             key: 'contacts' as DataLayerKey,
-            title: 'Lokasi Bantuan',
-            description: 'Polisi dan fasilitas kesehatan terdekat.',
+            title: 'Polsek & Rumah Sakit',
+            description: 'Tampilkan lokasi bantuan darurat pada peta.',
             checked: contactLayerVisible,
         }] : []),
     ];
@@ -3708,43 +3856,68 @@ function MapViewContent({
     return (
         <>
             <MapStyle />
-            {showMapControls && <MapControlPanel onLocateRequest={onLocateRequest} />}
+            {showMapControls && (
+                <MapControlPanel
+                    onLocateRequest={handleLocateRequest}
+                    panelOpen={Boolean(activeEdgePanel)}
+                />
+            )}
+
             {showEdgePanels ? (
-                <>
-                    <div
-                        className={`jagasleman-map-right-stack jagasleman-bantara-control-stack ${activeEdgePanel ? 'has-open-panel' : ''}`}
-                        data-open-panel={activeEdgePanel ?? 'none'}
-                        role="region"
-                        aria-label="Kontrol peta"
-                    >
-                        {showKdeLegend && (
-                            <KdeLegendControl
-                                mode={activeKdeLayerMode}
-                                showIncidents={incidentLayerVisible}
-                                showDistricts={districtLayerVisible}
-                                showVillages={villageLayerVisible}
-                                showContacts={contactLayerVisible}
-                                open={activeEdgePanel === 'legend'}
-                                onToggle={() => setActiveEdgePanel((current) => current === 'legend' ? null : 'legend')}
-                            />
-                        )}
-                        <KdeLayerControl
+                <div
+                    className={`jagasleman-map-right-stack jagasleman-bantara-control-stack ${activeEdgePanel ? 'has-open-panel' : ''}`}
+                    data-open-panel={activeEdgePanel ?? 'none'}
+                    role="region"
+                    aria-label="Kontrol peta"
+                >
+                    {showKdeLegend && (
+                        <KdeLegendControl
                             mode={activeKdeLayerMode}
-                            onChange={changeKdeLayerMode}
-                            dataLayers={dataLayers}
-                            onDataLayerChange={changeDataLayer}
-                            open={activeEdgePanel === 'layers'}
-                            onToggle={() => setActiveEdgePanel((current) => current === 'layers' ? null : 'layers')}
+                            showIncidents={incidentLayerVisible}
+                            showDistricts={districtLayerVisible}
+                            showVillages={villageLayerVisible}
+                            showContacts={contactLayerVisible}
+                            open={activeEdgePanel === 'legend'}
+                            onToggle={() => setActiveEdgePanel((current) => current === 'legend' ? null : 'legend')}
                         />
-                        <BasemapControl
-                            open={activeEdgePanel === 'basemap'}
-                            onToggle={() => setActiveEdgePanel((current) => current === 'basemap' ? null : 'basemap')}
+                    )}
+
+                    <KdeLayerControl
+                        mode={activeKdeLayerMode}
+                        onChange={changeKdeLayerMode}
+                        dataLayers={dataLayers}
+                        onDataLayerChange={changeDataLayer}
+                        open={activeEdgePanel === 'layers'}
+                        onToggle={() => setActiveEdgePanel((current) => current === 'layers' ? null : 'layers')}
+                    />
+
+                    <BasemapControl
+                        open={activeEdgePanel === 'basemap'}
+                        onToggle={() => setActiveEdgePanel((current) => current === 'basemap' ? null : 'basemap')}
+                    />
+
+                    {contacts.length > 0 && (
+                        <AssistanceRouteControl
+                            open={activeEdgePanel === 'routing'}
+                            onToggle={() => setActiveEdgePanel((current) => current === 'routing' ? null : 'routing')}
+                            origin={routeOrigin}
+                            routes={assistanceRoutes}
+                            loading={routeLoading}
+                            error={routeLocationError || routeAnalysisError}
+                            onUseCurrentLocation={handleLocateRequest}
+                            locating={locatingForRoute}
+                            onClear={() => {
+                                setRouteOrigin(null);
+                                setRouteLocationError(null);
+                                lastUserRouteKeyRef.current = null;
+                            }}
                         />
-                    </div>
-                </>
+                    )}
+                </div>
             ) : (
                 <BasemapControl />
             )}
+
             <MapInvalidation />
             <PopupPanelAutoCollapse onPopupOpen={() => setActiveEdgePanel(null)} />
             <ClickHandler onClick={onClick} />
@@ -3822,7 +3995,15 @@ function MapViewContent({
                 <HotspotClusterLayer hotspotClusters={hotspotClusters} onClusterClick={onClusterClick} />
             )}
 
-            {incidentLayerVisible && <ClusteredIncidentMarkers incidents={cleanIncidents} showRiskInfo={showRiskInfo} />}
+            {incidentLayerVisible && (
+                <ClusteredIncidentMarkers
+                    incidents={cleanIncidents}
+                    showRiskInfo={showRiskInfo}
+                    onRouteRequest={showEdgePanels && contacts.length > 0 ? openRouteAnalysis : undefined}
+                />
+            )}
+
+            <AssistanceRouteLayer origin={routeOrigin} routes={assistanceRoutes} />
 
             {contactLayerVisible && !showEdgePanels && <EmergencyContactLegend contacts={contacts} />}
             {contactLayerVisible && <EmergencyContactMarkers contacts={contacts} />}
